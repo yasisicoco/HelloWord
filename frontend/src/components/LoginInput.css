@@ -1,0 +1,56 @@
+.Input {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50vh; /* 부모 요소(Home)의 전체 높이를 차지 */
+  margin: 0 auto;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.boxForm {
+  width: 200px; /* input 필드 크기 설정 */
+  margin-bottom: 10px; /* 각 입력 필드 간 간격 */
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow:
+    inset 1px 1px 4px rgba(255, 255, 255, 0.75),
+    inset -1px -1px 4px rgba(0, 0, 0, 0.25);
+  filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25));
+}
+
+#loginBut {
+  height: 10vh;
+  border-radius: 10px;
+  box-shadow:
+    inset 1px 1px 4px rgba(255, 255, 255, 0.75),
+    inset -1px -1px 4px rgba(0, 0, 0, 0.25);
+  filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25));
+  background-color: rgb(255, 224, 118);
+  color: rgba(0, 0, 0, 0.75);
+  font-weight: bolder;
+}
+
+.containerAlign {
+  display: flex;
+  flex-direction: column;
+}
+
+.loginFont {
+  font-weight: bolder;
+  margin-bottom: 8px;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.signFont {
+  font-weight: bolder;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.75);
+}
