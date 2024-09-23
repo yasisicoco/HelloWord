@@ -1,13 +1,14 @@
-import { Routes, Route } from 'react-router-dom';
-
+import './styles/reset.css';
 import './App.css';
-import HomePage from './pages/HomePage';
+import React from 'react';
+import Router from './route/Router';
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-    </Routes>
+    <div className="App">
+      {/*} 여기서 App Style 넣기 {*/}
+      <Router />
+    </div>
   );
 }
 

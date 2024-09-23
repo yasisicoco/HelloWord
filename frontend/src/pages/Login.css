@@ -1,0 +1,88 @@
+.Login {
+  width: 100vw;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* 부모 요소(Home)의 전체 높이를 차지 */
+
+  background-image: url('../background/loginbg.png'); /* 이미지 경로 */
+  background-size: cover; /* 이미지를 화면에 맞게 확장 */
+  background-position: center; /* 이미지의 위치를 중앙으로 설정 */
+  background-repeat: no-repeat; /* 이미지 반복을 방지 */
+}
+
+.MainLogo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 40%; /* 부모 요소(Home)의 40% 높이를 차지 */
+}
+
+.Logoimg {
+  width: 20%;
+}
+
+.Input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 50%; /* 부모 요소(Home)의 50% 높이를 차지 */
+}
+
+.LoginButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 10%; /* 부모 요소(Home)의 10% 높이를 차지 */
+}
+
+.MainRight {
+  flex: 1;
+  margin-right: 40px;
+  margin-left: auto;
+  height: 100%; /* 부모 요소(Home)의 전체 높이를 차지 */
+}
+
+.TopContainer {
+  flex: 1;
+  margin-top: 12px;
+  /* background-color: bisque; */
+}
+.TopContainer .ExpContainer {
+  border-radius: 30px;
+  /* border: 5px solid aquamarine; */
+}
+
+.MiddleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 5;
+  height: 286px;
+  /* background-color: violet; */
+}
+
+.MiddleContainer img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* 이미지 비율을 유지하면서 부모 요소 안에 맞춤 */
+}
+
+.BottomContainer {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  flex-direction: row;
+  margin-bottom: 12px;
+  /* background-color: bisque; */
+}
+
+.ButtonContainer {
+  position: relative;
+  width: 30%;
+  /* background-color: yellowgreen; */
+}

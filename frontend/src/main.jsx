@@ -11,4 +11,5 @@ createRoot(document.getElementById('root')).render(
   </BrowserRouter>,
 );
 
+// Service Worker 등록
 register();
