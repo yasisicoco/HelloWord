@@ -23,7 +23,7 @@ function Router() {
 
       {/* Home 경로는 로그인된 사용자만 접근 가능 */}
       <Route
-        path="/login"
+        path="/home"
         element={
           <ProtectedRoute hasToken={hasToken}>
             <LoginPage />
