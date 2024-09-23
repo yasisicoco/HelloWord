@@ -1,0 +1,19 @@
+server:
+  port: 0
+
+spring:
+  datasource:
+    url: "{cipher}8bd674c602e628b1f14b4beaf37234caa3422584b14d747f29a7635ef9da409cd2d9055f83f1b7a045f97e45edb0279bfe26c02512afc0e4a46e48d23e18046c"
+    username: "{cipher}067e1fd0a73cbeb8783a88c1aac52d42101b718fd9da856444f0035b8434a260"
+    password: "{cipher}b531f8a3b2de8919e0ed536ae5c01803e97459a7e69dd6911e7952b20d02e288"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  dialect: org.hibernate.dialect.MySQL8Dialect
+
+eureka:
+  client:
+    service-url:
+      defaultZone: "{cipher}9ff5e4fffc93ae4382a6981d2c3f957fb023bccd868ac4f7a89a665b879deb823d1dc9aab6e668b02e011b61dc7a98d5"
