@@ -1,0 +1,57 @@
+.signup-page
+  width: 100vw
+  margin: 0 auto
+  display: flex
+  flex-direction: column
+  height: 100vh
+  justify-content: center
+  align-items: center
+
+  background-image: url('../background/loginbg.png')
+  background-size: cover
+  background-position: center
+  background-repeat: no-repeat
+
+.signup-form
+    display: flex
+    flex-direction: column
+    background: rgba(255,188,125, 1)
+    width: 40vw
+    border-radius: 10px
+    padding: 20px
+    box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+    filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+    
+    &__text
+      font-weight: bold
+
+    &__input
+      margin: 7px
+      border-radius: 10px
+      padding: 10px
+      border: solid 0px rgba( 0, 0, 0, 1)
+      box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+      filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+    
+    &__button
+      margin: 7px
+      height: 10vh
+      border-radius: 10px
+      border: solid 0px rgba( 0, 0, 0, 1)
+      box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+      filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+      background-color: rgb(255, 224, 118)
+      font-weight: bolder
+
+.signup-form__email-container
+  display: flex
+  width: 100% // 전체 너비를 차지하도록 설정
+  justify-content: space-between
+  margin-bottom: 10px
+
+.signup-form__input--email
+  flex-grow: 0.8
+  margin-right: 10px
+
+.signup-form__button--check
+  flex-grow: 0.2
