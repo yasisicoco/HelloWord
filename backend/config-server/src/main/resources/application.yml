@@ -1,6 +1,11 @@
 encrypt:
   key: ${ENCRYPT_KEY}
 
+security:
+  user:
+    username: ${CONFIG_USERNAME}
+    password: ${CONFIG_PASSWORD}
+
 server:
   port: ${CONFIG_SERVER_PORT}
 
