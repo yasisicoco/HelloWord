@@ -9,7 +9,7 @@ import SignupPage from '../pages/SignupPage';
 function Router() {
   const [hasToken, setHasToken] = useState(true);
 
-  // 토큰을 확인하는 로직 추가 (로컬 스토리지, 쿠키 등)
+  // 토큰을 확인하는 로직 추가 (로컬 스토리지, 쿠키 등)asdf
   useEffect(() => {
     const token = localStorage.getItem('token'); // 예시: 로컬 스토리지에서 토큰 확인
     if (token) {
