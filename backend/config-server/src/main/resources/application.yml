@@ -1,0 +1,16 @@
+encrypt:
+  key: ${ENCRYPT_KEY}
+
+server:
+  port: ${CONFIG_SERVER_PORT}
+
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: ${CONFIG_REPO_PATH}
