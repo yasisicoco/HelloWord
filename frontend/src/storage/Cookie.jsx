@@ -1,25 +1,24 @@
-import { Cookies } from 'react-cookie';
+import Cookies from 'js-cookie';
 
-const cookies = new Cookies();
+export const saveTokenToCookie = (tokenData) => {
+  const { refreshToken } = tokenData;
 
-// 새로운 리프레시 토큰을 저장하기 위한 함수
-export const setRefreshToken = (refreshToken) => {
-  const today = new Date();
-  const expireDate = today.setDate(today.getDate() + 7);
-
-  return cookies.set('refresh_token', refreshToken, {
-    sameSite: 'strict',
+  // 토큰을 쿠키에 저장
+  Cookies.set('refreshToken', refreshToken, {
+    expires: 7, // 7일 동안 유효
+    secure: true,
+    sameSite: 'Strict',
     path: '/',
-    expires: expireDate,
   });
 };
 
-// 쿠키에 저장된 리프레시 토큰을 가지고 오기위한 함수
-export const getCookieToken = () => {
-  return cookies.get('refresh_token');
+// access 토큰을 재발급받을 때 사용할 리프레시 토큰
+export const getRefreshToken = () => {
+  return Cookies.get('refreshToken');
 };
 
-// 쿠키에 저장된 토큰을 삭제하기 위한 함수 (로그아웃 시 사용)
-export const removeCookieToken = () => {
-  return cookies.remove('refresh_token', { sameSite: 'strict', path: '/' });
+// 로그아웃할 때 리프레시 토큰 삭제
+export const removeRefreshToken = () => {
+  Cookies.remove('refreshToken');
+  return true;
 };

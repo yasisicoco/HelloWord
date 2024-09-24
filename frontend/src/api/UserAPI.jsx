@@ -1,28 +1,39 @@
-import React from 'react';
 import axios from 'axios';
 
-const BASE_URL = '';
+const BASE_URL = 'https://j11b206.p.ssafy.io';
 
 const UserAPI = () => {
-  const login = async (userData) => {
+  // login 로직
+  const login = async (email, password) => {
+    const data = {
+      email: email,
+      password: password,
+    };
     try {
       const response = await axios.post(
-        `${BASE_URL}/signup`, // 요청을 보낼 경로
-        userData, // 요청에 보낼 데이터
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
+        `${BASE_URL}/login`, // 요청을 보낼 경로
+        // 요청에 보낼 데이터
+        data,
       );
+
       return response.data;
     } catch (error) {
-      console.error('Error during sign-up:', error.response?.data || error.message); // 에러 처리
-      throw error; // 필요하면 에러를 호출한 쪽에서 처리하게 할 수 있습니다.
+      return 'fail';
+      // throw error;
     }
   };
 
-  return { login };
+  const getAccessToken = async (refreshToken) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/getaccessToken`, refreshToken);
+      return response.data;
+    } catch (error) {
+      return 'fail'; // 일단 fail로 지정
+      // throw error;
+    }
+  };
+
+  return { login, getAccessToken };
 };
 
 export default UserAPI;
