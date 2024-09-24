@@ -5,34 +5,45 @@ import ProtectedRoute from './ProtectedRoute'; // ProtectedRoute 컴포넌트 �
 // 페이지 라우팅 주소
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
+import HomePage from '../pages/HomePage';
+
+// 토큰 여부 확인
+import { useAuth } from '../features/Auth/selectors';
 
 function Router() {
-  const [hasToken, setHasToken] = useState(true);
+  const [hasToken, setHasToken] = useState(false);
+  const token = useAuth(); // 예시: 로컬 스토리지에서 토큰 확인
 
-  // 토큰을 확인하는 로직 추가 (로컬 스토리지, 쿠키 등)asdf
+  // 토큰을 확인하는 로직 추가 (로컬 스토리지, 쿠키 등)
   useEffect(() => {
-    const token = localStorage.getItem('token'); // 예시: 로컬 스토리지에서 토큰 확인
     if (token) {
+      console.log(token);
       setHasToken(true);
+      console.log('접속완료');
+    } else {
+      setHasToken(false);
+      console.log('접속실패');
     }
   }, []);
 
+  // 보호된 경로 배열
+  const protectedRoutes = [
+    // 아래로 쭈욱 추가
+    { path: '/home', element: <HomePage /> },
+    // { path: '/home', element: <HomePage /> },
+  ];
+
   return (
     <Routes>
-      {/* 로그인 페이지는 보호되지 않음 */}
+      {/* 비보호 경로 */}
       <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
 
-      {/* Home 경로는 로그인된 사용자만 접근 가능 */}
-      <Route
-        path="/login"
-        element={
-          <ProtectedRoute hasToken={hasToken}>
-            <LoginPage />
-          </ProtectedRoute>
-        }
-      />
+      {/* 보호된 경로는 한 번에 처리 */}
+      {protectedRoutes.map(({ path, element }) => (
+        <Route key={path} path={path} element={<ProtectedRoute hasToken={hasToken}>{element}</ProtectedRoute>} />
+      ))}
     </Routes>
   );
 }

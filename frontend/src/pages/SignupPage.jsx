@@ -1,9 +1,13 @@
 import { useState } from 'react';
+import { IoClose } from 'react-icons/io5';
 import Signup from '../components/Signup';
+import { useNavigate } from 'react-router-dom';
 
 import './Signup.sass';
 
 const SignupPage = () => {
+  const navigate = useNavigate();
+
   // 유저 정보
   const [email, SetUserEmail] = useState('');
   const [password1, SetPassword1] = useState('');
@@ -38,6 +42,9 @@ const SignupPage = () => {
   return (
     <section className="signup-page">
       <form onSubmit={handleLogin} className="signup-form">
+        <div className="signup-form__close">
+          <IoClose className="" onClick={() => navigate('/login')} />
+        </div>
         <p className="signup-form__text">이메일</p>
         <div className="signup-form__email-container">
           <input
