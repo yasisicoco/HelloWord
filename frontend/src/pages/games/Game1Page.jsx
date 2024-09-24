@@ -13,7 +13,7 @@ const Game1Page = () => {
       <section className="top-nav">
         <button className="top-nav__back-space">뒤로가기</button>
         <div className="top-nav__time-stamp">
-          <TimeBar className="top-nav__time-stamp--Timebar" time={5} />
+          <TimeBar className="top-nav__time-stamp--Timebar" time={10} />
         </div>
         <div className="top-nav__bookmarker">페이지</div>
       </section>
