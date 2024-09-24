@@ -20,10 +20,10 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/disovery-service" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/discovery-service" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/disovery-service" />
+            <option value="$PROJECT_DIR$/discovery-service" />
           </set>
         </option>
       </GradleProjectSettings>
