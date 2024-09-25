@@ -1,4 +1,4 @@
 package com.helloword.userservice.user.dto.request;
 
-public class UserRequestDto {
+public class UserLoginDto {
 }
