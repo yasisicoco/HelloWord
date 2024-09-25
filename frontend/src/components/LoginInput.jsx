@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import './LoginInput.css';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import './LoginInput.sass';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login } from '../features/Auth/authSlice';
 
 const LoginInput = () => {
   const [email, setEmail] = useState('');
@@ -12,47 +13,45 @@ const LoginInput = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    // await new Promise((r) => setTimeout(r, 1000)); // 일단 대기
 
-    console.log(email);
-    console.log(password);
+    if (!email) {
+      return alert('아이디를 입력하세요.');
+    } else if (!password) {
+      return alert('비밀번호를 입력하세요.');
+    }
 
-    // axios로 로그인정보 받기
-    // const resposne = await axios.post(
-    //   '')
-    //   .then((res) => {
-    //     // res
-    //       // 토큰 저장 및 네이게이터로 home으로 보내기
-    //     navigate('/home');
-    //   })
-    //   .catch((error) => {
-    //     //error
-    //   })
+    try {
+      await dispatch(login({ email, password })).unwrap();
+      navigate('/home');
+    } catch (error) {
+      alert('로그인에 실패했습니다.');
+    }
   };
 
   return (
-    <section className="Input">
-      <form onSubmit={handleLogin}>
-        <div className="loginForm">
-          <div className="containerAlign">
-            <p className="loginFont">아이디</p>
-            <input
-              type="text"
-              className="boxForm"
-              id="userId"
-              placeholder=""
-              autoFocus
-              onChange={(e) => setEmail(e.target.value)}></input>
-            <p className="loginFont">비밀번호</p>
-            <input
-              type="password"
-              className="boxForm"
-              id="password"
-              placeholder=""
-              onChange={(e) => setPassword(e.target.value)}></input>
-            <p className="signFont">회원가입 / 비밀번호 찾기</p>
-            <button id="loginBut">로그인</button>
-          </div>
+    <section className="login-Compo">
+      <form onSubmit={handleLogin} className="login-form">
+        <p className="login-form__loginFont">아이디</p>
+        <input
+          type="text"
+          className="login-form__box"
+          id="userId"
+          placeholder=""
+          autoFocus
+          onChange={(e) => setEmail(e.target.value)}></input>
+        <p className="login-form__loginFont">비밀번호</p>
+        <input
+          type="password"
+          className="login-form__box"
+          id="password"
+          placeholder=""
+          onChange={(e) => setPassword(e.target.value)}></input>
+        <div className="login-form__textalign">
+          <p onClick={() => navigate('/signup')} className="login-form__signFont">
+            회원가입
+          </p>
+          <p className="login-form__signFont"> / </p>
+          <p className="login-form__signFont">비밀번호 찾기</p>
         </div>
         <button className="login-form__loginbox">로그인</button>
       </form>

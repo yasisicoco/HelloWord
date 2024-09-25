@@ -1,50 +1,62 @@
-import { Routes, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import ProtectedRoute from './ProtectedRoute'; // ProtectedRoute 컴포넌트 임포트
+import React, { useState } from 'react';
+import './LoginInput.sass';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login } from '../features/Auth/authSlice';
 
-// 페이지 라우팅 주소
-import LoginPage from '../pages/LoginPage';
+const LoginInput = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-function Router() {
-  const [hasToken, setHasToken] = useState(false);
-  const token = useAuth(); // 예시: 로컬 스토리지에서 토큰 확인
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  // 토큰을 확인하는 로직 추가 (로컬 스토리지, 쿠키 등)
-  useEffect(() => {
-    if (token) {
-      console.log(token);
-      setHasToken(true);
-      console.log('접속완료');
-    } else {
-      setHasToken(false);
-      console.log('접속실패');
+  const handleLogin = async (event) => {
+    event.preventDefault();
+
+    if (!email) {
+      return alert('아이디를 입력하세요.');
+    } else if (!password) {
+      return alert('비밀번호를 입력하세요.');
     }
-  }, []);
 
-  // 보호된 경로 배열
-  const protectedRoutes = [
-    // 아래로 쭈욱 추가
-    { path: '/home', element: <HomePage /> },
-    // { path: '/home', element: <HomePage /> },
-  ];
+    try {
+      await dispatch(login({ email, password })).unwrap();
+      navigate('/home');
+    } catch (error) {
+      alert('로그인에 실패했습니다.');
+    }
+  };
 
   return (
-    <Routes>
-      {/* 비보호 경로 */}
-      <Route path="/" element={<LoginPage />} />
-      <Route path="/login" element={<LoginPage />} />
-
-      {/* Home 경로는 로그인된 사용자만 접근 가능 */}
-      <Route
-        path="/login"
-        element={
-          <ProtectedRoute hasToken={hasToken}>
-            <LoginPage />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <section className="login-Compo">
+      <form onSubmit={handleLogin} className="login-form">
+        <p className="login-form__loginFont">아이디</p>
+        <input
+          type="text"
+          className="login-form__box"
+          id="userId"
+          placeholder=""
+          autoFocus
+          onChange={(e) => setEmail(e.target.value)}></input>
+        <p className="login-form__loginFont">비밀번호</p>
+        <input
+          type="password"
+          className="login-form__box"
+          id="password"
+          placeholder=""
+          onChange={(e) => setPassword(e.target.value)}></input>
+        <div className="login-form__textalign">
+          <p onClick={() => navigate('/signup')} className="login-form__signFont">
+            회원가입
+          </p>
+          <p className="login-form__signFont"> / </p>
+          <p className="login-form__signFont">비밀번호 찾기</p>
+        </div>
+        <button className="login-form__loginbox">로그인</button>
+      </form>
+    </section>
   );
-}
+};
 
-export default Router;
+export default LoginInput;
