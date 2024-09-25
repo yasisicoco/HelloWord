@@ -51,7 +51,9 @@ const LoginInput = () => {
             회원가입
           </p>
           <p className="login-form__signFont"> / </p>
-          <p className="login-form__signFont">비밀번호 찾기</p>
+          <p onClick={() => navigate('/password')} className="login-form__signFont">
+            비밀번호 찾기
+          </p>
         </div>
         <button className="login-form__loginbox">로그인</button>
       </form>

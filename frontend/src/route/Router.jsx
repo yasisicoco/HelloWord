@@ -6,6 +6,7 @@ import ProtectedRoute from './ProtectedRoute'; // ProtectedRoute 컴포넌트 �
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import HomePage from '../pages/HomePage';
+import PasswordPage from '../pages/PasswordPage';
 import Game1Page from '../pages/games/Game1Page';
 import Game2Page from '../pages/games/Game2Page';
 import Game3Page from '../pages/games/Game3Page';
@@ -49,6 +50,7 @@ function Router() {
       <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/password" element={<PasswordPage />} />
 
       {/* 개발용 코드 */}
       <Route path="/game1" element={<Game1Page />} />
