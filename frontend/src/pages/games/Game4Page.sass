@@ -1,7 +1,7 @@
-.game1-page
-  width: 100%
+.game4-page
+  width: 100vw
   height: 100vh
-  background-color: #7572B4
+  background-color: #6A7FDB
 
   .top-nav
     display: flex
@@ -24,8 +24,8 @@
       flex: 8
 
       &--timebar
-        width: 100%   
-        height: 100%  
+        width: 100%
+        height: 100%
         border-radius: 80px
         background-color: #fff
 
@@ -41,61 +41,80 @@
   .main-content
     display: flex
     padding: 12px 40px
-    height: 60%
+    height: 80%
 
-    &__img-wrap
+    .book-container
       display: flex
-      flex: 1
-      padding-right: 12px
-      justify-content: center
-      align-items: center
-
-      &--img
-        width: 100%
-        height: 100%
-        background-color: #ffffff
-        object-fit: contain
-        border: none
-        border-radius: 24px
-
-        box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
-        filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
-
-    &__card-container
-      display: flex
-      flex: 1
-      padding-left: 12px
-      flex-wrap: wrap
+      flex-direction: column
+      flex: 2
       gap: 12px
-      justify-content: space-between
+      padding-right: 12px
+
+      &__img-wrap
+        display: flex
+        flex: 1
+        justify-content: center
+        align-items: center
+        max-height: 70% // 부모 컨테이너 높이 내에서 이미지가 맞춰짐
+        height: auto
+
+        &--img
+          width: 100%
+          height: 100%
+          object-fit: contain
+          border-radius: 12px
+          background-color: #ffffff
+          box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+      
+      &__story-wrap
+        flex: 2
+        border-radius: 12px
+        background-color: #ffffff
+        box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+        &--text
+          text-align: center
+
+    .card-container
+      display: flex
+      flex: 1
+      flex-wrap: wrap
+      padding-left: 12px
+      gap: 12px
 
       &--card-wrap
-        display: flex
-        background-color: #ffffff
         flex: 1 1 calc(25% - 12px)
         min-width: 200px
-        padding: 12px
-        border: none
-        border-radius: 24px
+        background-color: #ffffff
+        padding: 20px
+        border-radius: 16px
+        display: flex
         justify-content: center
         align-items: center
         cursor: pointer
         box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
         filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
 
-  .footer
-    display: flex
-    height: 10%
-    padding: 12px 40px
-    justify-content: center
-    align-items: center
+  // 아이폰 가로 기준
+  @media screen and (max-width: 844px)
+    .top-nav
+      padding: 12px 40px
+      gap: 12px
 
-    &__play-button
-      width: 20%
-      padding: 10px 20px
-      border-radius: 24px
-      background-color: #ffffff
-      border: none
-      cursor: pointer
-      box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
-      filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+      &__back-space
+        padding: 8px 16px
+        border-radius: 16px
+
+    .main-content
+      padding: 8px 40px
+      height: 80%
+
+      .book-container
+        &__img-wrap
+          &--img
+            max-height: 200px
+            height: auto
+
+      .card-container
+        &--card-wrap
+          flex: 1 1 calc(50% - 12px)
+          min-width: 150px
