@@ -4,11 +4,6 @@ import ProtectedRoute from './ProtectedRoute'; // ProtectedRoute 컴포넌트 �
 
 // 페이지 라우팅 주소
 import LoginPage from '../pages/LoginPage';
-import SignupPage from '../pages/SignupPage';
-import HomePage from '../pages/HomePage';
-
-// 토큰 여부 확인
-import { useAuth } from '../features/Auth/selectors';
 
 function Router() {
   const [hasToken, setHasToken] = useState(false);
@@ -38,12 +33,16 @@ function Router() {
       {/* 비보호 경로 */}
       <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
 
-      {/* 보호된 경로는 한 번에 처리 */}
-      {protectedRoutes.map(({ path, element }) => (
-        <Route key={path} path={path} element={<ProtectedRoute hasToken={hasToken}>{element}</ProtectedRoute>} />
-      ))}
+      {/* Home 경로는 로그인된 사용자만 접근 가능 */}
+      <Route
+        path="/login"
+        element={
+          <ProtectedRoute hasToken={hasToken}>
+            <LoginPage />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
