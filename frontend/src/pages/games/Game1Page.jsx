@@ -13,21 +13,23 @@ const Game1Page = () => {
       <section className="top-nav">
         <button className="top-nav__back-space">뒤로가기</button>
         <div className="top-nav__time-stamp">
-          <TimeBar className="top-nav__time-stamp--Timebar" time={10} />
+          <TimeBar className="top-nav__time-stamp--timebar" time={5} />
         </div>
         <div className="top-nav__bookmarker">페이지</div>
       </section>
-      <section className="middle-content">
-        <div className="middle-content__img-wrap">
-          <img src="/charactor/rabbit.png" alt="캐릭터 이미지" className="middle-content__img-wrap--img" />
+
+      <section className="main-content">
+        <div className="main-content__img-wrap">
+          <img src="/charactor/rabbit.png" alt="캐릭터 이미지" className="main-content__img-wrap--img" />
         </div>
-        <div className="middle-content__card-container">
-          <div className="middle-content__card-container--card-wrap">WORD</div>
-          <div className="middle-content__card-container--card-wrap">WORD</div>
-          <div className="middle-content__card-container--card-wrap">WORD</div>
-          <div className="middle-content__card-container--card-wrap">WORD</div>
+        <div className="main-content__card-container">
+          <div className="main-content__card-container--card-wrap">WORD</div>
+          <div className="main-content__card-container--card-wrap">WORD</div>
+          <div className="main-content__card-container--card-wrap">WORD</div>
+          <div className="main-content__card-container--card-wrap">WORD</div>
         </div>
       </section>
+
       <section className="footer">
         <button className="footer__play-button">재생하기</button>
       </section>
