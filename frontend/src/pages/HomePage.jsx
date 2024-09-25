@@ -3,7 +3,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 
 import Button from '../components/Button';
 
-import './HomePage.sass';
+import './HomePage.sass'; //testet
 import game1 from '../assets/gameThumbnail/game1.png';
 import game2 from '../assets/gameThumbnail/game2.png';
 import game3 from '../assets/gameThumbnail/game3.png';
