@@ -6,6 +6,7 @@ import ProtectedRoute from './ProtectedRoute'; // ProtectedRoute 컴포넌트 �
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import HomePage from '../pages/HomePage';
+import PasswordPage from '../pages/PasswordPage';
 
 // 토큰 여부 확인
 import { useAuth } from '../features/Auth/selectors';
@@ -39,6 +40,7 @@ function Router() {
       <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/password" element={<PasswordPage />} />
 
       {/* 보호된 경로는 한 번에 처리 */}
       {protectedRoutes.map(({ path, element }) => (

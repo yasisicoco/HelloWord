@@ -3,7 +3,7 @@ import axios from 'axios';
 const BASE_URL = 'https://j11b206.p.ssafy.io';
 
 const UserAPI = () => {
-  // login 로직
+  // 유저 login
   const login = async (email, password) => {
     const data = {
       email: email,
@@ -24,6 +24,7 @@ const UserAPI = () => {
     }
   };
 
+  // 유저 Access토큰 발급
   const getAccessToken = async (refreshToken) => {
     try {
       const response = await axios.post(`${BASE_URL}/getaccessToken`, refreshToken);
@@ -35,6 +36,7 @@ const UserAPI = () => {
     }
   };
 
+  // 유저 아이디 중복 확인
   const idDuplicate = async (email) => {
     try {
       const response = await axios.post(`${BASE_URL}/checkId`, email);
@@ -51,7 +53,24 @@ const UserAPI = () => {
     }
   };
 
-  return { login, getAccessToken, idDuplicate };
+  // 유저 회원가입
+  const signUp = async (email, password, username, phone) => {
+    const data = { email, password, username, phone };
+    try {
+      const response = await axios.post(`${BASE_URL}/signup`, data);
+
+      if (response.data == '성공') {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log('Error UserAPI-signup');
+      return true;
+    }
+  };
+
+  return { login, getAccessToken, idDuplicate, signUp };
 };
 
 export default UserAPI;

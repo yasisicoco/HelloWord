@@ -1,18 +1,15 @@
 import { useState, useEffect } from 'react';
 import { IoClose } from 'react-icons/io5';
-import { FaCheckCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import UserAPI from '../api/UserAPI';
 
-import './Signup.sass';
+import './Password.sass';
 
-const SignupPage = () => {
+const PasswordPage = () => {
   const navigate = useNavigate();
 
   // 유저 정보
   const [email, SetEmail] = useState('');
-  const [password1, SetPassword1] = useState('');
-  const [password2, SetPassword2] = useState('');
   const [phone, SetPhone] = useState('');
   const [username, SetName] = useState('');
 
@@ -27,14 +24,7 @@ const SignupPage = () => {
   const [phoneChange, SetChangePhone] = useState('');
 
   useEffect(() => {
-    // 비밀번호 체크
-    if ((password1 === password2) & password1 & password2) {
-      SetpasswordCheck(true);
-    } else {
-      SetpasswordCheck(false);
-    }
-
-    // 휴대폰 체크
+    // 휴대폰 번호
     if (phone.length === 10) {
       SetChangePhone(phoneChange.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3'));
       SetphoneCheck(true);
@@ -51,20 +41,17 @@ const SignupPage = () => {
     } else {
       SetAllCheck(false);
     }
-  }, [passCheck, isEmailCheck, password1, password2, phone, phoneCheck]);
+  }, [passCheck, isEmailCheck, phone, phoneCheck]);
 
   useEffect(() => {
     SetemailCheck(false);
   }, [email]);
 
-  // 회원가입 정보 전달
+  // 패스워드확인 정보 전달
   const handleSignUp = async (event) => {
     event.preventDefault();
-    // 여기다가 회원가입 정보 전달하기
-    const response = await UserAPI().signUp(email, password1, username, phone);
-    if (response) {
-      navigate('/login');
-    }
+    // 여기다가 정보 전달 받기
+    const response = await UserAPI().signUp(email, username, phone);
   };
 
   // 아이디 유효성 검사 및 중복 검사 Handler
@@ -75,6 +62,7 @@ const SignupPage = () => {
       alert('이메일 양식을 확인하세요');
     }
 
+    // email 확인
     const emailCheck = await UserAPI().idDuplicate(email);
     alert('중복확인완료');
     // 이메일 체크
@@ -95,74 +83,43 @@ const SignupPage = () => {
   };
 
   return (
-    <section className="signup-page">
-      <form onSubmit={handleSignUp} className="signup-form">
-        <div className="signup-form__close">
+    <section className="password-page">
+      <form onSubmit={handleSignUp} className="password-form">
+        <div className="password-form__close">
           <IoClose className="" onClick={() => navigate('/login')} />
         </div>
-        <p className="signup-form__text">이메일</p>
-        <div className="signup-form__input2">
+        <p className="password-form__text">이메일</p>
+        <div className="password-form__input2">
           <input
             type="text"
             id="userId"
             autoFocus
-            className="signup-form__input2--box2"
-            onChange={(e) => SetEmail(e.target.value)}
-          />
-          <button
-            className="signup-form__input2--button0"
-            onClick={(e) => {
-              e.preventDefault();
-              idCheckHandler(email);
-            }}>
-            {isEmailCheck ? (
-              <>
-                <FaCheckCircle />
-              </>
-            ) : (
-              '중복확인'
-            )}
-          </button>
+            className="password-form__input2--box2"
+            onChange={(e) => SetEmail(e.target.value)}></input>
         </div>
-        <p className="signup-form__text">비밀번호</p>
-        <div className="signup-form__input">
-          <input
-            type="password"
-            id="password1"
-            className="signup-form__input--box1"
-            onChange={(p1) => SetPassword1(p1.target.value)}></input>
-        </div>
-        <p className="signup-form__text">비밀번호 확인</p>
-        <div className="signup-form__input">
-          <input
-            type="password"
-            id="password2"
-            className="signup-form__input--box1"
-            onChange={(p2) => SetPassword2(p2.target.value)}></input>
-        </div>
-        <p className="signup-form__text">이름</p>
-        <div className="signup-form__input">
+        <p className="password-form__text">이름</p>
+        <div className="password-form__input">
           <input
             type="text"
             id="username"
-            className="signup-form__input--box1"
+            className="password-form__input--box1"
             onChange={(name) => SetName(name.target.value)}></input>
         </div>
-        <p className="signup-form__text">전화번호</p>
-        <div className="signup-form__input">
+        <p className="password-form__text">전화번호</p>
+        <div className="password-form__input">
           <input
             type="text"
             id="phone"
-            className="signup-form__input--box1"
+            className="password-form__input--box1"
             value={phoneChange}
             onChange={(phone) => phoneNumberChange(phone.target.value)}></input>
         </div>
-        <button id="loginBut" className={`${allCheck ? 'signup-form__buttonO' : 'signup-form__buttonX'}`}>
-          회원 가입
+        <button id="loginBut" className={`${allCheck ? 'password-form__buttonO' : 'password-form__buttonX'}`}>
+          확인 하기
         </button>
       </form>
     </section>
   );
 };
 
-export default SignupPage;
+export default PasswordPage;
