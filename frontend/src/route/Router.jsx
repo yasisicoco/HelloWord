@@ -55,6 +55,7 @@ function Router() {
       <Route path="/game2" element={<Game2Page />} />
       <Route path="/game3" element={<Game3Page />} />
       <Route path="/game4" element={<Game4Page />} />
+      <Route path="/home" element={<HomePage />} />
 
       {/* 보호된 경로는 한 번에 처리 */}
       {protectedRoutes.map(({ path, element }) => (

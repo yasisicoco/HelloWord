@@ -1,10 +1,10 @@
 import './Button.sass';
 
-const Button = () => {
+const Button = ({ img }) => {
   return (
-    <div className="boutton-compo">
-      <button className="button-compo__button">Button</button>;
-    </div>
+    <>
+      <img src={img} alt="button icon" className="button__img" />
+    </>
   );
 };
 
