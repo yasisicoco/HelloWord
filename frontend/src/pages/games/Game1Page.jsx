@@ -1,17 +1,22 @@
 // hook
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // compo
 import TimeBar from '../../components/TimeBar';
 
-// sass
+// style
 import './Game1Page.sass';
 
 const Game1Page = () => {
+  const nav = useNavigate();
+
   return (
     <div className="game1-page">
       <section className="top-nav">
-        <button className="top-nav__back-space">뒤로가기</button>
+        <button onClick={() => nav(-1)} className="top-nav__back-space">
+          뒤로가기
+        </button>
         <div className="top-nav__time-stamp">
           <TimeBar className="top-nav__time-stamp--timebar" time={5} />
         </div>
