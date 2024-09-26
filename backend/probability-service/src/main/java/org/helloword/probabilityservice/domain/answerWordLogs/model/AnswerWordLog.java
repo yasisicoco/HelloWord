@@ -1,5 +1,7 @@
 package org.helloword.probabilityservice.domain.answerWordLogs.model;
 
+import org.helloword.probabilityservice.domain.answerWordLogs.dto.request.CreateAnswerWordLogRequestDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "answer_word_logs")
-public class AnswerWordLogs {
+public class AnswerWordLog {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,14 +31,14 @@ public class AnswerWordLogs {
 	@Column(nullable = false)
 	private Double probability;
 
-	private AnswerWordLogs(Long kidId, Long wordId, Double probability) {
+	private AnswerWordLog(Long kidId, Long wordId, Double probability) {
 		this.kidId = kidId;
 		this.wordId = wordId;
 		this.probability = probability;
 	}
 
-	public static AnswerWordLogs createAnswerWordLogs(Long kidId, Long wordId, Double probability) {
-		return new AnswerWordLogs(kidId, wordId, probability);
+	public static AnswerWordLog createAnswerWordLogs(CreateAnswerWordLogRequestDto requestDto, Long wordId, Double probability) {
+		return new AnswerWordLog(requestDto.getKidId(), wordId, probability);
 	}
 
 }
