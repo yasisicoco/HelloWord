@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import './HomePage.sass';
 
@@ -15,6 +15,11 @@ const HomePage = () => {
   const [exp, setExp] = useState(50);
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef(null);
+  const nav = useNavigate();
+
+  const imgClick = (gameNumber) => {
+    nav(`/${gameNumber}`);
+  };
 
   const gameItems = [
     { type: 'game1', image: game1 },
@@ -32,15 +37,15 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    const mockData = { user: { exp: 70 } };
-    setExp(mockData.user.exp);
-  }, []);
-
-  useEffect(() => {
     if (carouselRef.current) {
       carouselRef.current.style.transform = `translateY(-${currentIndex * 100}%)`;
     }
   }, [currentIndex]);
+
+  useEffect(() => {
+    const mockData = { user: { exp: 70 } };
+    setExp(mockData.user.exp);
+  }, []);
 
   return (
     <div className="home-page">
@@ -75,7 +80,12 @@ const HomePage = () => {
             <div className="home-gamelist__carousel" ref={carouselRef}>
               {gameItems.map((item, index) => (
                 <div key={item.type} className="home-gamelist__game">
-                  <img className="home-gamelist__game--thumbnail" src={item.image} alt={item.type} />
+                  <img
+                    onClick={() => imgClick(item.type)}
+                    className="home-gamelist__game--thumbnail"
+                    src={item.image}
+                    alt={item.type}
+                  />
                 </div>
               ))}
             </div>
