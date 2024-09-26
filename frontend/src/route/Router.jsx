@@ -11,6 +11,7 @@ import Game1Page from '../pages/games/Game1Page';
 import Game2Page from '../pages/games/Game2Page';
 import Game3Page from '../pages/games/Game3Page';
 import Game4Page from '../pages/games/Game4Page';
+import SelectKidsPage from '../pages/SelectKidsPage';
 
 // 토큰 여부 확인
 import { useAuth } from '../features/Auth/selectors';
@@ -21,6 +22,7 @@ function Router() {
 
   // 토큰을 확인하는 로직 추가 (로컬 스토리지, 쿠키 등)
   useEffect(() => {
+    // 아래 토큰 바꿔야함 제대로 오는지 아닌지 토큰 만들어지면 다시 구현해볼것
     if (token) {
       console.log(token);
       setHasToken(true);
@@ -29,12 +31,18 @@ function Router() {
       setHasToken(false);
       console.log('접속실패');
     }
-  }, []);
+  }, [hasToken]);
+
+  // 새로고침해도 다시 토큰을 먼저 확인 후 진행하므로 괜춘
+  if (hasToken == false) {
+    return <div>Loading...</div>;
+  }
 
   // 보호된 경로 배열
   const protectedRoutes = [
     // 아래로 쭈욱 추가
     { path: '/home', element: <HomePage /> },
+    { path: '/selectkids', element: <SelectKidsPage /> },
 
     // 인증 안되어있어서 주석처리
     // { path: '/game1', element: <Game1Page /> },

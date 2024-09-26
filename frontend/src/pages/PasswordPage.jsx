@@ -93,7 +93,6 @@ const PasswordPage = () => {
           <input
             type="text"
             id="userId"
-            autoFocus
             className="password-form__input2--box2"
             onChange={(e) => SetEmail(e.target.value)}></input>
         </div>

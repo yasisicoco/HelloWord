@@ -22,7 +22,7 @@ const LoginInput = () => {
 
     try {
       await dispatch(login({ email, password })).unwrap();
-      navigate('/home');
+      navigate('/selectkids');
     } catch (error) {
       alert('로그인에 실패했습니다.');
     }
@@ -37,7 +37,6 @@ const LoginInput = () => {
           className="login-form__box"
           id="userId"
           placeholder=""
-          autoFocus
           onChange={(e) => setEmail(e.target.value)}></input>
         <p className="login-form__loginFont">비밀번호</p>
         <input

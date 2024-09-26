@@ -1,0 +1,75 @@
+.selectkids-Page
+  display: flex
+  justify-content: center
+  align-items: center
+  flex-direction: column
+  width: 100vw
+  height: 100vh
+  margin: 0 auto
+  background: rgba(117,114,180,1)
+  transition: opacity 0.3s ease
+
+  &.modal-open
+    opacity: 0.5 // 모달이 열렸을 때 opacity 줄임
+
+.selectkids-form
+  background: white
+  height: 80%
+  width: 80%
+  border-radius: 10px
+  padding: 16px
+  box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+  filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+  position: relative
+
+  &__top
+    display: flex
+    justify-content: space-between
+    align-items: center
+    height: 15%
+    flex-direction: row
+    align-items: center
+    padding: 0 16px
+
+    &--word
+      flex-grow: 1
+      display: flex
+      justify-content: center
+      font-size: 1.5rem
+      font-weight: bold
+    
+    &--add
+      position: absolute
+      display: flex
+      align-items: center
+      justify-content: center
+      top: 10px
+      right: 10px
+      font-size: 3rem
+      padding: 8px
+      background: #ff8c00
+      color: white
+      border-radius: 50%
+      height: 40px
+      width: 40px
+
+  &__childlist
+    display: flex
+    height: 70%
+    justify-content: center
+    align-items: center
+
+  &__startbutton
+    display: flex
+    height: 15%
+    justify-content: center
+    align-items: center
+
+    &--button
+      background: rgba(154, 255, 186, 0.75)
+      border-radius: 10px
+      padding: 10px
+      border: 0px solid black
+      box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+      filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+      font-size: 1rem
