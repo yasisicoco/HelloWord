@@ -1,31 +1,6 @@
 body {
+  /* ios setting */
   padding: env(safe-area-inset);
   margin: 0;
   box-sizing: border-box;
-}
-
-/* 세로모드일 때 화면을 가로로 강제 회전 */
-@media only screen and (orientation: portrait) {
-  html,
-  body {
-    transform: rotate(90deg);
-    transform-origin: left top;
-    width: 100vh;
-    height: 100vw;
-    overflow: hidden;
-    position: absolute;
-    top: 100vw;
-    left: 0;
-  }
-}
-
-/* 가로모드일 때는 기본 상태로 표시 */
-@media only screen and (orientation: landscape) {
-  html,
-  body {
-    transform: none;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-  }
 }
