@@ -1,5 +1,5 @@
 server:
-  port: "{cipher}070ac56164464b5675755efddb09dc60619e0e841deab65a9ee4fe3d1655971e"
+  port: 8761
 
 eureka:
   client:

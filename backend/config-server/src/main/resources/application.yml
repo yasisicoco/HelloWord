@@ -1,13 +1,13 @@
 encrypt:
-  key: ${ENCRYPT_KEY}
+  key: HoshinoAI
 
 security:
   user:
-    username: ${CONFIG_USERNAME}
-    password: ${CONFIG_PASSWORD}
+    username: admin
+    password: password
 
 server:
-  port: ${CONFIG_SERVER_PORT}
+  port: 8888
 
 spring:
   application:
@@ -19,3 +19,25 @@ spring:
       server:
         native:
           search-locations: classpath:/config-repo
+
+#encrypt:
+#  key: ${ENCRYPT_KEY}
+#
+#security:
+#  user:
+#    username: ${CONFIG_USERNAME}
+#    password: ${CONFIG_PASSWORD}
+#
+#server:
+#  port: ${CONFIG_SERVER_PORT}
+#
+#spring:
+#  application:
+#    name: config-server
+#  profiles:
+#    active: native
+#  cloud:
+#    config:
+#      server:
+#        native:
+#          search-locations: classpath:/config-repo
