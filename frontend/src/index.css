@@ -18,3 +18,14 @@ body {
     left: 0;
   }
 }
+
+/* 가로모드일 때는 원래대로 표시 */
+@media only screen and (orientation: landscape) {
+  html,
+  body {
+    transform: none;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+}
