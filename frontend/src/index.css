@@ -1,5 +1,4 @@
-body {
-  /* ios setting */
+/* body {
   padding: env(safe-area-inset);
   margin: 0;
   box-sizing: border-box;
@@ -19,7 +18,6 @@ body {
   }
 }
 
-/* 가로모드일 때는 원래대로 표시 */
 @media only screen and (orientation: landscape) {
   html,
   body {
@@ -28,4 +26,4 @@ body {
     height: 100vh;
     overflow: hidden;
   }
-}
+} */
