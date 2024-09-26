@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
-
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import Button from '../components/Button';
+import './HomePage.sass';
 
-// style & image
-import './HomePage.sass'; //testet
 import game1 from '../assets/gameThumbnail/game1.png';
 import game2 from '../assets/gameThumbnail/game2.png';
 import game3 from '../assets/gameThumbnail/game3.png';
@@ -16,6 +14,7 @@ import Settings from '../assets/homeIcon/Settings.png';
 const HomePage = () => {
   const [exp, setExp] = useState(50);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const carouselRef = useRef(null);
 
   const gameItems = [
     { type: 'game1', image: game1 },
@@ -32,15 +31,16 @@ const HomePage = () => {
     setCurrentIndex((prevIndex) => (prevIndex === gameItems.length - 1 ? 0 : prevIndex + 1));
   };
 
-  const mockData = {
-    user: {
-      exp: 70, // 사용자 경험치 70%로 설정
-    },
-  };
-
   useEffect(() => {
+    const mockData = { user: { exp: 70 } };
     setExp(mockData.user.exp);
   }, []);
+
+  useEffect(() => {
+    if (carouselRef.current) {
+      carouselRef.current.style.transform = `translateY(-${currentIndex * 100}%)`;
+    }
+  }, [currentIndex]);
 
   return (
     <div className="home-page">
@@ -71,22 +71,14 @@ const HomePage = () => {
           <button className="home-gamelist__button button-up" onClick={handlePrevClick}>
             위로
           </button>
-          <div className="home-gamelist__game">
-            <img
-              className="home-gamelist__game--thumbnail"
-              src={currentIndex === 0 ? gameItems[gameItems.length - 1].image : gameItems[currentIndex - 1].image}
-              alt={currentIndex === 0 ? gameItems[gameItems.length - 1].type : gameItems[currentIndex - 1].type}
-            />
-            <img
-              className="home-gamelist__game--thumbnail"
-              alt={gameItems[currentIndex].type}
-              src={gameItems[currentIndex].image}
-            />
-            <img
-              className="home-gamelist__game--thumbnail"
-              src={currentIndex === gameItems.length - 1 ? gameItems[0].image : gameItems[currentIndex + 1].image}
-              alt={currentIndex === gameItems.length - 1 ? gameItems[0].type : gameItems[currentIndex + 1].type}
-            />
+          <div className="home-gamelist__carousel-wrapper">
+            <div className="home-gamelist__carousel" ref={carouselRef}>
+              {gameItems.map((item, index) => (
+                <div key={item.type} className="home-gamelist__game">
+                  <img className="home-gamelist__game--thumbnail" src={item.image} alt={item.type} />
+                </div>
+              ))}
+            </div>
           </div>
           <button className="home-gamelist__button button-down" onClick={handleNextClick}>
             아래로
