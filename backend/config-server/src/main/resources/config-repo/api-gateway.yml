@@ -32,4 +32,4 @@ spring:
         - id: probability-service
           uri: lb://PROBABILITY-SERVICE
           predicates:
-            - Path=/api/probability/**
+            - Path=/probability/**
