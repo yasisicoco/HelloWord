@@ -19,9 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/probability")
+@RequestMapping("/probability/internal")
 @Slf4j
-public class AnswerWordLogController {
+public class InternalAnswerWordLogController {
 
 	private final AnswerWordLogService answerWordLogService;
 	private final HttpResponseUtil responseUtil;
