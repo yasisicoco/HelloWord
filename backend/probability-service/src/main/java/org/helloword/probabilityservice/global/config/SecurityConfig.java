@@ -36,7 +36,7 @@ public class SecurityConfig {
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		);
 		http.authorizeHttpRequests((auth) -> auth
-			.requestMatchers("/api/probability/**").permitAll()
+			.requestMatchers("/probability/**").permitAll()
 			.anyRequest().authenticated()
 		);
 		http.exceptionHandling((handle) -> handle.authenticationEntryPoint(customExceptionHandler));
