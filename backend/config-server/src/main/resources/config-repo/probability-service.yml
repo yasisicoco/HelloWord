@@ -1,7 +1,7 @@
 ## mysql
 spring:
   datasource:
-    url: "{cipher}5ac0cfe270c760d7cd936061c69bb331ffae91b9e6a46e4ac263c14e08bfac1455c62618dc4815f848d4e0fd477232465bf8a5f028431a9ef3f752b3b70907a4469c54a31b219528e1c966afae2ce4f9b94ce17e4cc9242e721dc2d0b8b6ab39"
+    url: "{cipher}62977d2ef59b06d51c8519efc7ba78bf46c2f5b2bf96d3c324a428c9a36e68f44708e4786cd3fffe965be5ece70c7766d53203a662d17ce9e098540266fcc8b99602e5096936e23b1399a8f0ff48cee10471fcdeafdb63602f92147aae9244a4b694b3651c09ffcdba7ed2fbbccb3df232ba6973dc05430d4beff545fa0a111b"
     username: "{cipher}55c65c2c7873c2f9876bd56dca210e1552513e04c71e6e4b7382d094edd42ef5"
     password: "{cipher}fc132c8ea1440aea7e2795c0805be049d1e4cf4b2d0b2bd40541c2292af7a603"
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -12,3 +12,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true # INSERT 쿼리의 순서를 최적화하여 성능 향상
+        order_updates: true # UPDATE 쿼리의 순서를 최적화하여 성능 향상
