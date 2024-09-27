@@ -2,7 +2,7 @@ import './SelectKids.sass';
 import { FaCirclePlus } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AddChildModal from '../components/AddChildModal';
+import ChildModal from '../components/ChildModal';
 
 const SelectKidsPage = () => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ const SelectKidsPage = () => {
           </section>
           {/* 아이 추가 될 때마다 아이 Card 추가할 것 */}
           <section className="selectkids-form__childlist">
-            <div>123</div>
+            <div>학습할 아이가 없습니다. 계정을 등록해주세요!</div>
           </section>
           {/* 시작하기 버튼 만들기 */}
           <section className="selectkids-form__startbutton">
@@ -42,7 +42,7 @@ const SelectKidsPage = () => {
         </div>
       </div>
       {/* 모달 위치 */}
-      <AddChildModal isOpen={isModalOpen} closeModal={closeModal} />
+      <ChildModal isOpen={isModalOpen} closeModal={closeModal} />
     </div>
   );
 };

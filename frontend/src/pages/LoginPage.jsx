@@ -3,8 +3,6 @@ import LoginInput from '../components/LoginInput';
 
 import './Login.sass';
 
-// testsetsete
-
 const LoginPage = () => {
   return (
     <div className="login-Page">
@@ -12,7 +10,7 @@ const LoginPage = () => {
         <img className="login-Logo__img" src="/gamethumbnail/favicon.png" alt="Logo" />
       </section>
 
-      <section className="login-Input"> 
+      <section className="login-Input">
         <LoginInput />
       </section>
     </div>

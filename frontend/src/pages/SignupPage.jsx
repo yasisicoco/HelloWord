@@ -28,11 +28,7 @@ const SignupPage = () => {
 
   useEffect(() => {
     // 비밀번호 체크
-    if ((password1 === password2) & password1 & password2) {
-      SetpasswordCheck(true);
-    } else {
-      SetpasswordCheck(false);
-    }
+    SetpasswordCheck((password1 === password2) & password1 & password2);
 
     // 휴대폰 체크
     if (phone.length === 10) {
@@ -46,11 +42,7 @@ const SignupPage = () => {
     }
 
     // 전부 확인
-    if (isEmailCheck & passCheck & phoneCheck) {
-      SetAllCheck(true);
-    } else {
-      SetAllCheck(false);
-    }
+    SetAllCheck(isEmailCheck & passCheck & phoneCheck);
   }, [passCheck, isEmailCheck, password1, password2, phone, phoneCheck]);
 
   useEffect(() => {
@@ -72,11 +64,13 @@ const SignupPage = () => {
     const emailRegEx = /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/i;
     if (!emailRegEx.test(email)) {
       SetemailCheck(false);
+
       alert('이메일 양식을 확인하세요');
+      return;
     }
 
     const emailCheck = await UserAPI().idDuplicate(email);
-    alert('중복확인완료');
+
     // 이메일 체크
     SetemailCheck(emailCheck);
   };
@@ -86,9 +80,14 @@ const SignupPage = () => {
     const num = phone.replaceAll('-', '');
     SetPhone(num);
     // 휴대폰 번호 유효성 검증
-    const regex = /^[0-9\b -]{0,11}$/;
-    if (regex.test(num)) {
-      SetChangePhone(num);
+    const regex1 = /^[0-9\b -]{0,15}$/; // 특수문자 방지
+    const regex2 = /^[0-9\b -]{0,11}$/; // 12글자 이상 방지
+    if (regex1.test(num)) {
+      if (regex2.test(num)) {
+        SetChangePhone(num);
+      } else {
+        alert('전화번호는 11 글자 이하로 작성해주세요.');
+      }
     } else {
       alert('전화번호는 숫자만 입력할 수 있습니다.');
     }
@@ -105,7 +104,6 @@ const SignupPage = () => {
           <input
             type="text"
             id="userId"
-            autoFocus
             className="signup-form__input2--box2"
             onChange={(e) => SetEmail(e.target.value)}
           />
@@ -157,7 +155,10 @@ const SignupPage = () => {
             value={phoneChange}
             onChange={(phone) => phoneNumberChange(phone.target.value)}></input>
         </div>
-        <button id="loginBut" className={`${allCheck ? 'signup-form__buttonO' : 'signup-form__buttonX'}`}>
+        <button
+          id="loginBut"
+          className={`${allCheck ? 'signup-form__buttonO' : 'signup-form__buttonX'}`}
+          disabled={!allCheck}>
           회원 가입
         </button>
       </form>
