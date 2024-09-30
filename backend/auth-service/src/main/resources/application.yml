@@ -4,6 +4,10 @@ spring:
   config:
     import: optional:configserver:http://admin:password@localhost:8888
 
+jwt:
+  secret: fEDYiKuYlRKW/NscG8DEFqtIyb2Vo0Y3wEmGMEZ7oSLuoBakNBPN1BZvkBtYOsmIHljKX5BJmJLKSiRsZYaq6g==
+  expiration: 36000000
+
 #spring:
 #  application:
 #    name: discovery-service

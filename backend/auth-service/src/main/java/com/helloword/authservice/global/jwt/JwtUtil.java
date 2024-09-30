@@ -1,11 +1,11 @@
 package com.helloword.authservice.global.jwt;
 
-import com.helloword.authservice.auth.dto.response.UserInfoResponseDto;
+import com.helloword.authservice.domain.auth.dto.response.AuthenticateUserResponse;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -13,18 +13,35 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "your-secret-key";
-    byte[] keyBytes = Base64.getDecoder().decode(SECRET_KEY);
-    Key key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
+    private final Key key;
+    private final long expirationTime;
 
-    public String generateToken(UserInfoResponseDto userInfoResponseDto) {
-        return Jwts.builder()
-                .claim("userId", userInfoResponseDto.getUsername())
-                .claim("username", userInfoResponseDto.getPassword())
-                .claim("role", userInfoResponseDto.getRole())
+    public JwtUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration}") long expirationTime) {
+        this.key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
+        this.expirationTime = expirationTime;
+    }
+
+    public JwtToken generateToken(AuthenticateUserResponse authenticateUserResponse) {
+        String accessToken = Jwts.builder()
+                .claim("userId", authenticateUserResponse.getUserId())
+                .claim("username", authenticateUserResponse.getUsername())
+                .claim("role", authenticateUserResponse.getRole())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(key)
                 .compact();
+
+        String refreshToken = Jwts.builder()
+                .claim("userId", authenticateUserResponse.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expirationTime * 2))
+                .signWith(key)
+                .compact();
+
+        return JwtToken.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 }

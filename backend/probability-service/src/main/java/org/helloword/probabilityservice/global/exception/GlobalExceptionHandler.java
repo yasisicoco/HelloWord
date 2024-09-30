@@ -14,8 +14,9 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ExceptionResponse.class)
 	public ResponseEntity<?> handlerException(ExceptionResponse e){
 		Map<String, String> errorDetails = new HashMap<>();
-		errorDetails.put("errorCode", e.getCustomException().getErrorCode());
-		errorDetails.put("errorMessage", e.getCustomException().getErrorMessage());
-		return ResponseEntity.status(HttpStatus.valueOf(e.getCustomException().getStatusNum())).body(errorDetails);
+		errorDetails.put("errorCode", String.valueOf(e.getCustomException().getCode()));
+		errorDetails.put("success", "false");
+		errorDetails.put("errorMessage", e.getCustomException().getMessage());
+		return ResponseEntity.status(HttpStatus.valueOf(e.getCustomException().getCode())).body(errorDetails);
 	}
 }

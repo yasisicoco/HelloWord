@@ -16,24 +16,28 @@ spring:
         - id: log-service
           uri: lb://LOG-SERVICE
           predicates:
-            - Path=/api/logs/**
+            - Path=/logs/**
         - id: kid-service
           uri: lb://KID-SERVICE
           predicates:
-            - Path=/api/kids/**
+            - Path=/kids/**
         - id: word-service
           uri: lb://WORD-SERVICE
           predicates:
-            - Path=/api/words/**
+            - Path=/words/**
         - id: game-service
           uri: lb://GAME-SERVICE
           predicates:
-            - Path=/api/games/**
+            - Path=/games/**
         - id: collection-service
           uri: lb://COLLECTION-SERVICE
           predicates:
-            - Path=/api/collections/**
+            - Path=/collections/**
         - id: probability-service
           uri: lb://PROBABILITY-SERVICE
           predicates:
             - Path=/api/probability/**
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/auth/**
