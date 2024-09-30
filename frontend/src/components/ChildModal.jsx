@@ -17,19 +17,11 @@ function AddChildModal({ isOpen, closeModal }) {
   const [isbutton, setButton] = useState(false);
 
   useEffect(() => {
-    if (birthDate && name) {
-      setCheck(true);
-    } else {
-      setCheck(false);
-    }
+    setCheck(birthDate && name);
   }, [birthDate, name]);
 
   useEffect(() => {
-    if (allCheck) {
-      setButton(true);
-    } else {
-      setButton(false);
-    }
+    setButton(allCheck);
   }, [allCheck]);
 
   const handleDateChange = (date) => {
@@ -60,23 +52,6 @@ function AddChildModal({ isOpen, closeModal }) {
     SetName('');
     setBirthDate(null);
     setProfileimg('../charactor/defaultProfile.png');
-  };
-
-  // 달력 커스텀
-  const YEARS = Array.from({ length: new Date().getFullYear() + 1 - 2000 }, (_, i) => new Date().getFullYear() - i);
-  const MONTHS = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-
-  const changeOfDay = (nameOfDay) => {
-    const KORDay = {
-      Sunday: '일',
-      Monday: '월',
-      Tuesday: '화',
-      Wednesday: '수',
-      Thursday: '목',
-      Friday: '금',
-      Saturday: '토',
-    };
-    return KORDay[nameOfDay];
   };
 
   return (
@@ -124,17 +99,13 @@ function AddChildModal({ isOpen, closeModal }) {
           <p>생년월일</p>
           <DatePicker
             locale={ko} // 한국어 로케일 설정
-            formatWeekDay={(nameOfDay) => changeOfDay(nameOfDay)}
             selected={birthDate}
-            onChange={handleDateChange}
             dateFormat="yyyy/MM/dd"
             placeholderText="생년월일을 선택하세요"
             maxDate={new Date()}
             showYearDropdown
             showMonthDropdown
-            scrollableYearDropdown
             dropdownMode="select"
-            onFocus
             className="addchild-compo__ageinput--ageBox"
           />
         </div>
