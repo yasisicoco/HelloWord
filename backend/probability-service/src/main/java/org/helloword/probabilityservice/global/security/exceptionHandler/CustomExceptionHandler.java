@@ -23,14 +23,13 @@ public class CustomExceptionHandler implements AuthenticationEntryPoint {
 		CustomException exception = (CustomException) request.getAttribute("exception");
 		if(exception == null){
 			log.error(authException.getMessage());
-			exception = CustomException.ACCESS_DENIED_EXCEPTION;
+			exception = CustomException.BAD_REQUEST;
 		}
 
 		response.setContentType("application/json;charset=UTF-8");
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		response.getWriter().println("{ \"message\" : \"" + exception.getErrorMessage()
-			+ "\", \"code\" : \"" +  exception.getErrorCode()
-			+ "\", \"statusNum\" : " + exception.getStatusNum()
+		response.getWriter().println("{ \"message\" : \"" + exception.getMessage()
+			+ "\", \"code\" : " + exception.getCode()
 			+ "}");
 	}
 }
