@@ -28,10 +28,10 @@ public class AnswerWordLogServiceImpl implements AnswerWordLogService {
 	@Transactional
 	public void createAnswerWordLogs(CreateAnswerWordLogRequestDto requestDto) {
 		// TODO: word-service에서 word count를 받아서 200 대신 사용
-		double probability = 1.0 / 51.0;
+		double probability = 1.0 / 200.0;
 		List<AnswerWordLog> answerWordLogs = new ArrayList<>();
 
-		for (long wordId = 1; wordId <= 51; wordId++) {
+		for (long wordId = 1; wordId <= 200; wordId++) {
 			AnswerWordLog answerWordLog = AnswerWordLog.createAnswerWordLogs(requestDto, wordId, probability);
 			answerWordLogs.add(answerWordLog);
 		}
