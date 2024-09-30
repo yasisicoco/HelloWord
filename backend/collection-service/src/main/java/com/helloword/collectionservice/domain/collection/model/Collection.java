@@ -36,7 +36,7 @@ public class Collection {
 	private Boolean isCompleted;
 
 	@Builder
-	public Collection(Long kidId, Long wordId, Integer count, Boolean isCompleted) {
+	private Collection(Long kidId, Long wordId, Integer count, Boolean isCompleted) {
 		this.kidId = kidId;
 		this.wordId = wordId;
 		this.count = count;
