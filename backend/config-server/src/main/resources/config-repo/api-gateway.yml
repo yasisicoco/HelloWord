@@ -5,6 +5,10 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: swagger-server
+          uri: lb://WORD-SERVICE
+          predicates:
+            - Path=/swagger-ui/**
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
