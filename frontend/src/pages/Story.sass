@@ -1,0 +1,61 @@
+.Story-Page
+  display: flex
+  justify-content: center
+  align-items: center
+  width: 100vw
+  height: 100vh
+  margin: 0 auto
+  background: rgba(117,114,180,1)
+  transition: opacity 0.3s ease
+
+.story-form
+  display: flex
+  justify-content: center
+  align-items: center
+  background: rgba(238,238,240, 1)
+  flex-direction: column
+  height: 80vh
+  border-radius: 10px
+  padding: 16px
+  box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+  filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+
+  &__background
+    display: flex
+    justify-content: center
+    align-items: center
+    width: 80vw
+    height: 65vh
+    border-radius: 10px
+    box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+    filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+    margin-bottom: 10px
+  
+  &__script
+    display: flex
+    justify-content: center
+    align-items: center
+    background: rgba(255,255,255, 1)
+    width: 80vw
+    height: 20vh
+    border-radius: 10px
+    box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+    filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+    position: relative
+
+    &--font
+      font-size: 1rem
+      font-weight: bolder
+    
+    &--next
+      position: absolute
+      right: 13px
+      animation: blink 1s infinite
+
+@keyframes blink
+  0%, 100%
+    opacity: 1
+  50%
+    opacity: 0
+
+
