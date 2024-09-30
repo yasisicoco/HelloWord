@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: user-service
+  config:
+    import: optional:configserver:http://admin:password@config-server:8888
+
+
+#spring:
+#  application:
+#    name: user-service
+#  config:
+#    import: optional:configserver:${CONFIG_SERVER_URL}
