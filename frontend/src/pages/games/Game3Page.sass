@@ -13,8 +13,12 @@
     justify-content: space-between
 
     &__back-space
+      display: flex
       flex: 1
-      padding: 10px 20px
+      min-width: 120px
+      padding: 8px 16px
+      justify-content: center
+      align-items: center
       border-radius: 24px
       background-color: #ffffff
       border: none
@@ -32,11 +36,16 @@
         background-color: #fff
 
     &__bookmarker
+      display: flex
       flex: 1
-      padding: 10px 20px
+      min-width: 120px
+      padding: 8px 16px
+      justify-content: center
+      align-items: center
       border-radius: 24px
       background-color: #ffffff
       border: none
+      box-sizing: border-box
       box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
       filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
 
@@ -44,43 +53,21 @@
     display: flex
     flex-wrap: wrap
     height: 80%
-    padding: 12px 40px
+    padding: 0 152px
     gap: 12px
     justify-content: space-around
     align-items: center
 
     &__card
       width: calc(25% - 12px)
-      min-width: 140px
-      height: 50%
-      background-color: #ffffff
-      border-radius: 16px
+      min-width: 120px
+      min-height: 120px
+      // height: 40%
+      border-radius: 24px
       display: flex
       justify-content: center
       align-items: center
       cursor: pointer
-
+      background-color: #ffffff
       box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
       filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
-
-    // 아이폰 가로 기준
-  @media screen and (max-width: 844px)
-    .top-nav
-      padding: 12px 40px
-      gap: 12px
-
-      &__back-space
-        padding: 8px 16px
-        border-radius: 16px
-
-    .main-content
-      padding: 0 40px
-      height: 75%
-
-      &__card
-        max-height: 130px
-
-      .card-container
-        &--card-wrap
-          flex: 1 1 calc(50% - 12px)
-          min-width: 150px

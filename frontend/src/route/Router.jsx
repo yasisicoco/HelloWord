@@ -6,6 +6,9 @@ import ProtectedRoute from './ProtectedRoute'; // ProtectedRoute 컴포넌트 �
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import HomePage from '../pages/HomePage';
+import UserPage from '../pages/UserPage';
+import Collection from '../pages/Collection';
+import Settings from '../pages/Settings';
 import PasswordPage from '../pages/PasswordPage';
 import Game1Page from '../pages/games/Game1Page';
 import Game2Page from '../pages/games/Game2Page';
@@ -52,6 +55,9 @@ function Router() {
     // { path: '/game3', element: <Game3Page /> },
     // { path: '/game4', element: <Game4Page /> },
     // { path: '/home', element: <HomePage /> },
+    // {path: '/home/userpage', element: <UserPage /> },
+    // {path: '/home/collection', element: <Collection /> },
+    // {path: '/homt/settings', element: <Settings /> }
   ];
 
   return (
@@ -68,6 +74,9 @@ function Router() {
       <Route path="/game3" element={<Game3Page />} />
       <Route path="/game4" element={<Game4Page />} />
       <Route path="/home" element={<HomePage />} />
+      <Route path="/home/userpage" element={<UserPage />} />
+      <Route path="/home/collection" element={<Collection />} />
+      <Route path="/home/settings" element={<Settings />} />
 
       {/* 보호된 경로는 한 번에 처리 */}
       {protectedRoutes.map(({ path, element }) => (
