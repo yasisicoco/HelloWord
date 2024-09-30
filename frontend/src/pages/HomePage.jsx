@@ -59,13 +59,13 @@ const HomePage = () => {
           <img src="/charactor/rabbit.png" alt="Rabbit" className="home-user__character--image" />
         </div>
         <div className="home-user__sub-menu">
-          <Link to={'collection'} className="home-user__sub-menu--button">
+          <Link to={'userpage'} className="home-user__sub-menu--button">
             <Button img={User} />
           </Link>
-          <Link to={'stat'} className="home-user__sub-menu--button">
+          <Link to={'collection'} className="home-user__sub-menu--button">
             <Button img={GoldMedal} />
           </Link>
-          <Link to={'setting'} className="home-user__sub-menu--button">
+          <Link to={'settings'} className="home-user__sub-menu--button">
             <Button img={Settings} />
           </Link>
         </div>
