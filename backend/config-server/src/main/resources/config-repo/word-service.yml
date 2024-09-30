@@ -16,6 +16,7 @@ spring:
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
+
   api-docs:
     path: /api/words/v3/api-docs
     groups:
@@ -23,4 +24,19 @@ springdoc:
   swagger-ui:
     disable-swagger-default-url: true
     display-request-duration: true
-  paths-to-match: /**
+    urls:
+#      - name: user-service
+#        url: /api/users/v3/api-docs
+#      - name: log-service
+#        url: /api/logs/v3/api-docs
+      - name: kid-service
+        url: /api/kids/v3/api-docs
+      - name: word-service
+        url: /api/words/v3/api-docs
+#      - name: game-service
+#        url: /api/games/v3/api-docs
+#      - name: collection-service
+#        url: /api/collections/v3/api-docs
+#      - name: probability-service
+#        url: /api/probability/v3/api-docs
+    paths-to-match: /**
