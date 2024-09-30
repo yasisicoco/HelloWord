@@ -1,7 +1,10 @@
+server:
+  port: 12345
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: "{cipher}b3cf5b5d4aa1cdc2ab7db75e869f7d97e079cebb874df26f78cf6ea8b304523f323027c80ea7d974d78abde3cbafd99a48282ed80fe9150b34153e0b95db6bae"
+    url: "{cipher}f98806975ef8753e63e5a88c81d52366c67d42db2e9fe8fb4d1e75390f7a129a10c53e2317faab575bf9fba6b7572781f45971e8dd1282ae13661835a5f92207"
     username: "{cipher}2cdde92bd8448500aad5134fef09e8aa84010f585e189f27b8ab7b4b05c38d7b"
     password: "{cipher}99d38a6d7465db51b45f0739e83e925c90eeb39d8a4b448f544272780f88c27d"
   jpa:
@@ -16,27 +19,18 @@ spring:
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
-
   api-docs:
-    path: /api/words/v3/api-docs
+    path: /api/kids/v3/api-docs
     groups:
       enabled: true
   swagger-ui:
     disable-swagger-default-url: true
     display-request-duration: true
-    urls:
-#      - name: user-service
-#        url: /api/users/v3/api-docs
-#      - name: log-service
-#        url: /api/logs/v3/api-docs
-      - name: kid-service
-        url: /api/kids/v3/api-docs
-      - name: word-service
-        url: /api/words/v3/api-docs
-#      - name: game-service
-#        url: /api/games/v3/api-docs
-#      - name: collection-service
-#        url: /api/collections/v3/api-docs
-#      - name: probability-service
-#        url: /api/probability/v3/api-docs
-    paths-to-match: /**
+  paths-to-match: /**
+
+aws:
+  access-key: "{cipher}6ee3dbbd12eba5cc72b5099245e54954b22ea38ab431d285f3d23df39dad31fb75647f118153a02a0044f5091a689ef7"
+  secret-key: "{cipher}a16e44c0dbf52ed7c1f4a73847b2a22a96e03a0b825385d704400f0be4d8a09c7e03f470eec9f4671686781bce03b2dc1747ba5bd4f7394f186f47f98a23d45f"
+  s3:
+    bucket: "{cipher}2e1b261d1d97a7c00790763ade58f3e7b72423fcdb57c77b04651650390a31b2aa27c3cdc80aef6f09ab95f1cad67e48"
+    base-url: "{cipher}ead76c54c65451b915207473047110697412db4aba38fcce0809d61209ec4a7be4dc96be59b4b7ffb9c4238f0385ddcfc6883d774606dca37f7cece4e07306768f2b113580eafeec0480aebb2ba11be9"
