@@ -35,7 +35,7 @@ const SelectKidsPage = () => {
           </section>
           {/* 시작하기 버튼 만들기 */}
           <section className="selectkids-form__startbutton">
-            <button className="selectkids-form__startbutton--button" onClick={() => navigate('/home')}>
+            <button className="selectkids-form__startbutton--button" onClick={() => navigate('/storypage')}>
               시작하기
             </button>
           </section>

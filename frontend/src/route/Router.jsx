@@ -12,6 +12,7 @@ import Game2Page from '../pages/games/Game2Page';
 import Game3Page from '../pages/games/Game3Page';
 import Game4Page from '../pages/games/Game4Page';
 import SelectKidsPage from '../pages/SelectKidsPage';
+import StoryPage from '../pages/StoryPage';
 
 // 토큰 여부 확인
 import { useAuth } from '../features/Auth/selectors';
@@ -43,6 +44,7 @@ function Router() {
     // 아래로 쭈욱 추가
     { path: '/home', element: <HomePage /> },
     { path: '/selectkids', element: <SelectKidsPage /> },
+    { path: '/storypage', element: <StoryPage /> },
 
     // 인증 안되어있어서 주석처리
     // { path: '/game1', element: <Game1Page /> },
