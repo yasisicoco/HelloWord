@@ -2,7 +2,7 @@ spring:
   application:
     name: api-gateway
   config:
-    import: optional:configserver:http://admin:password@localhost:8888
+    import: optional:configserver:http://admin:password@config-server:8888
 
 
 #spring:
