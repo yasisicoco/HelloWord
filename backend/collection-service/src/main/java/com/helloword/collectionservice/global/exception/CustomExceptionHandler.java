@@ -1,11 +1,9 @@
-package org.helloword.probabilityservice.global.security.exceptionHandler;
+package com.helloword.collectionservice.global.exception;
 
 import java.io.IOException;
 
-import org.helloword.probabilityservice.global.exception.CustomException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-
 import org.springframework.stereotype.Component;
 
 import jakarta.servlet.ServletException;

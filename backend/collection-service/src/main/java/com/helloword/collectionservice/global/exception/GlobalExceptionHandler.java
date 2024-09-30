@@ -1,4 +1,4 @@
-package org.helloword.probabilityservice.global.exception;
+package com.helloword.collectionservice.global.exception;
 
 import java.util.HashMap;
 import java.util.Map;
