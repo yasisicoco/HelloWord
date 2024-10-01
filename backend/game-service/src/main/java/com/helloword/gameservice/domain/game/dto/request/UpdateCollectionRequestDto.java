@@ -1,4 +1,4 @@
-package com.helloword.collectionservice.domain.collection.dto.request;
+package com.helloword.gameservice.domain.game.dto.request;
 
 import java.util.List;
 
@@ -14,10 +14,11 @@ import lombok.NoArgsConstructor;
 public class UpdateCollectionRequestDto {
 
 	@NotNull
-	private Long kidId;
+	private List<CollectionUpdateDto> collections;
 
 	@NotNull
-	private List<CollectionUpdateDto> collections;
+	private Long kidId;
+
 
 	@Getter
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
