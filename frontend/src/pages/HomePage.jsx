@@ -56,7 +56,7 @@ const HomePage = () => {
       </section>
 
       <section className="home-game">
-        <EmblaCarousel slides={gameItems} options={{ axis: 'y', loop: true }} />
+        <EmblaCarousel slides={gameItems} options={{ axis: 'y', loop: true }} storageKey="homeGameIndex" />
       </section>
     </div>
   );
