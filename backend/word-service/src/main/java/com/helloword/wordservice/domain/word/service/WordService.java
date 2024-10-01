@@ -8,4 +8,6 @@ public interface WordService {
     List<Word> getWordListByIds(List<Long> ids);
 
     List<Word> getWordListByKidId(Long kidId);
+
+    List<Word> getAllWords();
 }

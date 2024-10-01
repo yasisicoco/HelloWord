@@ -30,4 +30,9 @@ public class WordServiceImpl implements WordService {
     public List<Word> getWordListByKidId(Long kidId) {
         return List.of();
     }
+
+    @Override
+    public List<Word> getAllWords() {
+        return wordRepository.findAll();
+    }
 }
