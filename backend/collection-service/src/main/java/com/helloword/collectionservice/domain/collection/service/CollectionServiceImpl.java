@@ -74,7 +74,9 @@ public class CollectionServiceImpl implements CollectionService {
 			}
 		}
 
-		KidExpUpdateRequestDto expUpdateRequestDto = new KidExpUpdateRequestDto(kidId, exp);
-		kidServiceClient.updateKidExp(expUpdateRequestDto);
+		if (exp > 0) {
+			KidExpUpdateRequestDto expUpdateRequestDto = new KidExpUpdateRequestDto(kidId, exp);
+			kidServiceClient.updateKidExp(expUpdateRequestDto);
+		}
 	}
 }
