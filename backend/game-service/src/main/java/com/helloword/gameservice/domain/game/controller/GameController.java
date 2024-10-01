@@ -1,10 +1,13 @@
 package com.helloword.gameservice.domain.game.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.helloword.gameservice.domain.game.dto.request.GameResultRequestDto;
 import com.helloword.gameservice.domain.game.dto.response.FairytaleGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.PairGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeechGameResponseDto;
@@ -40,5 +43,10 @@ public class GameController {
 	@GetMapping("/fairytale")
 	public FairytaleGameResponseDto getFairytaleGameCards(@RequestParam("kidId") Long kidId) {
 		return gameService.getFairytaleGameCards(kidId);
+	}
+
+	@PostMapping("/results")
+	public void saveGameResult(@RequestBody GameResultRequestDto requestDto) {
+		gameService.saveGameResult(requestDto);
 	}
 }
