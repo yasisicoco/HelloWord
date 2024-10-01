@@ -1,0 +1,27 @@
+.embla
+  position: relative
+  width: 100%
+  height: 100vh
+  &__viewport
+    overflow: hidden
+    width: 100%
+    height: 100%
+
+  &__container
+    display: flex
+    flex-direction: column
+    height: 100%
+
+  &__slide
+    flex: 0 0 70%
+    min-width: 0
+    position: relative
+    &__img
+      display: block
+      width: 100%
+      height: 100%
+      object-fit: contain
+      
+  &__slide--prev,
+  &__slide--next
+    opacity: 0.3
