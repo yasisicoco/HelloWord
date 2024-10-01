@@ -17,6 +17,5 @@ public class SpeechWordResponseDto {
 		private Long wordId;
 		private String word;
 		private String imageUrl;
-		private String voiceUrl;
 	}
 }

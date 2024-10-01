@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.helloword.gameservice.domain.game.dto.response.PairGameResponseDto;
+import com.helloword.gameservice.domain.game.dto.response.PairWordResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeechGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeechWordResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeedGameResponseDto;
@@ -63,5 +65,26 @@ public class GameServiceImpl implements GameService {
 			.collect(Collectors.toList());
 
 		return new SpeechGameResponseDto(rounds);
+	}
+
+	public PairGameResponseDto getPairGameCards(Long kidId) {
+		PairWordResponseDto pairWordResponse = wordServiceClient.getPairWords(kidId);
+
+		List<PairGameResponseDto.RoundDto> rounds = new ArrayList<>();
+		List<PairWordResponseDto.WordDto> words = pairWordResponse.getWords();
+
+		for (int i = 0; i < words.size(); i += 4) {
+			List<PairGameResponseDto.WordDto> wordDtos = words.subList(i, i + 4).stream()
+				.map(word -> new PairGameResponseDto.WordDto(
+					word.getWordId(),
+					word.getWord(),
+					word.getImageUrl()
+				))
+				.collect(Collectors.toList());
+
+			rounds.add(new PairGameResponseDto.RoundDto(wordDtos));
+		}
+
+		return new PairGameResponseDto(rounds);
 	}
 }
