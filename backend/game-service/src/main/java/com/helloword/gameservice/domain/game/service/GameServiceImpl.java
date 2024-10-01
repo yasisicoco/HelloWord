@@ -1,11 +1,15 @@
 package com.helloword.gameservice.domain.game.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.helloword.gameservice.domain.game.dto.request.GameLogRequestDto;
+import com.helloword.gameservice.domain.game.dto.request.GameResultRequestDto;
+import com.helloword.gameservice.domain.game.dto.request.UpdateCollectionRequestDto;
 import com.helloword.gameservice.domain.game.dto.response.FairytaleGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.FairytaleWordResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.PairGameResponseDto;
@@ -14,6 +18,8 @@ import com.helloword.gameservice.domain.game.dto.response.SpeechGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeechWordResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeedGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeedWordResponseDto;
+import com.helloword.gameservice.global.client.CollectionServiceClient;
+import com.helloword.gameservice.global.client.LogServiceClient;
 import com.helloword.gameservice.global.client.WordServiceClient;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 public class GameServiceImpl implements GameService {
 
 	private final WordServiceClient wordServiceClient;
+	private final CollectionServiceClient collectionServiceClient;
+	private final LogServiceClient logServiceClient;
 
 	public SpeedGameResponseDto getSpeedGameCards(Long kidId) {
 		SpeedWordResponseDto speedWordResponse = wordServiceClient.getSpeedWords(kidId);
@@ -124,5 +132,28 @@ public class GameServiceImpl implements GameService {
 
 		return new FairytaleGameResponseDto(fairytaleWordResponse.getStoryTitle(),
 			fairytaleWordResponse.getSentenceCount(), rounds);
+	}
+
+	@Override
+	public void saveGameResult(GameResultRequestDto requestDto) {
+		List<UpdateCollectionRequestDto.CollectionUpdateDto> collections = requestDto.getAnswerWords().stream()
+			.map(answerWord -> new UpdateCollectionRequestDto.CollectionUpdateDto(
+				answerWord.getId(),
+				1
+			))
+			.collect(Collectors.toList());
+
+		UpdateCollectionRequestDto updateCollectionRequest = new UpdateCollectionRequestDto(collections, requestDto.getKidId());
+		collectionServiceClient.updateCollections(updateCollectionRequest);
+
+		GameLogRequestDto gameLogRequest = new GameLogRequestDto(
+			requestDto.getKidId(),
+			requestDto.getGameType(),
+			LocalDate.now(),
+			requestDto.getPlayTime(),
+			requestDto.getCorrectRate()
+		);
+
+		logServiceClient.saveGameLog(gameLogRequest);
 	}
 }

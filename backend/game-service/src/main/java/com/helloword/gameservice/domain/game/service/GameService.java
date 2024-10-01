@@ -1,5 +1,6 @@
 package com.helloword.gameservice.domain.game.service;
 
+import com.helloword.gameservice.domain.game.dto.request.GameResultRequestDto;
 import com.helloword.gameservice.domain.game.dto.response.FairytaleGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.PairGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeechGameResponseDto;
@@ -11,4 +12,5 @@ public interface GameService {
 	SpeechGameResponseDto getSpeechGameCards(Long kidId);
 	PairGameResponseDto getPairGameCards(Long kidId);
 	FairytaleGameResponseDto getFairytaleGameCards(Long kidId);
+	void saveGameResult(GameResultRequestDto requestDto);
 }

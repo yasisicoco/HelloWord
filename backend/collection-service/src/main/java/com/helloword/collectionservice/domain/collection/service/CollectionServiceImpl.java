@@ -57,25 +57,19 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Transactional
 	public void updateCollections(UpdateCollectionRequestDto requestDto) {
-
 		int exp = 0;
-		long kidId = 0;
 
 		for (CollectionUpdateDto updateDto : requestDto.getCollections()) {
-			Collection collection = collectionRepository.findByKidIdAndWordId(updateDto.getKidId(), updateDto.getWordId())
+			Collection collection = collectionRepository.findByKidIdAndWordId(requestDto.getKidId(), updateDto.getWordId())
 				.orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND));
 
 			if (collection.updateCount(updateDto.getCount())) {
 				exp += 10;
 			}
-
-			if (kidId == 0) {
-				kidId = collection.getKidId();
-			}
 		}
 
 		if (exp > 0) {
-			KidExpUpdateRequestDto expUpdateRequestDto = new KidExpUpdateRequestDto(kidId, exp);
+			KidExpUpdateRequestDto expUpdateRequestDto = new KidExpUpdateRequestDto(requestDto.getKidId(), exp);
 			kidServiceClient.updateKidExp(expUpdateRequestDto);
 		}
 	}
