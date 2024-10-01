@@ -20,7 +20,7 @@ spring:
         - id: kid-service
           uri: lb://KID-SERVICE
           predicates:
-            - Path=/kids/**
+            - Path=/api/kids/**
         - id: word-service
           uri: lb://WORD-SERVICE
           predicates:

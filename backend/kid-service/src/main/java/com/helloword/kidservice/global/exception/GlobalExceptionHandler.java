@@ -5,10 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.io.IOException;
 
 @Slf4j
 @RestControllerAdvice
@@ -17,7 +16,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MainException.class)
     public ResponseEntity<ErrorResponse> handleMainException(
-            MainException e, HttpServletRequest request) throws IOException {
+            MainException e, HttpServletRequest request) {
 
         CustomException code = e.getErrorCode();
 
@@ -29,9 +28,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.valueOf(code.getCode())).body(errorResponse);
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException e) {
+
+        CustomException code = CustomException.INVALID_ARGUMENT;
+        ErrorResponse errorResponse =
+                new ErrorResponse(
+                        code.getCode(),
+                        code.getMessage());
+
+        return ResponseEntity.status(HttpStatus.valueOf(code.getCode())).body(errorResponse);
+    }
+
     @ExceptionHandler(Throwable.class)
-    protected ResponseEntity<ErrorResponse> handleGlobalException(Exception e, HttpServletRequest request)
-            throws IOException {
+    protected ResponseEntity<ErrorResponse> handleGlobalException(Exception e, HttpServletRequest request) {
 
         log.error("INTERNAL_SERVER_ERROR", e);
         CustomException internalServerError = CustomException.INTERNAL_SERVER_ERROR;
