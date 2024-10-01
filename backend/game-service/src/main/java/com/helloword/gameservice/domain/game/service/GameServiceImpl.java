@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.helloword.gameservice.domain.game.dto.response.FairytaleGameResponseDto;
+import com.helloword.gameservice.domain.game.dto.response.FairytaleWordResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.PairGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.PairWordResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeechGameResponseDto;
@@ -86,5 +88,41 @@ public class GameServiceImpl implements GameService {
 		}
 
 		return new PairGameResponseDto(rounds);
+	}
+
+	public FairytaleGameResponseDto getFairytaleGameCards(Long kidId) {
+		FairytaleWordResponseDto fairytaleWordResponse = wordServiceClient.getFairytaleWords(kidId);
+
+		List<FairytaleWordResponseDto.WordDto> incorrectWords = fairytaleWordResponse.getIncorrectWords();
+		List<FairytaleGameResponseDto.RoundDto> rounds = new ArrayList<>();
+
+		int incorrectWordIndex = 0;
+
+		for (FairytaleWordResponseDto.SentenceDto sentenceDto : fairytaleWordResponse.getSentences()) {
+			List<FairytaleGameResponseDto.WordDto> incorrectWordsForRound = incorrectWords
+				.subList(incorrectWordIndex, incorrectWordIndex + 3).stream()
+				.map(word -> new FairytaleGameResponseDto.WordDto(
+					word.getWordId(),
+					word.getWord()
+				))
+				.collect(Collectors.toList());
+
+			FairytaleGameResponseDto.RoundDto round = new FairytaleGameResponseDto.RoundDto(
+				sentenceDto.getSentence(),
+				sentenceDto.getImageUrl(),
+				sentenceDto.getSentenceOrder(),
+				new FairytaleGameResponseDto.WordDto(
+					sentenceDto.getCorrectWord().getWordId(),
+					sentenceDto.getCorrectWord().getWord()
+				),
+				incorrectWordsForRound
+			);
+
+			rounds.add(round);
+			incorrectWordIndex += 3;
+		}
+
+		return new FairytaleGameResponseDto(fairytaleWordResponse.getStoryTitle(),
+			fairytaleWordResponse.getSentenceCount(), rounds);
 	}
 }
