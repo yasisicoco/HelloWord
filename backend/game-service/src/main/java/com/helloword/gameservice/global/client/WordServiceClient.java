@@ -4,6 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.helloword.gameservice.domain.game.dto.response.FairytaleWordResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.PairWordResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeechWordResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeedWordResponseDto;
@@ -19,4 +20,7 @@ public interface WordServiceClient {
 
 	@GetMapping("/api/words/internal/pair")
 	PairWordResponseDto getPairWords(@RequestParam("kidId") Long kidId);
+
+	@GetMapping("/api/words/internal/fairytale")
+	FairytaleWordResponseDto getFairytaleWords(@RequestParam("kidId") Long kidId);
 }
