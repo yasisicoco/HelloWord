@@ -14,15 +14,15 @@ import lombok.NoArgsConstructor;
 public class UpdateCollectionRequestDto {
 
 	@NotNull
+	private Long kidId;
+
+	@NotNull
 	private List<CollectionUpdateDto> collections;
 
 	@Getter
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	@AllArgsConstructor
 	public static class CollectionUpdateDto {
-
-		@NotNull
-		private Long kidId;
 
 		@NotNull
 		private Long wordId;
