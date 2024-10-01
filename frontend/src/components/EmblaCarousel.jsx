@@ -25,7 +25,7 @@ const EmblaCarousel = ({ slides, options }) => {
   };
 
   return (
-    <div className="embla">
+    <section className="embla">
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">
           {slides.map((slide, index) => (
@@ -44,7 +44,16 @@ const EmblaCarousel = ({ slides, options }) => {
           ))}
         </div>
       </div>
-    </div>
+      <div className="embla__dots">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => scrollTo(index)}
+            className={`embla__dot ${index === currentIndex ? 'embla__dot--selected' : ''}`}
+          />
+        ))}
+      </div>
+    </section>
   );
 };
 
