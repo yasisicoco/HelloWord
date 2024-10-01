@@ -20,6 +20,7 @@ public class UpdateCollectionRequestDto {
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	@AllArgsConstructor
 	public static class CollectionUpdateDto {
+
 		@NotNull
 		private Long kidId;
 
