@@ -67,4 +67,25 @@ public class Kid {
                 .profileImageUrl(profileImageUrl)
                 .build();
     }
+
+    public void addExperience(int experiencePoints) {
+        this.experience += experiencePoints;
+
+        while (this.experience >= 100) {
+            this.experience -= 100;
+            this.level++;
+        }
+    }
+
+    public void updateKidInfo(String name, LocalDate birthDate, Gender gender, String profileImageUrl) {
+        this.name = name;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        if(profileImageUrl != null) this.profileImageUrl = profileImageUrl;
+    }
+
+    public void changeMainCharacter(Character newCharacter) {
+        this.mainCharacter = newCharacter;
+    }
+
 }
