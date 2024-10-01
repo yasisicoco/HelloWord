@@ -54,7 +54,7 @@ public class Collection {
 
 	public boolean updateCount(int count) {
 		this.count += count;
-		if (this.count == 5) {
+		if (this.count == 3) {
 			updateIsCompleted();
 			return true;
 		}
