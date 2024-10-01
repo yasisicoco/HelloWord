@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.helloword.gameservice.domain.game.dto.response.PairGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeechGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeedGameResponseDto;
 import com.helloword.gameservice.domain.game.service.GameService;
@@ -28,5 +29,10 @@ public class GameController {
 	@GetMapping("/speech-cards")
 	public SpeechGameResponseDto getSpeechGameCards(@RequestParam("kidId") Long kidId) {
 		return gameService.getSpeechGameCards(kidId);
+	}
+
+	@GetMapping("/pair")
+	public PairGameResponseDto getPairGameCards(@RequestParam("kidId") Long kidId) {
+		return gameService.getPairGameCards(kidId);
 	}
 }
