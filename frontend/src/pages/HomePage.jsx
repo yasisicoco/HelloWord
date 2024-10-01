@@ -1,8 +1,11 @@
+// hook, lib
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
+// img, component
+import EmblaCarousel from '../components/EmblaCarousel';
 import Button from '../components/Button';
 import './HomePage.sass';
-
 import game1 from '../assets/gameThumbnail/game1.png';
 import game2 from '../assets/gameThumbnail/game2.png';
 import game3 from '../assets/gameThumbnail/game3.png';
@@ -13,13 +16,8 @@ import Settings from '../assets/homeIcon/Settings.png';
 
 const HomePage = () => {
   const [exp, setExp] = useState(50);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const carouselRef = useRef(null);
+  const [character, setCharacter] = useState('먼지쿤');
   const nav = useNavigate();
-
-  const imgClick = (gameNumber) => {
-    nav(`/${gameNumber}`);
-  };
 
   const gameItems = [
     { type: 'game1', image: game1 },
@@ -27,20 +25,6 @@ const HomePage = () => {
     { type: 'game3', image: game3 },
     { type: 'game4', image: game4 },
   ];
-
-  const handlePrevClick = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? gameItems.length - 1 : prevIndex - 1));
-  };
-
-  const handleNextClick = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === gameItems.length - 1 ? 0 : prevIndex + 1));
-  };
-
-  useEffect(() => {
-    if (carouselRef.current) {
-      carouselRef.current.style.transform = `translateY(-${currentIndex * 100}%)`;
-    }
-  }, [currentIndex]);
 
   useEffect(() => {
     const mockData = { user: { exp: 70 } };
@@ -52,7 +36,7 @@ const HomePage = () => {
       <section className="home-user">
         <div className="home-user__exp">
           <div className="home-user__exp--exp-wrap" style={{ width: `${exp}%` }}>
-            {exp}%
+            {character} {exp}%
           </div>
         </div>
         <div className="home-user__character">
@@ -72,28 +56,7 @@ const HomePage = () => {
       </section>
 
       <section className="home-game">
-        <div className="home-gamelist__container">
-          <button className="home-gamelist__button button-up" onClick={handlePrevClick}>
-            위로
-          </button>
-          <div className="home-gamelist__carousel-wrapper">
-            <div className="home-gamelist__carousel" ref={carouselRef}>
-              {gameItems.map((item, index) => (
-                <div key={item.type} className="home-gamelist__game">
-                  <img
-                    onClick={() => imgClick(item.type)}
-                    className="home-gamelist__game--thumbnail"
-                    src={item.image}
-                    alt={item.type}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          <button className="home-gamelist__button button-down" onClick={handleNextClick}>
-            아래로
-          </button>
-        </div>
+        <EmblaCarousel slides={gameItems} options={{ axis: 'y', loop: true }} storageKey="homeGameIndex" />
       </section>
     </div>
   );
