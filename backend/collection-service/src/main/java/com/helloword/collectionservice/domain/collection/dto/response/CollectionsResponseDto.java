@@ -17,6 +17,9 @@ public class CollectionsResponseDto {
 
 	private List<CollectionData> collections;
 	private int collectionRate;
+	private int allCount;
+	private long completedCount;
+	private long uncompletedCount;
 
 	public static CollectionsResponseDto createCollectionsResponseDto(List<Collection> collections, List<WordsResponseDto.WordData> words) {
 		List<CollectionData> collectionDataList = collections.stream()
@@ -41,7 +44,8 @@ public class CollectionsResponseDto {
 		double collectionRate = ((double) completedCount / collections.size()) * 100;
 		int roundedCollectionRate = (int) Math.round(collectionRate);
 
-		return new CollectionsResponseDto(collectionDataList, roundedCollectionRate);
+		return new CollectionsResponseDto(collectionDataList, roundedCollectionRate, collections.size(),
+			completedCount, collections.size() - completedCount);
 	}
 
 	@AllArgsConstructor
