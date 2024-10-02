@@ -16,6 +16,8 @@ const UserAPI = () => {
         data,
       );
 
+      console.log(response);
+
       return response.data;
     } catch (error) {
       console.log('Error UserAPI-login');
@@ -38,8 +40,17 @@ const UserAPI = () => {
 
   // 유저 아이디 중복 확인
   const idDuplicate = async (email) => {
+    consoloe.log('000000000000000000');
     try {
-      const response = await axios.post(`${BASE_URL}/checkId`, email);
+      const response = await axios.post(`${BASE_URL}/api/users/check-duplicate?email=${email}`, {
+        headers: {
+          'Content-Type': 'application/json', // 헤더 추가
+        },
+      });
+      consoloe.log('11111111111111111111');
+      consoloe.log(response);
+      consoloe.log(response.data);
+      consoloe.log('2222222222222222222');
 
       if (response.data == '정상') {
         return true;
@@ -55,16 +66,28 @@ const UserAPI = () => {
 
   // 유저 회원가입
   const signUp = async (email, password, username, phone) => {
-    const data = { email, password, username, phone };
+    const data = { username: email, password: password, name: username, phone: phone };
     try {
-      const response = await axios.post(`${BASE_URL}/signup`, data);
-
-      if (response.data == '성공') {
+      const response = await axios.post(`${BASE_URL}/api/users`, data, {
+        headers: {
+          'Content-Type': 'application/json', // 헤더 추가
+        },
+      });
+      console.log('0000000000000');
+      console.log(response);
+      console.log('0000000000000');
+      if (response) {
+        console.log('11111111111111');
+        console.log(response);
         return true;
       } else {
+        console.log('222222222222222');
+        console.log(response);
         return false;
       }
     } catch (error) {
+      console.log('3333333333333');
+      console.log(response);
       console.log('Error UserAPI-signup');
       return true;
     }
