@@ -30,7 +30,7 @@ public class WebConfig implements WebFluxConfigurer {
 
 
     @Bean
-    public CorsWebFilter corsWebFilter(GlobalCorsProperties globalCorsProperties) {
+    public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://localhost:5173, https://j11b206.p.ssafy.io");
         config.addAllowedMethod("*");
