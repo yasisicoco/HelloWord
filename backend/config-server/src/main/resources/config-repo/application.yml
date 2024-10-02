@@ -5,4 +5,15 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-#      defaultZone: "{cipher}9ff5e4fffc93ae4382a6981d2c3f957fb023bccd868ac4f7a89a665b879deb823d1dc9aab6e668b02e011b61dc7a98d5"
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/
