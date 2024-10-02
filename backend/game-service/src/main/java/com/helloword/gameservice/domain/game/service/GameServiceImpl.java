@@ -149,9 +149,9 @@ public class GameServiceImpl implements GameService {
 		GameLogRequestDto gameLogRequest = new GameLogRequestDto(
 			requestDto.getKidId(),
 			requestDto.getGameType(),
-			LocalDate.now(),
 			requestDto.getPlayTime(),
-			requestDto.getCorrectRate()
+			requestDto.getCorrectRate(),
+			requestDto.getCorrectCount()
 		);
 
 		logServiceClient.saveGameLog(gameLogRequest);

@@ -17,12 +17,12 @@ public class GameLogRequestDto {
 	private String gameType;
 
 	@NotNull
-	private LocalDate createdAt;
+	private Integer playTime;
 
 	@NotNull
-	private int playTime;
+	private Double correctRate;
 
 	@NotNull
-	private double correctRate;
+	private Integer correctCount;
 }
 
