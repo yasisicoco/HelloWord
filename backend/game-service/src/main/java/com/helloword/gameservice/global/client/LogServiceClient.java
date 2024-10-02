@@ -9,6 +9,6 @@ import com.helloword.gameservice.domain.game.dto.request.GameLogRequestDto;
 @FeignClient(name = "log-service")
 public interface LogServiceClient {
 
-	@PostMapping("/api/logs/internal")
+	@PostMapping("/internal/logs")
 	void saveGameLog(@RequestBody GameLogRequestDto gameLogRequest);
 }
