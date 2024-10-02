@@ -12,12 +12,10 @@ import com.helloword.gameservice.domain.game.dto.request.GameResultRequestDto;
 import com.helloword.gameservice.domain.game.dto.request.UpdateCollectionRequestDto;
 import com.helloword.gameservice.domain.game.dto.response.FairytaleGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.FairytaleWordResponseDto;
+import com.helloword.gameservice.domain.game.dto.response.GameWordResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.PairGameResponseDto;
-import com.helloword.gameservice.domain.game.dto.response.PairWordResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeechGameResponseDto;
-import com.helloword.gameservice.domain.game.dto.response.SpeechWordResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeedGameResponseDto;
-import com.helloword.gameservice.domain.game.dto.response.SpeedWordResponseDto;
 import com.helloword.gameservice.global.client.CollectionServiceClient;
 import com.helloword.gameservice.global.client.LogServiceClient;
 import com.helloword.gameservice.global.client.WordServiceClient;
@@ -35,19 +33,21 @@ public class GameServiceImpl implements GameService {
 	private final LogServiceClient logServiceClient;
 
 	public SpeedGameResponseDto getSpeedGameCards(Long kidId) {
-		SpeedWordResponseDto speedWordResponse = wordServiceClient.getSpeedWords(kidId);
+		GameWordResponseDto gameWordResponse = wordServiceClient.getGameWords(kidId, 20);
 
-		List<SpeedWordResponseDto.WordDto> correctWords = speedWordResponse.getCorrectWords();
-		List<SpeedWordResponseDto.WordDto> incorrectWords = speedWordResponse.getIncorrectWords();
+		List<GameWordResponseDto.WordDto> words = gameWordResponse.getWords();
+		List<GameWordResponseDto.WordDto> correctWords = words.subList(0, 5);
+		List<GameWordResponseDto.WordDto> incorrectWords = words.subList(5, 20);
 
 		List<SpeedGameResponseDto.RoundDto> rounds = new ArrayList<>();
 		for (int i = 0; i < correctWords.size(); i++) {
-			SpeedWordResponseDto.WordDto correctWord = correctWords.get(i);
+			GameWordResponseDto.WordDto correctWord = correctWords.get(i);
 			SpeedGameResponseDto.CorrectWordDto correctWordDto = new SpeedGameResponseDto.CorrectWordDto(
 				correctWord.getWordId(),
 				correctWord.getWord(),
 				correctWord.getImageUrl(),
-				correctWord.getVoiceUrl());
+				correctWord.getVoiceUrl()
+			);
 
 			List<SpeedGameResponseDto.IncorrectWordDto> incorrectWordDtos = incorrectWords.subList(i * 3, (i + 1) * 3).stream()
 				.map(incorrectWord -> new SpeedGameResponseDto.IncorrectWordDto(
@@ -64,9 +64,9 @@ public class GameServiceImpl implements GameService {
 	}
 
 	public SpeechGameResponseDto getSpeechGameCards(Long kidId) {
-		SpeechWordResponseDto speechWordResponse = wordServiceClient.getSpeechWords(kidId);
+		GameWordResponseDto gameWordResponse = wordServiceClient.getGameWords(kidId, 5);
 
-		List<SpeechGameResponseDto.RoundDto> rounds = speechWordResponse.getWords().stream()
+		List<SpeechGameResponseDto.RoundDto> rounds = gameWordResponse.getWords().stream()
 			.map(word -> new SpeechGameResponseDto.RoundDto(
 				word.getWordId(),
 				word.getWord(),
@@ -78,10 +78,10 @@ public class GameServiceImpl implements GameService {
 	}
 
 	public PairGameResponseDto getPairGameCards(Long kidId) {
-		PairWordResponseDto pairWordResponse = wordServiceClient.getPairWords(kidId);
+		GameWordResponseDto gameWordResponse = wordServiceClient.getGameWords(kidId, 20);
 
 		List<PairGameResponseDto.RoundDto> rounds = new ArrayList<>();
-		List<PairWordResponseDto.WordDto> words = pairWordResponse.getWords();
+		List<GameWordResponseDto.WordDto> words = gameWordResponse.getWords();
 
 		for (int i = 0; i < words.size(); i += 4) {
 			List<PairGameResponseDto.WordDto> wordDtos = words.subList(i, i + 4).stream()
