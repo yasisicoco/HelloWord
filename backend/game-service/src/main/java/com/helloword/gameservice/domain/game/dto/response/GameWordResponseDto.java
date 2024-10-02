@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GameWordResponseDto {
 
-	private List<PairWordResponseDto.WordDto> words;
+	private List<WordDto> words;
 
 	@Getter
 	@AllArgsConstructor

@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class PairGameResponseDto {
+
 	private List<RoundDto> rounds;
 
 	@Getter
