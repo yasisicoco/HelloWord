@@ -9,6 +9,6 @@ import com.helloword.gameservice.domain.game.dto.request.UpdateCollectionRequest
 @FeignClient(name = "collection-service")
 public interface CollectionServiceClient {
 
-	@PatchMapping("/api/collections/internal")
+	@PatchMapping("/internal/collections")
 	void updateCollections(@RequestBody UpdateCollectionRequestDto requestDto);
 }

@@ -9,6 +9,6 @@ import com.helloword.collectionservice.domain.collection.dto.request.KidExpUpdat
 @FeignClient(name = "kid-service")
 public interface KidServiceClient {
 
-	@PatchMapping("/api/kids/internal")
+	@PatchMapping("/internal/kids/exp")
 	void updateKidExp(@RequestBody KidExpUpdateRequestDto requestDto);
 }
