@@ -2,6 +2,7 @@ package com.helloword.wordservice.domain.word.service;
 
 import com.helloword.wordservice.domain.word.model.Word;
 import com.helloword.wordservice.domain.word.repository.WordRepository;
+import com.helloword.wordservice.global.client.ProbabilityServiceClient;
 import com.helloword.wordservice.global.exception.MainException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import static com.helloword.wordservice.global.exception.CustomException.NOT_FOU
 @RequiredArgsConstructor
 public class WordServiceImpl implements WordService {
     private final WordRepository wordRepository;
+    private final ProbabilityServiceClient probabilityServiceClient;
 
     @Transactional(readOnly = true)
     @Override
@@ -27,8 +29,11 @@ public class WordServiceImpl implements WordService {
     }
 
     @Override
-    public List<Word> getWordListByKidId(Long kidId) {
-        return List.of();
+    public List<Word> getWordListByKidId(Long kidId, Integer wordCount) {
+//        probabilityServiceClient.getAnswerWordLogs(kidId);
+        List<Word> words = wordRepository.findAll();
+        int count = Math.min(wordCount, words.size());
+        return words.subList(0, count);
     }
 
     @Override

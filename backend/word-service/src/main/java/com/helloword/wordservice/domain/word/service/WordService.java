@@ -7,7 +7,7 @@ import java.util.List;
 public interface WordService {
     List<Word> getWordListByIds(List<Long> ids);
 
-    List<Word> getWordListByKidId(Long kidId);
+    List<Word> getWordListByKidId(Long kidId, Integer wordCount);
 
     List<Word> getAllWords();
 }

@@ -1,6 +1,5 @@
 package com.helloword.apigateway.config;
 
-import org.springframework.cloud.gateway.config.GlobalCorsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -30,7 +29,7 @@ public class WebConfig implements WebFluxConfigurer {
 
 
     @Bean
-    public CorsWebFilter corsWebFilter(GlobalCorsProperties globalCorsProperties) {
+    public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://localhost:5173, https://j11b206.p.ssafy.io");
         config.addAllowedMethod("*");

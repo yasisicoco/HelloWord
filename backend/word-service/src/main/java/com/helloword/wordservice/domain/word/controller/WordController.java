@@ -22,12 +22,4 @@ public class WordController {
         List<Word> wordDetails = wordService.getWordListByIds(wordIds);
         return wordDetails;
     }
-
-    @Operation(summary = "해당 단어리스트 조회", description = "kidId에 해당하는 단어를 조회하고 계산하여 반환합니다.")
-    @GetMapping("/kids/{kidId}")
-    public List<Word> getWordDetailsBykidIds(@PathVariable Long kidId) {
-        List<Word> wordDetails = wordService.getWordListByKidId(kidId);
-        return wordDetails;
-    }
-
 }
