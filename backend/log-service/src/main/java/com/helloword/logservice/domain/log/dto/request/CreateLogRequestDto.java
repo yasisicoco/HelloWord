@@ -1,20 +1,23 @@
-package com.helloword.gameservice.domain.game.dto.request;
+package com.helloword.logservice.domain.log.dto.request;
 
-import java.time.LocalDate;
+import com.helloword.logservice.domain.log.model.GameType;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class GameLogRequestDto {
+public class CreateLogRequestDto {
 
 	@NotNull
 	private Long kidId;
 
 	@NotNull
-	private String gameType;
+	private GameType gameType;
 
 	@NotNull
 	private Integer playTime;
@@ -24,5 +27,5 @@ public class GameLogRequestDto {
 
 	@NotNull
 	private Integer correctCount;
-}
 
+}

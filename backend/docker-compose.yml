@@ -122,6 +122,16 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
+  log-service:
+    image: mrcsbin/helloword-log-service:latest
+    container_name: log-service
+    networks:
+      - backend-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
 
 networks:
   backend-network:

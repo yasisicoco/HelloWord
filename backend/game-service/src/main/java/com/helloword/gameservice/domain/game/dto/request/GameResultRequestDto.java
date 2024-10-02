@@ -25,6 +25,9 @@ public class GameResultRequestDto {
 	@NotNull
 	private double correctRate;
 
+	@NotNull
+	private int correctCount;
+
 	@Getter
 	@AllArgsConstructor
 	public static class AnswerWordDto {
