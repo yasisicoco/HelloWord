@@ -3,22 +3,6 @@ server:
 
 spring:
   cloud:
-    default-filters:
-      - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
-    globalcors:
-      cors-configurations:
-        '[/**]':
-          allowedOrigins:
-            - 'http://localhost:5173'
-            - 'https://j11b206.p.ssafy.io'
-          allow-credentials: true
-          allowedHeaders: '*'
-          allowedMethods:
-            - PUT
-            - GET
-            - POST
-            - DELETE
-            - OPTIONS
     gateway:
       routes:
         - id: swagger-server
@@ -29,8 +13,6 @@ spring:
           uri: lb://USER-SERVICE
           predicates:
             - Path=/api/users/**
-          filters:
-            - StripPrefix=1  # 프록시 경로 조정
         - id: log-service
           uri: lb://LOG-SERVICE
           predicates:
