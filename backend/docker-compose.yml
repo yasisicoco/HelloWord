@@ -111,6 +111,18 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
+  game-service:
+    image: mrcsbin/helloword-game-service:latest
+    container_name: game-service
+    networks:
+      - backend-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+
 networks:
   backend-network:
     driver: bridge
