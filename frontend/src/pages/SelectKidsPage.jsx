@@ -14,7 +14,7 @@ const SelectKidsPage = () => {
     // 다른 작업하기
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {}, [isModalOpen]);
 
   return (
     <div>

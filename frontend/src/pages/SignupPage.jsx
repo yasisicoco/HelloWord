@@ -56,6 +56,8 @@ const SignupPage = () => {
     const response = await UserAPI().signUp(email, password1, username, phone);
     if (response) {
       navigate('/login');
+    } else {
+      alert('서버 오류로 인하여 재가입 해주세요.');
     }
   };
 
@@ -69,6 +71,10 @@ const SignupPage = () => {
     }
 
     const emailCheck = await UserAPI().idDuplicate(email);
+    if (!emailCheck) {
+      alert('중복된 이메일 입니다.');
+      return;
+    }
 
     // 이메일 체크
     SetemailCheck(emailCheck);

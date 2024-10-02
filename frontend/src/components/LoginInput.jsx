@@ -21,10 +21,15 @@ const LoginInput = () => {
     }
 
     try {
-      await dispatch(login({ email, password })).unwrap();
-      navigate('/selectkids');
+      const accessToken = await dispatch(login({ email, password })).unwrap();
+
+      if (accessToken) {
+        navigate('/selectkids');
+      } else {
+        alert('아이디/비밀번호를 재 확인해주세요');
+      }
     } catch (error) {
-      alert('로그인에 실패했습니다.');
+      alert('서버 오류로 인한 로그인에 실패했습니다.');
     }
   };
 

@@ -6,6 +6,11 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173, // 포트 번호 확인
+    cors: {
+      origin: '*', // 모든 출처에서의 요청 허용
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+      credentials: true,
+    },
   },
   plugins: [
     react(),
@@ -54,20 +59,6 @@ export default defineConfig({
             type: 'image/x-icon',
           },
         ],
-        // screenshots: [
-        //   {
-        //     src: "/screenshots/screenshot1.png",  // 스크린샷 경로
-        //     sizes: "540x720",                     // 스크린샷 크기
-        //     type: "image/png",
-        //     form_factor: "wide",                  // 데스크탑 용도
-        //   },
-        //   {
-        //     src: "/screenshots/screenshot2.png",
-        //     sizes: "540x720",
-        //     type: "image/png",
-        //     form_factor: "narrow",                // 모바일 용도
-        //   }
-        // ],
       },
     }),
   ],

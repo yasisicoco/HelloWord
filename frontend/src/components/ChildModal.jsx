@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 
 function AddChildModal({ isOpen, closeModal }) {
   const [name, SetName] = useState('');
-  const [birthDate, setBirthDate] = useState(null);
+  const [birthDate, setBirthDate] = useState(null); // Date 객체 유지
   const [profileimg, setProfileimg] = useState('../charactor/defaultProfile.png');
   const fileInputRef = useRef(null);
 
@@ -24,17 +24,17 @@ function AddChildModal({ isOpen, closeModal }) {
     setButton(allCheck);
   }, [allCheck]);
 
+  // DatePicker에서 선택한 날짜를 Date 객체로 유지
   const handleDateChange = (date) => {
-    if (date) {
-      const formattedDate = format(date, 'yyyy-MM-dd');
-      setBirthDate(formattedDate);
-    }
+    setBirthDate(date); // Date 객체로 저장
   };
 
   const submitProfile = async (e) => {
     e.preventDefault();
+    // 제출 시 포맷팅하여 처리
+    const formattedDate = birthDate ? format(birthDate, 'yyyy-MM-dd') : '';
     console.log(name);
-    console.log(birthDate);
+    console.log(formattedDate);
   };
 
   const handleImageChange = (e) => {
@@ -99,7 +99,8 @@ function AddChildModal({ isOpen, closeModal }) {
           <p>생년월일</p>
           <DatePicker
             locale={ko} // 한국어 로케일 설정
-            selected={birthDate}
+            selected={birthDate} // Date 객체를 전달
+            onChange={handleDateChange} // Date 객체로 설정
             dateFormat="yyyy/MM/dd"
             placeholderText="생년월일을 선택하세요"
             maxDate={new Date()}

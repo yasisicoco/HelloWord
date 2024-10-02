@@ -26,6 +26,7 @@ export const useAuth = async () => {
 
   if (!accessToken || !isAccessTokenValid(accessToken)) {
     // accessToken이 없거나 유효하지 않은 경우, refreshToken을 사용하여 새로 발급받기
+
     const result = dispatch(refreshAccessToken());
     return result; // access토큰이 되거나 혹은 false로 반환될거임
   }

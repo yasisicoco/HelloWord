@@ -28,14 +28,11 @@ function Router() {
   useEffect(() => {
     // 아래 토큰 바꿔야함 제대로 오는지 아닌지 토큰 만들어지면 다시 구현해볼것
     if (token) {
-      console.log(token);
       setHasToken(true);
-      console.log('접속완료');
     } else {
       setHasToken(false);
-      console.log('접속실패');
     }
-  }, [hasToken]);
+  }, [token]);
 
   // 새로고침해도 다시 토큰을 먼저 확인 후 진행하므로 괜춘
   if (hasToken == false) {
