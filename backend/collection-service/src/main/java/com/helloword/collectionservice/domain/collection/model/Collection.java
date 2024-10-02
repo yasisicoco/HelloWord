@@ -36,7 +36,7 @@ public class Collection {
 	private Boolean isCompleted;
 
 	@Builder
-	public Collection(Long kidId, Long wordId, Integer count, Boolean isCompleted) {
+	private Collection(Long kidId, Long wordId, Integer count, Boolean isCompleted) {
 		this.kidId = kidId;
 		this.wordId = wordId;
 		this.count = count;
@@ -52,11 +52,13 @@ public class Collection {
 			.build();
 	}
 
-	public void updateCount(int count) {
+	public boolean updateCount(int count) {
 		this.count += count;
-		if (this.count == 5) {
+		if (this.count == 3) {
 			updateIsCompleted();
+			return true;
 		}
+		return false;
 	}
 
 	private void updateIsCompleted() {
