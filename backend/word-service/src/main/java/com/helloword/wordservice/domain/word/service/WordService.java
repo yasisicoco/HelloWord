@@ -11,4 +11,6 @@ public interface WordService {
     GameWordResponseDto getWordListByKidId(Long kidId, Integer wordCount);
 
     List<Word> getAllWords();
+
+    void init();
 }

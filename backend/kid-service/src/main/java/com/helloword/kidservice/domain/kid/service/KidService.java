@@ -24,4 +24,5 @@ public interface KidService {
 
     void increaseExperience(UpdateExpRequestDto updateExpRequestDto);
 
+    Integer getKidAgeById(Long kidId);
 }
