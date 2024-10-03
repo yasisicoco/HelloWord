@@ -1,8 +1,8 @@
 package com.helloword.wordservice.domain.word.controller;
 
+import com.helloword.wordservice.domain.word.dto.response.GameWordResponseDto;
 import com.helloword.wordservice.domain.word.model.Word;
 import com.helloword.wordservice.domain.word.service.WordService;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class InternalWordController {
 
     @GetMapping
     @Operation(summary = "아이 게임 단어 조회", description = "아이에게 출제할 게임 단어를 조회하고 계산하여 반환합니다.")
-    public List<Word> getWordsByKidId(
+    public GameWordResponseDto getWordsByKidId(
             @RequestParam Long kidId,
             @RequestParam Integer wordCount
     ) {
