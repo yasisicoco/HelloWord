@@ -1,12 +1,10 @@
 package com.helloword.kidservice.domain.kid.service;
 
-import com.helloword.kidservice.domain.kid.dto.request.CraeteKidRequestDto;
-import com.helloword.kidservice.domain.kid.dto.request.UpdateExpRequestDto;
-import com.helloword.kidservice.domain.kid.dto.request.UpdateKidRequestDto;
-import com.helloword.kidservice.domain.kid.dto.request.UpdateMainCharactorRequestDto;
+import com.helloword.kidservice.domain.kid.dto.request.*;
 import com.helloword.kidservice.domain.kid.dto.response.KidResponseDto;
 import com.helloword.kidservice.domain.kid.model.Kid;
 import com.helloword.kidservice.domain.kid.repository.KidRepository;
+import com.helloword.kidservice.global.client.ProbabilityServiceClient;
 import com.helloword.kidservice.global.exception.MainException;
 import com.helloword.kidservice.global.utils.FileService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +29,7 @@ public class KidServiceImpl implements KidService {
 
     private final FileService fileService;
     private final KidRepository kidRepository;
+    private final ProbabilityServiceClient probabilityServiceClient;
 
     @Transactional
     @Override
@@ -48,6 +47,8 @@ public class KidServiceImpl implements KidService {
                 profileImageUrl
         );
         kidRepository.save(kid);
+
+        probabilityServiceClient.createAnswerWordLog(new CreateAnswerWordLogRequestDto(kid.getId()));
 
         return new KidResponseDto(kid);
     }
