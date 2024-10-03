@@ -39,23 +39,18 @@ public class LogServiceImpl implements LogService {
 
 	@Override
 	public GameStatsResponseDto getGameStats(Long kidId) {
-		// Speed Game
-		Double speedGameKidAvg = logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.SPEED_GAME);
-		Double speedGameGlobalAvg = logRepository.findGlobalAverageCorrectRateByGameType(GameType.SPEED_GAME);
+		Double speedGameKidAvg = getNonNullAverage(logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.SPEED_GAME));
+		Double speedGameGlobalAvg = getNonNullAverage(logRepository.findGlobalAverageCorrectRateByGameType(GameType.SPEED_GAME));
 
-		// Speech Game
-		Double speechGameKidAvg = logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.SPEECH_GAME);
-		Double speechGameGlobalAvg = logRepository.findGlobalAverageCorrectRateByGameType(GameType.SPEECH_GAME);
+		Double speechGameKidAvg = getNonNullAverage(logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.SPEECH_GAME));
+		Double speechGameGlobalAvg = getNonNullAverage(logRepository.findGlobalAverageCorrectRateByGameType(GameType.SPEECH_GAME));
 
-		// Pair Game
-		Double pairGameKidAvg = logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.PAIR_GAME);
-		Double pairGameGlobalAvg = logRepository.findGlobalAverageCorrectRateByGameType(GameType.PAIR_GAME);
+		Double pairGameKidAvg = getNonNullAverage(logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.PAIR_GAME));
+		Double pairGameGlobalAvg = getNonNullAverage(logRepository.findGlobalAverageCorrectRateByGameType(GameType.PAIR_GAME));
 
-		// Fairytale Game
-		Double fairytaleGameKidAvg = logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.FAIRYTALE_GAME);
-		Double fairytaleGameGlobalAvg = logRepository.findGlobalAverageCorrectRateByGameType(GameType.FAIRYTALE_GAME);
+		Double fairytaleGameKidAvg = getNonNullAverage(logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.FAIRYTALE_GAME));
+		Double fairytaleGameGlobalAvg = getNonNullAverage(logRepository.findGlobalAverageCorrectRateByGameType(GameType.FAIRYTALE_GAME));
 
-		// 통합된 DTO 반환
 		return new GameStatsResponseDto(
 			speedGameKidAvg, speedGameGlobalAvg,
 			speechGameKidAvg, speechGameGlobalAvg,
@@ -63,4 +58,9 @@ public class LogServiceImpl implements LogService {
 			fairytaleGameKidAvg, fairytaleGameGlobalAvg
 		);
 	}
+
+	private Double getNonNullAverage(Double value) {
+		return (value != null) ? value : 0.0;
+	}
+
 }

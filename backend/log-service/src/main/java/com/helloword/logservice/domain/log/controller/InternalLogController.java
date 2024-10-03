@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.helloword.logservice.domain.log.dto.request.CreateLogRequestDto;
 import com.helloword.logservice.domain.log.dto.response.GameStatsResponseDto;
 import com.helloword.logservice.domain.log.dto.response.LearningStatsResponseDto;
-import com.helloword.logservice.domain.log.model.GameType;
 import com.helloword.logservice.domain.log.service.LogService;
 
 import lombok.RequiredArgsConstructor;
