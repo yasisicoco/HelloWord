@@ -35,12 +35,12 @@ public class GameController {
 		return gameService.getSpeechGameCards(kidId);
 	}
 
-	@GetMapping("/pair")
+	@GetMapping("/pair-cards")
 	public PairGameResponseDto getPairGameCards(@RequestParam("kidId") Long kidId) {
 		return gameService.getPairGameCards(kidId);
 	}
 
-	@GetMapping("/fairytale")
+	@GetMapping("/fairytale-cards")
 	public FairytaleGameResponseDto getFairytaleGameCards(@RequestParam("kidId") Long kidId) {
 		return gameService.getFairytaleGameCards(kidId);
 	}
