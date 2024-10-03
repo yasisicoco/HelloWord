@@ -57,6 +57,12 @@ public class WordServiceImpl implements WordService {
 
         resultWords.sort((o1, o2) -> Double.compare(o2.value, o1.value));
 
+        int count = Math.min(wordCount * 2, resultWords.size());
+        resultWords = resultWords.subList(0, count);
+
+        Collections.shuffle(resultWords);
+        resultWords = resultWords.subList(0, count / 2);
+
         List<Word> words = wordRepository.findAllById(resultWords.stream().map(resultWord -> resultWord.id).toList());
 
         List<GameWordResponseDto.WordDto> wordDtos = new ArrayList<>();
