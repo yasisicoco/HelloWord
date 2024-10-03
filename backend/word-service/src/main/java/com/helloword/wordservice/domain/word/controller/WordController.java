@@ -22,4 +22,10 @@ public class WordController {
         List<Word> wordDetails = wordService.getWordListByIds(wordIds);
         return wordDetails;
     }
+
+    @Operation(summary = "단어 목록 등록", description = "DB에 단어 목록이 없으면 단어 목록을 등록합니다.")
+    @GetMapping
+    public void init() {
+        wordService.init();
+    }
 }
