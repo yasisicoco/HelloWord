@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -112,6 +114,18 @@ public class KidServiceImpl implements KidService {
         kid.addExperience(updateExpRequestDto.exp());
 
         kidRepository.save(kid);
+    }
+
+    @Override
+    public Integer getKidAgeById(Long kidId) {
+        Kid kid = findKidById(kidId);
+        LocalDate birthDate = kid.getBirthDate();
+        LocalDate currentDate = LocalDate.now();
+
+        // 현재 날짜와 아이의 생일 사이의 차이를 개월 수로 계산
+        Period period = Period.between(birthDate, currentDate);
+        int ageInMonths = period.getYears() * 12 + period.getMonths();
+        return ageInMonths;
     }
 
     private Kid findKidById(Long kidId) {
