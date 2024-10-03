@@ -23,7 +23,7 @@ public class JwtUtil {
 
     public JwtToken generateToken(AuthenticateUserResponse authenticateUserResponse) {
         String accessToken = Jwts.builder()
-                .claim("userId", authenticateUserResponse.getUserId())
+                .claim("userId", authenticateUserResponse.getId())
                 .claim("username", authenticateUserResponse.getUsername())
                 .claim("role", authenticateUserResponse.getRole())
                 .issuedAt(new Date(System.currentTimeMillis()))

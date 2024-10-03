@@ -41,3 +41,6 @@ spring:
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/api/auth/**
+
+jwt:
+  secret: fEDYiKuYlRKW/NscG8DEFqtIyb2Vo0Y3wEmGMEZ7oSLuoBakNBPN1BZvkBtYOsmIHljKX5BJmJLKSiRsZYaq6g==
