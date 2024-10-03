@@ -10,7 +10,7 @@ import com.helloword.gameservice.domain.game.dto.response.GameWordResponseDto;
 @FeignClient(name = "word-service")
 public interface WordServiceClient {
 
-	@GetMapping("/internal/words/game")
+	@GetMapping("/internal/words")
 	GameWordResponseDto getGameWords(@RequestParam("kidId") Long kidId, @RequestParam("wordCount") Integer wordCount);
 
 	@GetMapping("/internal/words/fairytale")
