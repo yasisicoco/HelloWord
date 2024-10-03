@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class InternalKidController {
     private final KidService kidService;
 
-    @PatchMapping("/exp")
+    @PutMapping("/exp")
     @Operation(summary = "아이 경험치 수정", description = "요청한 정보로 아이의 경험치를 수정합니다.")
     public void updateKidExp(@ModelAttribute UpdateExpRequestDto updateExpRequestDto) {
         kidService.increaseExperience(updateExpRequestDto);
