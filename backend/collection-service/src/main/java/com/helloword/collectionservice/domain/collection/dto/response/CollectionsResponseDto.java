@@ -39,7 +39,6 @@ public class CollectionsResponseDto {
 				);
 			}).collect(Collectors.toList());
 
-		// Collection rate 계산
 		long completedCount = collections.stream().filter(Collection::getIsCompleted).count();
 		double collectionRate = ((double) completedCount / collections.size()) * 100;
 		int roundedCollectionRate = (int) Math.round(collectionRate);
