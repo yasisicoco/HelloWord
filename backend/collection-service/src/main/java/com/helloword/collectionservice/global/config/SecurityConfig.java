@@ -35,7 +35,8 @@ public class SecurityConfig {
 		);
 		http.authorizeHttpRequests((auth) -> auth
 			.requestMatchers("/api/collections/**").permitAll()
-			.anyRequest().authenticated()
+			.requestMatchers("/internal/collections/**").permitAll()
+			.anyRequest().permitAll()
 		);
 		http.exceptionHandling((handle) -> handle.authenticationEntryPoint(customExceptionHandler));
 

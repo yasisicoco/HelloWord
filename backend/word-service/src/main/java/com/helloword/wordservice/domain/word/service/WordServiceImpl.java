@@ -1,5 +1,6 @@
 package com.helloword.wordservice.domain.word.service;
 
+import com.helloword.wordservice.domain.word.dto.response.GameWordResponseDto;
 import com.helloword.wordservice.domain.word.model.Word;
 import com.helloword.wordservice.domain.word.repository.WordRepository;
 import com.helloword.wordservice.global.client.ProbabilityServiceClient;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.helloword.wordservice.global.exception.CustomException.NOT_FOUND;
@@ -29,11 +31,19 @@ public class WordServiceImpl implements WordService {
     }
 
     @Override
-    public List<Word> getWordListByKidId(Long kidId, Integer wordCount) {
+    public GameWordResponseDto getWordListByKidId(Long kidId, Integer wordCount) {
 //        probabilityServiceClient.getAnswerWordLogs(kidId);
         List<Word> words = wordRepository.findAll();
         int count = Math.min(wordCount, words.size());
-        return words.subList(0, count);
+        List<Word> subListedWords = words.subList(0, count);
+
+        List<GameWordResponseDto.WordDto> wordDtos = new ArrayList<>();
+        for (Word word : subListedWords) {
+            wordDtos.add(new GameWordResponseDto.WordDto(word.getId(), word.getWord(), word.getImageUrl(),
+                word.getVoiceUrl()));
+        }
+
+        return new GameWordResponseDto(wordDtos);
     }
 
     @Override

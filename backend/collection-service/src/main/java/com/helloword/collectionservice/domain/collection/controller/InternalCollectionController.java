@@ -1,7 +1,7 @@
 package com.helloword.collectionservice.domain.collection.controller;
 
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +29,7 @@ public class InternalCollectionController {
 		log.info("collection service - response: create ok");
 	}
 
-	@PatchMapping
+	@PutMapping
 	public void updateCollections(@RequestBody UpdateCollectionRequestDto requestDto) {
 		collectionService.updateCollections(requestDto);
 

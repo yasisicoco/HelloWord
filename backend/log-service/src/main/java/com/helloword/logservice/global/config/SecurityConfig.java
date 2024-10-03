@@ -34,8 +34,8 @@ public class SecurityConfig {
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		);
 		http.authorizeHttpRequests((auth) -> auth
-			.requestMatchers("/api/games/**").permitAll()
-			.anyRequest().authenticated()
+			.requestMatchers("/internal/logs/**").permitAll()
+			.anyRequest().permitAll()
 		);
 		http.exceptionHandling((handle) -> handle.authenticationEntryPoint(customExceptionHandler));
 
