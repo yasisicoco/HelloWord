@@ -3,19 +3,52 @@ import { FaCirclePlus } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChildModal from '../components/ChildModal';
-import { useSelector } from 'react-redux';
+import UserAPI from '../api/UserAPI';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSelectedKid } from '../features/Auth/kidSlice'; // 아이 선택 액션
 
 const SelectKidsPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const accessToken = useSelector((state) => state.auth.accessToken);
+  const selectedKidFromRedux = useSelector((state) => state.kid.selectedKidId); // 선택된 아이 ID 확인
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedKidId, setSelectedKidId] = useState(null); // 선택된 아이 ID 상태
+  const [kids, setKids] = useState([]); // 아이 목록을 상태로 관리
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
-    // 다른 작업하기
   };
 
-  useEffect(() => {}, [isModalOpen]);
+  useEffect(() => {
+    const fetchKids = async () => {
+      try {
+        const listKids = await UserAPI().getKids(accessToken);
+        setKids(listKids); // 아이 목록 상태 업데이트
+        console.log(listKids);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchKids(); // useEffect 내부에서 비동기 함수 호출
+  }, [isModalOpen, accessToken]);
+
+  const handleCardClick = (kidId) => {
+    setSelectedKidId(kidId); // 선택된 아이 ID를 상태에 저장
+  };
+
+  const handleStartClick = () => {
+    if (selectedKidId) {
+      dispatch(setSelectedKid(selectedKidId)); // Redux에 선택된 아이 ID 저장
+      navigate('/home');
+    } else {
+      alert('학습할 아이를 선택해주세요.');
+    }
+  };
 
   return (
     <div>
@@ -30,18 +63,35 @@ const SelectKidsPage = () => {
               <FaCirclePlus onClick={openModal} />
             </div>
           </section>
+
           {/* 아이 추가 될 때마다 아이 Card 추가할 것 */}
-          <section className="selectkids-form__childlist">
-            <div>학습할 아이가 없습니다. 계정을 등록해주세요!</div>
+          <section className="kid-card__childlist">
+            {kids.length > 0 ? (
+              kids.map((kid) => (
+                <div
+                  key={kid.kidId}
+                  className={`kid-card ${selectedKidId === kid.kidId ? 'kid-card__childlist--selected' : ''}`} // 선택된 카드에 스타일 적용
+                  onClick={() => handleCardClick(kid.kidId)}>
+                  <img className="kid-card__childlist--img" src={kid.profileimag} alt={`${kid.name}'s profile`} />
+                  <div className="kid-card__childlist--selected--kidinfo">
+                    <p className="kid-card__childlist--selected--p">{kid.name}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div>학습할 아이가 없습니다. 계정을 등록해주세요!</div>
+            )}
           </section>
+
           {/* 시작하기 버튼 만들기 */}
           <section className="selectkids-form__startbutton">
-            <button className="selectkids-form__startbutton--button" onClick={() => navigate('/storypage')}>
+            <button className="selectkids-form__startbutton--button" onClick={handleStartClick}>
               시작하기
             </button>
           </section>
         </div>
       </div>
+
       {/* 모달 위치 */}
       <ChildModal isOpen={isModalOpen} closeModal={closeModal} />
     </div>

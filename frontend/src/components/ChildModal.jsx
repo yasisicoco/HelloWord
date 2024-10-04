@@ -6,12 +6,15 @@ import { ko } from 'date-fns/locale';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
+import UserAPI from '../api/UserAPI';
+import { useSelector } from 'react-redux';
 
 function AddChildModal({ isOpen, closeModal }) {
   const [name, SetName] = useState('');
   const [birthDate, setBirthDate] = useState(null); // Date 객체 유지
   const [profileimg, setProfileimg] = useState('../character/defaultProfile.png');
   const fileInputRef = useRef(null);
+  const accessToken = useSelector((state) => state.auth.accessToken);
 
   const [allCheck, setCheck] = useState(false);
   const [isbutton, setButton] = useState(false);
@@ -29,12 +32,16 @@ function AddChildModal({ isOpen, closeModal }) {
     setBirthDate(date); // Date 객체로 저장
   };
 
+  // 아이 생성 제출
   const submitProfile = async (e) => {
     e.preventDefault();
     // 제출 시 포맷팅하여 처리
     const formattedDate = birthDate ? format(birthDate, 'yyyy-MM-dd') : '';
-    console.log(name);
-    console.log(formattedDate);
+
+    await UserAPI().createKid(name, formattedDate, '', accessToken);
+    SetName('');
+    setBirthDate(null);
+    setProfileimg('../character/defaultProfile.png');
   };
 
   const handleImageChange = (e) => {
@@ -51,7 +58,7 @@ function AddChildModal({ isOpen, closeModal }) {
   const resetData = () => {
     SetName('');
     setBirthDate(null);
-    setProfileimg('../charactor/defaultProfile.png');
+    setProfileimg('../character/defaultProfile.png');
   };
 
   return (
@@ -116,7 +123,6 @@ function AddChildModal({ isOpen, closeModal }) {
             className={`${isbutton ? 'addchild-compo__button--submitO' : 'addchild-compo__button--submitX'}`}
             onClick={() => {
               closeModal();
-              resetData();
             }}
             disabled={!isbutton}>
             추가하기

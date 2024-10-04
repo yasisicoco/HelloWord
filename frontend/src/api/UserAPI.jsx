@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 
 const BASE_URL = 'https://j11b206.p.ssafy.io';
 
@@ -74,7 +73,61 @@ const UserAPI = () => {
     }
   };
 
-  return { login, idDuplicate, signUp };
+  const createKid = async (name, birthDate, profileImage, accessToken) => {
+    const formData = new FormData();
+    const data = {
+      name: name,
+      gender: 'M',
+      birthDate: birthDate,
+    };
+    console.log(data);
+
+    try {
+      console.log('###################');
+      console.log(name);
+      console.log(birthDate);
+      console.log(formData);
+      console.log(accessToken);
+      const response = await axios.post(`${BASE_URL}/api/kids`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.status == 200) {
+        console.log('아이 만들기 성공');
+        return response.data;
+      } else {
+        console.log(`createKid Server Error: ${response.status}`);
+        return response.data;
+      }
+    } catch (error) {
+      console.log('Error UserAPI-createKid');
+    }
+  };
+
+  const getKids = async (accessToken) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/kids`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.status == 200) {
+        return response.data;
+      } else {
+        console.log(`createKid Server Error: ${response.status}`);
+        return response.data;
+      }
+    } catch (error) {
+      console.log('Error UserAPI-getKids');
+    }
+  };
+
+  return { login, idDuplicate, signUp, createKid, getKids };
 };
 
 export default UserAPI;
