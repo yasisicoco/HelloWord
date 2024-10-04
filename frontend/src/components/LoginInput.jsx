@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import './LoginInput.sass';
 import { useNavigate } from 'react-router-dom';
+import UserAPI from '../api/UserAPI';
 import { useDispatch } from 'react-redux';
-import { login } from '../features/Auth/authSlice';
+import { setTokens } from '../features/Auth/authSlice';
 
 const LoginInput = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -21,15 +21,22 @@ const LoginInput = () => {
     }
 
     try {
-      const accessToken = await dispatch(login({ email, password })).unwrap();
+      const response = await UserAPI().login(email, password);
 
-      if (accessToken) {
+      if (response.status == 200) {
+        // 응답에 따라 success 플래그가 있다고 가정
+        const refreshToken = response.data.refreshToken;
+        const accessToken = response.data.accessToken;
+
+        dispatch(setTokens({ accessToken, refreshToken }));
+
         navigate('/selectkids');
       } else {
         alert('아이디/비밀번호를 재 확인해주세요');
       }
     } catch (error) {
-      alert('서버 오류로 인한 로그인에 실패했습니다.');
+      console.error('로그인 중 에러 발생:', error);
+      alert('아이디가 존재하지 않습니다.');
     }
   };
 

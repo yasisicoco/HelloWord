@@ -3,6 +3,7 @@ import { FaCirclePlus } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChildModal from '../components/ChildModal';
+import { useSelector } from 'react-redux';
 
 const SelectKidsPage = () => {
   const navigate = useNavigate();

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 const BASE_URL = 'https://j11b206.p.ssafy.io';
 
-const UserAPI = async () => {
+const UserAPI = () => {
   // 유저 login
   const login = async (email, password) => {
     const data = { email: email, password: password };
@@ -26,7 +26,7 @@ const UserAPI = async () => {
 
       return response.data;
     } catch (error) {
-      console.log('Error UserAPI-login');
+      console.log('Error UserAPI-login: 유저 정보가 존재하지 않거나 서버 에러');
       return 'fail';
       // throw error;
     }

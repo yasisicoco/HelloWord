@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 function AddChildModal({ isOpen, closeModal }) {
   const [name, SetName] = useState('');
   const [birthDate, setBirthDate] = useState(null); // Date 객체 유지
-  const [profileimg, setProfileimg] = useState('../charactor/defaultProfile.png');
+  const [profileimg, setProfileimg] = useState('../character/defaultProfile.png');
   const fileInputRef = useRef(null);
 
   const [allCheck, setCheck] = useState(false);

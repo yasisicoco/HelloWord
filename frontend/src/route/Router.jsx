@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import ProtectedRoute from './ProtectedRoute'; // ProtectedRoute 컴포넌트 임포트
+import { useSelector } from 'react-redux';
 
 // 페이지 라우팅 주소
 import LoginPage from '../pages/LoginPage';
@@ -17,27 +18,19 @@ import Game4Page from '../pages/games/Game4Page';
 import SelectKidsPage from '../pages/SelectKidsPage';
 import StoryPage from '../pages/StoryPage';
 
-// 토큰 여부 확인
-import { useAuth } from '../features/Auth/selectors';
-
 function Router() {
-  const [hasToken, setHasToken] = useState(false);
-  const token = useAuth(); // 예시: 로컬 스토리지에서 토큰 확인
+  const [hasToken, setHasToken] = useState(true);
+  const check = useSelector((state) => state.auth.accessToken);
 
   // 토큰을 확인하는 로직 추가 (로컬 스토리지, 쿠키 등)
   useEffect(() => {
     // 아래 토큰 바꿔야함 제대로 오는지 아닌지 토큰 만들어지면 다시 구현해볼것
-    if (token) {
+    if (check) {
       setHasToken(true);
     } else {
       setHasToken(false);
     }
-  }, [token]);
-
-  // 새로고침해도 다시 토큰을 먼저 확인 후 진행하므로 괜춘
-  if (hasToken == false) {
-    return <div>Loading...</div>;
-  }
+  }, [check]);
 
   // 보호된 경로 배열
   const protectedRoutes = [
