@@ -4,6 +4,7 @@ import com.helloword.kidservice.domain.kid.dto.request.*;
 import com.helloword.kidservice.domain.kid.dto.response.KidResponseDto;
 import com.helloword.kidservice.domain.kid.model.Kid;
 import com.helloword.kidservice.domain.kid.repository.KidRepository;
+import com.helloword.kidservice.global.client.CollectionServiceClient;
 import com.helloword.kidservice.global.client.ProbabilityServiceClient;
 import com.helloword.kidservice.global.exception.MainException;
 import com.helloword.kidservice.global.utils.FileService;
@@ -30,6 +31,7 @@ public class KidServiceImpl implements KidService {
     private final FileService fileService;
     private final KidRepository kidRepository;
     private final ProbabilityServiceClient probabilityServiceClient;
+    private final CollectionServiceClient collectionServiceClient;
 
     @Transactional
     @Override
@@ -49,6 +51,7 @@ public class KidServiceImpl implements KidService {
         kidRepository.save(kid);
 
         probabilityServiceClient.createAnswerWordLog(new CreateAnswerWordLogRequestDto(kid.getId()));
+        collectionServiceClient.createCollections(new CreateCollectionRequestDto(kid.getId()));
 
         return new KidResponseDto(kid);
     }
