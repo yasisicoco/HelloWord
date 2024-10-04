@@ -43,7 +43,8 @@ public class JwtAuthenticationFilter implements WebFilter {
                 path.startsWith("/api/users") ||
                 path.startsWith("/api/users/check-duplicate/") ||
                 path.startsWith("/internal/") ||
-                path.startsWith("/actuator/")) {
+                path.startsWith("/actuator/") ||
+                path.startsWith("/swagger-ui/")) {
             return chain.filter(exchange);
         }
 
