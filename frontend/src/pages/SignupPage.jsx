@@ -56,6 +56,8 @@ const SignupPage = () => {
     const response = await UserAPI().signUp(email, password1, username, phone);
     if (response) {
       navigate('/login');
+    } else {
+      alert('서버 오류로 인하여 재가입 해주세요.');
     }
   };
 
@@ -64,12 +66,15 @@ const SignupPage = () => {
     const emailRegEx = /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/i;
     if (!emailRegEx.test(email)) {
       SetemailCheck(false);
-
       alert('이메일 양식을 확인하세요');
       return;
     }
 
     const emailCheck = await UserAPI().idDuplicate(email);
+    if (!emailCheck) {
+      alert('중복된 이메일 입니다.');
+      return;
+    }
 
     // 이메일 체크
     SetemailCheck(emailCheck);
@@ -87,6 +92,7 @@ const SignupPage = () => {
         SetChangePhone(num);
       } else {
         alert('전화번호는 11 글자 이하로 작성해주세요.');
+        SetPhone(num.slice(0, 11));
       }
     } else {
       alert('전화번호는 숫자만 입력할 수 있습니다.');

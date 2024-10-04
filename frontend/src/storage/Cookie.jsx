@@ -1,11 +1,9 @@
 import Cookies from 'js-cookie';
 
 export const saveTokenToCookie = (tokenData) => {
-  const { refreshToken } = tokenData;
-
   // 토큰을 쿠키에 저장
-  Cookies.set('refreshToken', refreshToken, {
-    expires: 7, // 7일 동안 유효
+  Cookies.set('refreshToken', tokenData, {
+    expires: 7, // 7일 동안 유효 -> 유통기한 다되면 undefined로 나옴
     secure: true,
     sameSite: 'Strict',
     path: '/',

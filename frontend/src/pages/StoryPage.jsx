@@ -22,7 +22,7 @@ const storyData = [
   },
   {
     image: '../storyline/story5.JPG',
-    text: '     어디선가, 숲을 지키는 아기 부엉이 등장했고 도움을 요청합니다.',
+    text: '     어디선가, 숲을 지키는 아기 부엉이가 나타나 도움을 요청합니다.',
   },
   {
     image: '../storyline/story5.JPG',
@@ -33,6 +33,7 @@ const storyData = [
 const StoryPage = () => {
   const [number, setNumber] = useState(0);
   const [displayedText, setDisplayedText] = useState(''); // 애니메이션된 텍스트
+  const [fade, setFade] = useState(false); // 이미지 교차를 위한 상태
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,11 +57,16 @@ const StoryPage = () => {
   }, [number]);
 
   const imageChange = () => {
-    if (number < storyData.length - 1) {
-      setNumber(number + 1);
-    } else {
-      navigate('/home');
-    }
+    setFade(true);
+
+    setTimeout(() => {
+      if (number < storyData.length - 1) {
+        setNumber(number + 1);
+      } else {
+        navigate('/home');
+      }
+      setFade(false);
+    }, 1000);
   };
 
   return (
@@ -69,6 +75,7 @@ const StoryPage = () => {
         {/* 그림 들어가는 화면 */}
         <section className="story-form__background" onClick={imageChange}>
           <div
+            className={`story-image ${fade ? 'fade-out' : 'fade-in'}`}
             style={{
               width: '80vw',
               height: '65vh',

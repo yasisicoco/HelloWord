@@ -3,6 +3,7 @@ import { FaCirclePlus } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChildModal from '../components/ChildModal';
+import { useSelector } from 'react-redux';
 
 const SelectKidsPage = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const SelectKidsPage = () => {
     // 다른 작업하기
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {}, [isModalOpen]);
 
   return (
     <div>
