@@ -40,7 +40,7 @@ const HomePage = () => {
           </div>
         </div>
         <div className="home-user__character">
-          <img src="/charactor/rabbit.png" alt="Rabbit" className="home-user__character--image" />
+          <img src="/character/rabbit.png" alt="Rabbit" className="home-user__character--image" />
         </div>
         <div className="home-user__sub-menu">
           <Link to={'userpage'} className="home-user__sub-menu--button">
