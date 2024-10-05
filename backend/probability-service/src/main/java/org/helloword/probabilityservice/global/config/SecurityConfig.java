@@ -34,6 +34,7 @@ public class SecurityConfig {
 		);
 		http.authorizeHttpRequests((auth) -> auth
 			.requestMatchers("/internal/probability/**").permitAll()
+            .requestMatchers("/api/probability/**").permitAll()
 			.anyRequest().authenticated()
 		);
 		http.exceptionHandling((handle) -> handle.authenticationEntryPoint(customExceptionHandler));

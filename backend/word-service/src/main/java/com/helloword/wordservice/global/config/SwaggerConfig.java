@@ -26,7 +26,7 @@ public class SwaggerConfig {
         return new Info()
                 .version("1.0.0")
                 .title("\"Hello Word API문서\"")
-                .description("Word Service의 API 문서 입니다.")
+                .description("단어의 API 문서 입니다.")
                 .license(license);
     }
 }

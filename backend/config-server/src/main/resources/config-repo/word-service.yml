@@ -11,6 +11,13 @@ spring:
     naming:
       physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategySnakeCaseImpl
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true # INSERT 쿼리의 순서를 최적화하여 성능 향상
+        order_updates: true # UPDATE 쿼리의 순서를 최적화하여 성능 향상
   dialect: org.hibernate.dialect.MySQL8Dialect
 
 springdoc:
@@ -25,6 +32,8 @@ springdoc:
     disable-swagger-default-url: true
     display-request-duration: true
     urls:
+      - name: auth-service
+        url: /api/auth/v3/api-docs
       - name: user-service
         url: /api/users/v3/api-docs
       - name: log-service
