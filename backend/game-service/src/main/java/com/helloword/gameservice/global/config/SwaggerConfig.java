@@ -1,4 +1,4 @@
-package com.helloword.kidservice.global.config;
+package com.helloword.gameservice.global.config;
 
 
 import io.swagger.v3.oas.models.Components;
@@ -26,7 +26,7 @@ public class SwaggerConfig {
         return new Info()
                 .version("1.0.0")
                 .title("\"Hello Word API문서\"")
-                .description("아이의 API 문서 입니다.")
+                .description("게임 API 문서 입니다.")
                 .license(license);
     }
 }
