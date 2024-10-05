@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.*;
 public class InternalKidController {
     private final KidService kidService;
 
-    @GetMapping("/{kids}/age")
     @Operation(summary = "아이 개월 수 조회", description = "해당 아이의 개월 수를 조회합니다.")
+    @GetMapping("/{kids}/age")
     public Integer getKidAgeById(@RequestParam Long kidId) {
         return kidService.getKidAgeById(kidId);
     }
 
-    @PutMapping("/exp")
     @Operation(summary = "아이 경험치 수정", description = "요청한 정보로 아이의 경험치를 수정합니다.")
+    @PutMapping("/exp")
     public void updateKidExp(@ModelAttribute UpdateExpRequestDto updateExpRequestDto) {
         kidService.increaseExperience(updateExpRequestDto);
     }

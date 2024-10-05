@@ -23,14 +23,14 @@ public class InternalWordController {
     private final WordService wordService;
     private final FairytaleService fairytaleService;
 
-    @GetMapping("/all")
     @Operation(summary = "모든 단어 조회", description = "모든 단어를 조회합니다.")
+    @GetMapping("/all")
     public List<Word> getAllWords() {
         return wordService.getAllWords();
     }
 
-    @GetMapping
     @Operation(summary = "아이 게임 단어 조회", description = "아이에게 출제할 게임 단어를 조회하고 계산하여 반환합니다.")
+    @GetMapping
     public GameWordResponseDto getWordsByKidId(
             @RequestParam Long kidId,
             @RequestParam Integer wordCount
@@ -38,8 +38,8 @@ public class InternalWordController {
         return wordService.getWordListByKidId(kidId, wordCount);
     }
 
-    @GetMapping("/fairytale")
     @Operation(summary = "아이의 동화 조회", description = "동화 게임에서 사용될 정보를 조회합니다.")
+    @GetMapping("/fairytale")
     public FairytaleResponseDto getFairytale(@RequestParam Long kidId) {
         return fairytaleService.getFairytale();
     }

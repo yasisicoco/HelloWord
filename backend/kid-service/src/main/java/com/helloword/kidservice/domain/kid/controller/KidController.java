@@ -15,8 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
-
 @RestController
 @RequestMapping("/api/kids")
 @RequiredArgsConstructor
@@ -24,8 +22,8 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 public class KidController {
     private final KidService kidService;
 
-    @PostMapping
     @Operation(summary = "아이 등록", description = "요청한 정보로 아이를 등록합니다.")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public KidResponseDto createKid(
             @RequestHeader("X-User-Id") Long userId,
             @RequestPart(value = "profileImage") MultipartFile profileImage,
@@ -34,16 +32,16 @@ public class KidController {
         return kidService.createKid(userId, profileImage, craeteKidRequestDto);
     }
 
-    @GetMapping
     @Operation(summary = "아이 목록 조회", description = "자신의 아이 목록을 조회합니다.")
+    @GetMapping
     public List<KidResponseDto> getKidsByUserId(
             @RequestHeader("X-User-Id") Long userId
     ) {
         return kidService.getKidsByUserId(userId);
     }
 
-    @GetMapping("/{kidId}")
     @Operation(summary = "해당 아이 조회", description = "해당 아이의 정보를 조회합니다.")
+    @GetMapping("/{kidId}")
     public KidResponseDto getKid(
             @RequestHeader("X-User-Id") Long userId,
             @PathVariable Long kidId
@@ -51,19 +49,19 @@ public class KidController {
         return kidService.getKid(userId, kidId);
     }
 
-    @PatchMapping("/{kidId}")
     @Operation(summary = "해당 아이 수정", description = "해당 아이의 정보를 수정합니다.")
+    @PatchMapping(value = "/{kidId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public KidResponseDto updateKid(
             @RequestHeader("X-User-Id") Long userId,
             @PathVariable Long kidId,
-            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
-            @ModelAttribute UpdateKidRequestDto updateKidRequestDto
+            @RequestPart(value = "profileImage") MultipartFile profileImage,
+            @Valid @RequestPart("kid") UpdateKidRequestDto updateKidRequestDto
     ) {
         return kidService.updateKid(userId, kidId, profileImage, updateKidRequestDto);
     }
 
-    @PatchMapping("/{kidId}/character")
     @Operation(summary = "해당 아이의 캐릭터 변경", description = "해당 아이의 캐릭터를 변경합니다.")
+    @PatchMapping("/{kidId}/character")
     public KidResponseDto updateMainCharacter(
             @RequestHeader("X-User-Id") Long userId,
             @PathVariable Long kidId,
@@ -72,8 +70,8 @@ public class KidController {
         return kidService.updateMainCharacter(userId, kidId, updateMainCharactorRequestDto);
     }
 
-    @DeleteMapping("/{kidId}")
     @Operation(summary = "해당 아이 삭제", description = "해당 아이를 삭제합니다.")
+    @DeleteMapping("/{kidId}")
     public void deleteKid(
             @RequestHeader("X-User-Id") Long userId,
             @PathVariable Long kidId
