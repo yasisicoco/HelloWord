@@ -7,11 +7,15 @@ import com.helloword.kidservice.domain.kid.dto.response.KidResponseDto;
 import com.helloword.kidservice.domain.kid.service.KidService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @RestController
 @RequestMapping("/api/kids")
@@ -24,8 +28,8 @@ public class KidController {
     @Operation(summary = "아이 등록", description = "요청한 정보로 아이를 등록합니다.")
     public KidResponseDto createKid(
             @RequestHeader("X-User-Id") Long userId,
-            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
-            @ModelAttribute CraeteKidRequestDto craeteKidRequestDto
+            @RequestPart(value = "profileImage") MultipartFile profileImage,
+            @Valid @RequestPart("kid") CraeteKidRequestDto craeteKidRequestDto
     ) {
         return kidService.createKid(userId, profileImage, craeteKidRequestDto);
     }
