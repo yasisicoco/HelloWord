@@ -69,7 +69,7 @@ public class FileService {
             throw new MainException(FILE_UPLOAD_FAILED);
         }
         log.info("url = {}", fileName);
-        return baseUrl + "/" + fileName;
+        return baseUrl + fileName;
     }
 
     private void validateFile(MultipartFile file, int sizeThreshold, String[] exts) throws MainException {
