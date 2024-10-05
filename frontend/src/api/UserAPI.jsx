@@ -73,29 +73,32 @@ const UserAPI = () => {
     }
   };
 
-  const createKid = async (name, birthDate, profileImage, accessToken) => {
+  const createKid = async (name, birthDate, profileImageFile, accessToken) => {
     const formData = new FormData();
-    const data = {
+
+    // kid 객체를 JSON으로 구성하여 추가
+    const kidData = JSON.stringify({
       name: name,
-      gender: 'M',
       birthDate: birthDate,
-    };
-    console.log(data);
+      gender: 'F', // 성별은 필요에 따라 수정하세요
+    });
+
+    // FormData에 kid 데이터와 파일 추가
+    formData.append('kid', kidData); // kid 데이터를 JSON 문자열로 추가
+    formData.append('profileImage', profileImageFile); // 파일 추가
 
     try {
-      console.log('###################');
-      console.log(name);
-      console.log(birthDate);
-      console.log(formData);
-      console.log(accessToken);
-      const response = await axios.post(`${BASE_URL}/api/kids`, data, {
+      console.log('############################');
+      console.log(kidData);
+      console.log(profileImageFile);
+      const response = await axios.post(`${BASE_URL}/api/kids`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`, // Authorization 헤더 추가
+          // 'Content-Type': 'multipart/form-data'는 제거
         },
       });
 
-      if (response.status == 200) {
+      if (response.status === 200) {
         console.log('아이 만들기 성공');
         return response.data;
       } else {
@@ -103,7 +106,8 @@ const UserAPI = () => {
         return response.data;
       }
     } catch (error) {
-      console.log('Error UserAPI-createKid');
+      console.error('Error UserAPI-createKid', error.response);
+      throw error;
     }
   };
 

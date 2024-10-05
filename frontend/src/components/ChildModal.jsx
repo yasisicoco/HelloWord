@@ -35,19 +35,32 @@ function AddChildModal({ isOpen, closeModal }) {
   // 아이 생성 제출
   const submitProfile = async (e) => {
     e.preventDefault();
-    // 제출 시 포맷팅하여 처리
+
     const formattedDate = birthDate ? format(birthDate, 'yyyy-MM-dd') : '';
 
-    await UserAPI().createKid(name, formattedDate, '', accessToken);
-    SetName('');
-    setBirthDate(null);
-    setProfileimg('../character/defaultProfile.png');
+    // 파일 가져오기
+    const file = fileInputRef.current.files[0];
+    if (!file) {
+      alert('프로필 이미지를 선택해 주세요.');
+      return;
+    }
+
+    try {
+      // API 호출
+      const response = await UserAPI().createKid(name, formattedDate, file, accessToken);
+
+      // 제출 후 상태 초기화
+      SetName('');
+      setBirthDate(null);
+      setProfileimg('../character/defaultProfile.png');
+    } catch (error) {}
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setProfileimg(URL.createObjectURL(file));
+      setProfileimg(URL.createObjectURL(file)); // 미리보기 이미지 설정
+      // 파일은 fileInputRef로 유지되어 submitProfile에서 사용됨
     }
   };
 
