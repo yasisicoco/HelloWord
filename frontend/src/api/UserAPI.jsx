@@ -85,7 +85,7 @@ const UserAPI = () => {
 
     // FormData에 kid 데이터와 파일 추가
     formData.append('kid', kidData); // kid 데이터를 JSON 문자열로 추가
-    formData.append('profileImage', profileImageFile); // 파일 추가
+    formData.append('profileImage', ''); // 파일 추가
 
     try {
       console.log('############################');
