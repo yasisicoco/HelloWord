@@ -6,12 +6,15 @@ import { ko } from 'date-fns/locale';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
+import UserAPI from '../api/UserAPI';
+import { useSelector } from 'react-redux';
 
 function AddChildModal({ isOpen, closeModal }) {
-  const [name, SetName] = useState('');
+  const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState(null); // Date 객체 유지
   const [profileimg, setProfileimg] = useState('../character/defaultProfile.png');
   const fileInputRef = useRef(null);
+  const accessToken = useSelector((state) => state.auth.accessToken);
 
   const [allCheck, setCheck] = useState(false);
   const [isbutton, setButton] = useState(false);
@@ -29,18 +32,40 @@ function AddChildModal({ isOpen, closeModal }) {
     setBirthDate(date); // Date 객체로 저장
   };
 
+  // 아이 생성 제출
   const submitProfile = async (e) => {
     e.preventDefault();
-    // 제출 시 포맷팅하여 처리
+
     const formattedDate = birthDate ? format(birthDate, 'yyyy-MM-dd') : '';
-    console.log(name);
-    console.log(formattedDate);
+
+    // 파일 가져오기
+    const file = fileInputRef.current.files[0];
+    if (!file) {
+      alert('프로필 이미지를 선택해 주세요.');
+      return;
+    }
+
+    try {
+      // API 호출
+      const response = await UserAPI().createKid(name, formattedDate, file, accessToken);
+
+      // 아이가 성공적으로 추가된 경우, 모달 닫기 + 부모 컴포넌트에 갱신 트리거
+      closeModal(true); // 부모 컴포넌트에서 아이 목록을 갱신하도록 true로 전달
+
+      // 제출 후 상태 초기화
+      setName('');
+      setBirthDate(null);
+      setProfileimg('../character/defaultProfile.png');
+    } catch (error) {
+      console.error('아이 추가 실패', error);
+    }
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setProfileimg(URL.createObjectURL(file));
+      setProfileimg(URL.createObjectURL(file)); // 미리보기 이미지 설정
+      // 파일은 fileInputRef로 유지되어 submitProfile에서 사용됨
     }
   };
 
@@ -49,9 +74,9 @@ function AddChildModal({ isOpen, closeModal }) {
   };
 
   const resetData = () => {
-    SetName('');
+    setName('');
     setBirthDate(null);
-    setProfileimg('../charactor/defaultProfile.png');
+    setProfileimg('../character/defaultProfile.png');
   };
 
   return (
@@ -92,7 +117,11 @@ function AddChildModal({ isOpen, closeModal }) {
 
         <div className="addchild-compo__nameinput">
           <p>이름</p>
-          <input className="addchild-compo__nameinput--nameBox" onChange={(e) => SetName(e.target.value)} />
+          <input
+            className="addchild-compo__nameinput--nameBox"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
 
         <div className="addchild-compo__ageinput">
@@ -113,10 +142,10 @@ function AddChildModal({ isOpen, closeModal }) {
 
         <div className="addchild-compo__button">
           <button
+            type="submit"
             className={`${isbutton ? 'addchild-compo__button--submitO' : 'addchild-compo__button--submitX'}`}
             onClick={() => {
               closeModal();
-              resetData();
             }}
             disabled={!isbutton}>
             추가하기

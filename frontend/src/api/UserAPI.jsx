@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 
 const BASE_URL = 'https://j11b206.p.ssafy.io';
 
@@ -74,7 +73,67 @@ const UserAPI = () => {
     }
   };
 
-  return { login, idDuplicate, signUp };
+  const createKid = async (name, birthDate, profileImageFile, accessToken) => {
+    const formData = new FormData();
+
+    // kid 객체를 JSON으로 구성하여 추가
+    const kidData = new Blob(
+      [
+        JSON.stringify({
+          name: name,
+          birthDate: birthDate,
+          gender: 'M',
+        }),
+      ],
+      { type: 'application/json' },
+    );
+
+    // FormData에 kid 데이터와 파일 추가
+    formData.append('kid', kidData); // kid 데이터를 JSON 문자열로 추가
+    formData.append('profileImage', profileImageFile); // 파일 추가
+
+    try {
+      const response = await axios.post(`${BASE_URL}/api/kids`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // Authorization 헤더 추가
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.status === 200) {
+        console.log('아이 만들기 성공');
+        return response.data;
+      } else {
+        console.log(`createKid Server Error: ${response.status}`);
+        return response.data;
+      }
+    } catch (error) {
+      console.error('Error UserAPI-createKid', error.response);
+      throw error;
+    }
+  };
+
+  const getKids = async (accessToken) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/kids`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.status == 200) {
+        return response.data;
+      } else {
+        console.log(`createKid Server Error: ${response.status}`);
+        return response.data;
+      }
+    } catch (error) {
+      console.log('Error UserAPI-getKids');
+    }
+  };
+
+  return { login, idDuplicate, signUp, createKid, getKids };
 };
 
 export default UserAPI;
