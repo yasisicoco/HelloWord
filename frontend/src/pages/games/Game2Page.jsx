@@ -1,9 +1,10 @@
 // hook
 import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef, useCallback } from 'react';
-import axios from 'axios';
+import { useState, useEffect, useCallback } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 // compo
 import TimeBar from '../../components/TimeBar';
@@ -27,26 +28,78 @@ const mockdata = {
 
 const Game2Page = () => {
   const nav = useNavigate();
-  const round = useRef(0);
+  const [round, setRound] = useState(0);
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
   const [word, setWord] = useState(mockdata.data.rounds[0].word);
+  const [timeLeft, setTimeLeft] = useState(10);
+
+  const accessToken = useSelector((state) => state.auth.accessToken);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  const nextRound = useCallback(() => {
+    const nextRoundIndex = (round + 1) % mockdata.data.rounds.length;
+    setRound(nextRoundIndex);
+    setWord(mockdata.data.rounds[nextRoundIndex].word);
+    setTimeLeft(10);
+    resetTranscript();
+    if (listening) {
+      SpeechRecognition.stopListening();
+    }
+  }, [round, resetTranscript, listening]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`https://j11b206.p.ssafy.io/api/games/speech-cards?kidId=${2}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        if (response.data.success && response.data.status === 200) {
+          setData(response.data.data.rounds);
+          console.log(response.data);
+        } else {
+          throw new Error('서버 응답이 올바르지 않습니다.');
+        }
+      } catch (err) {
+        console.error('데이터 불러오기 실패:', err.message);
+        setError('데이터를 불러오는 데 실패했습니다.');
+      }
+    };
+
+    if (accessToken) {
+      fetchData();
+    }
+  }, [accessToken]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 0.1) {
+          nextRound();
+          return 10;
+        }
+        return prevTime - 0.1;
+      });
+    }, 100);
+
+    return () => clearInterval(timer);
+  }, [nextRound]);
 
   useEffect(() => {
     if (listening) {
-      // console.log('Recognized Speech:', transcript);
       if (transcript === word) {
-        round.current += 1;
-        setWord(mockdata.data.rounds[round.current].word);
-        SpeechRecognition.stopListening();
-        resetTranscript();
+        nextRound();
         console.log('맞:', transcript);
-      } else if (transcript.length >= word.length && transcript != word) {
+      } else if (transcript.length >= word.length && transcript !== word) {
         SpeechRecognition.stopListening();
         resetTranscript();
         console.log('틀:', transcript);
       }
     }
-  }, [transcript, listening, word]);
+  }, [transcript, listening, word, nextRound]);
 
   const toggleListening = () => {
     if (listening) {
@@ -73,19 +126,19 @@ const Game2Page = () => {
           뒤로가기
         </button>
         <div className="top-nav__time-stamp">
-          <TimeBar className="top-nav__time-stamp--timebar" time={10} />
+          <TimeBar time={timeLeft} />
         </div>
         <div className="top-nav__bookmarker">
-          {round.current + 1} / {mockdata.data.rounds.length}
+          {round + 1} / {mockdata.data.rounds.length}
         </div>
       </section>
 
       <section className="main-content">
         <div className="main-content__img-wrap">
-          <img src="/charactor/rabbit.png" alt="캐릭터 이미지" className="main-content__img-wrap--img" />
+          <img src="/character/rabbit.png" alt="캐릭터 이미지" className="main-content__img-wrap--img" />
         </div>
         <div className="main-content__card-container">
-          <div className="main-content__card-container--word-card">{mockdata.data.rounds[round.current].word}</div>
+          <div className="main-content__card-container--word-card">{word}</div>
           <div
             onClick={toggleListening}
             className={`main-content__card-container--mic-card card-container--${getMicState()}`}
