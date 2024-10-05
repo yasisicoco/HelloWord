@@ -144,6 +144,9 @@ function AddChildModal({ isOpen, closeModal }) {
           <button
             type="submit"
             className={`${isbutton ? 'addchild-compo__button--submitO' : 'addchild-compo__button--submitX'}`}
+            onClick={() => {
+              closeModal();
+            }}
             disabled={!isbutton}>
             추가하기
           </button>
