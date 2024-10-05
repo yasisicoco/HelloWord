@@ -17,24 +17,32 @@ const SelectKidsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedKidId, setSelectedKidId] = useState(null); // 선택된 아이 ID 상태
   const [kids, setKids] = useState([]); // 아이 목록을 상태로 관리
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+
+  // 아이 목록을 가져오는 함수
+  const fetchKids = async () => {
+    try {
+      setIsLoading(true); // 로딩 시작
+      const listKids = await UserAPI().getKids(accessToken);
+      setKids(listKids.data); // 아이 목록 상태 업데이트
+      console.log(listKids);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
+  };
 
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => {
+  const closeModal = (shouldRefresh = false) => {
     setIsModalOpen(false);
+    if (shouldRefresh) {
+      fetchKids(); // 모달이 닫히면서 목록을 갱신
+    }
   };
 
   useEffect(() => {
-    const fetchKids = async () => {
-      try {
-        const listKids = await UserAPI().getKids(accessToken);
-        setKids(listKids); // 아이 목록 상태 업데이트
-        console.log(listKids);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchKids(); // useEffect 내부에서 비동기 함수 호출
+    fetchKids(); // 페이지가 로드되거나 accessToken이 변경될 때마다 아이 목록을 가져옴
   }, [isModalOpen, accessToken]);
 
   const handleCardClick = (kidId) => {
@@ -64,15 +72,17 @@ const SelectKidsPage = () => {
             </div>
           </section>
 
-          {/* 아이 추가 될 때마다 아이 Card 추가할 것 */}
+          {/* 아이 목록 표시 및 로딩 스피너 */}
           <section className="kid-card__childlist">
-            {kids.length > 0 ? (
+            {isLoading ? (
+              <div>로딩 중...</div> // 로딩 중일 때 표시할 내용
+            ) : kids.length > 0 ? (
               kids.map((kid) => (
                 <div
                   key={kid.kidId}
                   className={`kid-card ${selectedKidId === kid.kidId ? 'kid-card__childlist--selected' : ''}`} // 선택된 카드에 스타일 적용
                   onClick={() => handleCardClick(kid.kidId)}>
-                  <img className="kid-card__childlist--img" src={kid.profileimag} alt={`${kid.name}'s profile`} />
+                  <img className="kid-card__childlist--img" src={kid.profileImageUrl} alt={`${kid.name}'s profile`} />
                   <div className="kid-card__childlist--selected--kidinfo">
                     <p className="kid-card__childlist--selected--p">{kid.name}</p>
                   </div>

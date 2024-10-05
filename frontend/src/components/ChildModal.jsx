@@ -10,7 +10,7 @@ import UserAPI from '../api/UserAPI';
 import { useSelector } from 'react-redux';
 
 function AddChildModal({ isOpen, closeModal }) {
-  const [name, SetName] = useState('');
+  const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState(null); // Date 객체 유지
   const [profileimg, setProfileimg] = useState('../character/defaultProfile.png');
   const fileInputRef = useRef(null);
@@ -49,11 +49,16 @@ function AddChildModal({ isOpen, closeModal }) {
       // API 호출
       const response = await UserAPI().createKid(name, formattedDate, file, accessToken);
 
+      // 아이가 성공적으로 추가된 경우, 모달 닫기 + 부모 컴포넌트에 갱신 트리거
+      closeModal(true); // 부모 컴포넌트에서 아이 목록을 갱신하도록 true로 전달
+
       // 제출 후 상태 초기화
-      SetName('');
+      setName('');
       setBirthDate(null);
       setProfileimg('../character/defaultProfile.png');
-    } catch (error) {}
+    } catch (error) {
+      console.error('아이 추가 실패', error);
+    }
   };
 
   const handleImageChange = (e) => {
@@ -69,7 +74,7 @@ function AddChildModal({ isOpen, closeModal }) {
   };
 
   const resetData = () => {
-    SetName('');
+    setName('');
     setBirthDate(null);
     setProfileimg('../character/defaultProfile.png');
   };
@@ -112,7 +117,11 @@ function AddChildModal({ isOpen, closeModal }) {
 
         <div className="addchild-compo__nameinput">
           <p>이름</p>
-          <input className="addchild-compo__nameinput--nameBox" onChange={(e) => SetName(e.target.value)} />
+          <input
+            className="addchild-compo__nameinput--nameBox"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
 
         <div className="addchild-compo__ageinput">
@@ -133,10 +142,8 @@ function AddChildModal({ isOpen, closeModal }) {
 
         <div className="addchild-compo__button">
           <button
+            type="submit"
             className={`${isbutton ? 'addchild-compo__button--submitO' : 'addchild-compo__button--submitX'}`}
-            onClick={() => {
-              closeModal();
-            }}
             disabled={!isbutton}>
             추가하기
           </button>

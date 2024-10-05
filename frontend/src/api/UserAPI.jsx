@@ -77,24 +77,26 @@ const UserAPI = () => {
     const formData = new FormData();
 
     // kid 객체를 JSON으로 구성하여 추가
-    const kidData = JSON.stringify({
-      name: name,
-      birthDate: birthDate,
-      gender: 'F', // 성별은 필요에 따라 수정하세요
-    });
+    const kidData = new Blob(
+      [
+        JSON.stringify({
+          name: name,
+          birthDate: birthDate,
+          gender: 'M',
+        }),
+      ],
+      { type: 'application/json' },
+    );
 
     // FormData에 kid 데이터와 파일 추가
     formData.append('kid', kidData); // kid 데이터를 JSON 문자열로 추가
-    formData.append('profileImage', ''); // 파일 추가
+    formData.append('profileImage', profileImageFile); // 파일 추가
 
     try {
-      console.log('############################');
-      console.log(kidData);
-      console.log(profileImageFile);
       const response = await axios.post(`${BASE_URL}/api/kids`, formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`, // Authorization 헤더 추가
-          // 'Content-Type': 'multipart/form-data'는 제거
+          'Content-Type': 'multipart/form-data',
         },
       });
 
