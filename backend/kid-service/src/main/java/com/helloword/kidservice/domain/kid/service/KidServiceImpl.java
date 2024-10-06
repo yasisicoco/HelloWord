@@ -112,10 +112,10 @@ public class KidServiceImpl implements KidService {
 
     @Transactional
     @Override
-    public void increaseExperience(UpdateExpRequestDto updateExpRequestDto) {
-        Kid kid = findKidById(updateExpRequestDto.kidId());
+    public void increaseExperience(KidExpUpdateRequestDto kidExpUpdateRequestDto) {
+        Kid kid = findKidById(kidExpUpdateRequestDto.kidId());
 
-        kid.addExperience(updateExpRequestDto.exp());
+        kid.addExperience(kidExpUpdateRequestDto.exp());
 
         kidRepository.save(kid);
     }

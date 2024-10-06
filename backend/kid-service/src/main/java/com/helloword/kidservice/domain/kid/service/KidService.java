@@ -1,7 +1,7 @@
 package com.helloword.kidservice.domain.kid.service;
 
 import com.helloword.kidservice.domain.kid.dto.request.CraeteKidRequestDto;
-import com.helloword.kidservice.domain.kid.dto.request.UpdateExpRequestDto;
+import com.helloword.kidservice.domain.kid.dto.request.KidExpUpdateRequestDto;
 import com.helloword.kidservice.domain.kid.dto.request.UpdateKidRequestDto;
 import com.helloword.kidservice.domain.kid.dto.request.UpdateMainCharactorRequestDto;
 import com.helloword.kidservice.domain.kid.dto.response.KidResponseDto;
@@ -22,7 +22,7 @@ public interface KidService {
 
     void deleteKid(Long userId, Long kidId);
 
-    void increaseExperience(UpdateExpRequestDto updateExpRequestDto);
+    void increaseExperience(KidExpUpdateRequestDto kidExpUpdateRequestDto);
 
     Integer getKidAgeById(Long kidId);
 }
