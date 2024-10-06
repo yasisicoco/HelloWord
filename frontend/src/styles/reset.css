@@ -3,6 +3,28 @@
    License: none (public domain)
 */
 
+@font-face {
+  font-family: 'Pretendard-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Pretendard-Regular', serif;
+}
+
+html,
+body {
+  height: calc(var(--vh, 1vh) * 100);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+
+
 html,
 body,
 div,
@@ -91,6 +113,7 @@ video {
   font: inherit;
   vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article,
 aside,
@@ -105,17 +128,21 @@ nav,
 section {
   display: block;
 }
+
 body {
   line-height: 1;
 }
+
 ol,
 ul {
   list-style: none;
 }
+
 blockquote,
 q {
   quotes: none;
 }
+
 blockquote:before,
 blockquote:after,
 q:before,
@@ -123,7 +150,17 @@ q:after {
   content: '';
   content: none;
 }
+
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+a,
+a:visited,
+a:hover,
+a:active {
+  font-family: 'Pretendard-Regular', serif;
+  text-decoration: none;
+  color: inherit;
 }

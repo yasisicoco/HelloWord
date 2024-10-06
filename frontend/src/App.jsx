@@ -1,5 +1,4 @@
 import './styles/reset.css';
-import './App.css';
 import React from 'react';
 import Router from './route/Router';
 
