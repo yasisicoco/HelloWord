@@ -6,11 +6,12 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import { useSelector } from 'react-redux';
 
 // API import
-import { fetchGame2, fecthGame2Result } from '../../api/GameAPI';
+import { fetchGame2, fetchGame2Result } from '../../api/GameAPI';
 
 // compo
 import TimeBar from '../../components/TimeBar';
 import GameModal from '../../components/GameModal';
+import GameResult from '../../components/GameResult';
 import useTimer from '../../hooks/useTimer';
 
 // style
@@ -22,11 +23,16 @@ const Game2Page = () => {
   const [round, setRound] = useState(0);
   const [word, setWord] = useState('');
   const [imageUrl, setImage] = useState('');
-  const [correctAnswer, setCorrectAnswer] = useState(0); // 맞은 갯수 카운팅
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달
+  const [correctAnswer, setCorrectAnswer] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [gameStartTime, setGameStartTime] = useState(null);
+  const [correctWords, setCorrectWords] = useState([]);
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
 
   const accessToken = useSelector((state) => state.auth.accessToken);
+  const kidId = useSelector((state) => state.kid.selectedKidId);
+
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
   const showModal = (message) => {
@@ -44,13 +50,30 @@ const Game2Page = () => {
       resetTimer();
       resetTranscript();
     } else {
-      // 게임 종료 로직
-      // const fatchGameResultData = async () => {
-      //   if (!accessToken) return
-      //   try {
-      //     const result = await fecthGame2Result(accessToken, )
-      //   }
-      // }
+      endGame();
+    }
+  };
+
+  const endGame = async () => {
+    const endTime = new Date();
+    const playTime = Math.round((endTime - gameStartTime) / 1000);
+    const correctRate = correctAnswer / data.length;
+
+    const gameResult = {
+      kidId: kidId,
+      answerWords: correctWords,
+      gameType: 'SPEECH_GAME',
+      playTime: playTime,
+      correctRate: correctRate,
+      correctCount: correctAnswer,
+    };
+
+    try {
+      await fetchGame2Result(accessToken, gameResult);
+      setIsResultModalOpen(true);
+    } catch (error) {
+      showModal('게임 결과 저장에 실패했습니다.');
+      nav(-1);
     }
   };
 
@@ -67,10 +90,11 @@ const Game2Page = () => {
     const fetchGameData = async () => {
       if (!accessToken) return;
       try {
-        const rounds = await fetchGame2(accessToken, 2);
+        const rounds = await fetchGame2(accessToken, kidId);
         setData(rounds);
         setWord(rounds[0].word);
         setImage(rounds[0].imageUrl);
+        setGameStartTime(new Date());
       } catch (err) {
         showModal('데이터를 불러오는 데 실패했습니다.');
       }
@@ -83,19 +107,18 @@ const Game2Page = () => {
     if (listening) {
       if (transcript === word) {
         setCorrectAnswer((answer) => answer + 1);
+        setCorrectWords([...correctWords, { id: data[round].id, word: transcript }]);
         SpeechRecognition.stopListening();
         showModal('정답입니다! 🎉');
         nextRound();
-        console.log('맞:', transcript);
       } else if (transcript.length >= word.length && transcript !== word) {
         SpeechRecognition.stopListening();
         resetTranscript();
-        setIsModalOpen(true);
         showModal('틀렸습니다 😞');
-        console.log('틀:', transcript);
+        setTimeout(nextRound, 1000);
       }
     }
-  }, [transcript, listening, word, nextRound]);
+  }, [transcript, listening, word]);
 
   // 마이크 클릭 이벤트
   const toggleListening = () => {
@@ -146,6 +169,15 @@ const Game2Page = () => {
       </section>
 
       <GameModal isOpen={isModalOpen} message={modalMessage} onRequestClose={() => setIsModalOpen(false)} />
+      <GameResult
+        isOpen={isResultModalOpen}
+        onClose={() => {
+          setIsResultModalOpen(false);
+          nav(-1);
+        }}
+        correctCount={correctAnswer}
+        totalQuestions={data ? data.length : 0}
+      />
     </div>
   );
 };
