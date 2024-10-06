@@ -6,7 +6,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import { useSelector } from 'react-redux';
 
 // API import
-import { fetchGame2 } from '../../api/GameAPI';
+import { fetchGame2, fecthGame2Result } from '../../api/GameAPI';
 
 // compo
 import TimeBar from '../../components/TimeBar';
@@ -18,6 +18,7 @@ import './Game2Page.sass';
 
 const Game2Page = () => {
   const nav = useNavigate();
+  const [data, setData] = useState(null);
   const [round, setRound] = useState(0);
   const [word, setWord] = useState('');
   const [imageUrl, setImage] = useState('');
@@ -27,7 +28,6 @@ const Game2Page = () => {
 
   const accessToken = useSelector((state) => state.auth.accessToken);
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
-  const [data, setData] = useState(null);
 
   const showModal = (message) => {
     setIsModalOpen(true);
@@ -45,8 +45,12 @@ const Game2Page = () => {
       resetTranscript();
     } else {
       // 게임 종료 로직
-      // showModal('게임이 종료되었습니다!');
-      // 필요한 경우 여기에 게임 종료 후 처리 로직 추가
+      // const fatchGameResultData = async () => {
+      //   if (!accessToken) return
+      //   try {
+      //     const result = await fecthGame2Result(accessToken, )
+      //   }
+      // }
     }
   };
 
