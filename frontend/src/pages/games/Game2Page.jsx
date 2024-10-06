@@ -1,112 +1,109 @@
 // hook
 import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import axios from 'axios';
 import { useSelector } from 'react-redux';
+
+// API import
+import { fetchGame2, fecthGame2Result } from '../../api/GameAPI';
 
 // compo
 import TimeBar from '../../components/TimeBar';
+import GameModal from '../../components/GameModal';
+import useTimer from '../../hooks/useTimer';
 
 // style
 import './Game2Page.sass';
 
-const mockdata = {
-  success: true,
-  status: 200,
-  data: {
-    rounds: [
-      { word_id: 1, word: '포도', image_url: '단어이미지1' },
-      { word_id: 2, word: '딸기', image_url: '단어이미지2' },
-      { word_id: 3, word: '사과', image_url: '단어이미지3' },
-      { word_id: 4, word: '수박', image_url: '단어이미지4' },
-      { word_id: 5, word: '토마토', image_url: '단어이미지5' },
-    ],
-  },
-};
-
 const Game2Page = () => {
   const nav = useNavigate();
+  const [data, setData] = useState(null);
   const [round, setRound] = useState(0);
-  const { transcript, listening, resetTranscript } = useSpeechRecognition();
-  const [word, setWord] = useState(mockdata.data.rounds[0].word);
-  const [timeLeft, setTimeLeft] = useState(10);
+  const [word, setWord] = useState('');
+  const [imageUrl, setImage] = useState('');
+  const [correctAnswer, setCorrectAnswer] = useState(0); // 맞은 갯수 카운팅
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달
+  const [modalMessage, setModalMessage] = useState('');
 
   const accessToken = useSelector((state) => state.auth.accessToken);
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
+  const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
-  const nextRound = useCallback(() => {
-    const nextRoundIndex = (round + 1) % mockdata.data.rounds.length;
-    setRound(nextRoundIndex);
-    setWord(mockdata.data.rounds[nextRoundIndex].word);
-    setTimeLeft(10);
-    resetTranscript();
-    if (listening) {
-      SpeechRecognition.stopListening();
+  const showModal = (message) => {
+    setIsModalOpen(true);
+    setModalMessage(message);
+    setTimeout(() => setIsModalOpen(false), 1000);
+  };
+
+  const nextRound = () => {
+    if (data && round < data.length - 1) {
+      const nextRoundIndex = round + 1;
+      setRound(nextRoundIndex);
+      setWord(data[nextRoundIndex].word);
+      setImage(data[nextRoundIndex].imageUrl);
+      resetTimer();
+      resetTranscript();
+    } else {
+      // 게임 종료 로직
+      // const fatchGameResultData = async () => {
+      //   if (!accessToken) return
+      //   try {
+      //     const result = await fecthGame2Result(accessToken, )
+      //   }
+      // }
     }
-  }, [round, resetTranscript, listening]);
+  };
 
+  const onTimeUp = () => {
+    showModal('시간이 초과되었습니다. 틀렸습니다 😞');
+    setTimeout(nextRound, 1000);
+  };
+
+  // TimeBar 시간초 관리 Effect
+  const { timeLeft, resetTimer } = useTimer(10, onTimeUp);
+
+  // 첫 렌더링 시 토큰, 데이터, 이미지, 단어 받아오는 Effect
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchGameData = async () => {
+      if (!accessToken) return;
       try {
-        const response = await axios.get(`https://j11b206.p.ssafy.io/api/games/speech-cards?kidId=${2}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        if (response.data.success && response.data.status === 200) {
-          setData(response.data.data.rounds);
-          console.log(response.data);
-        } else {
-          throw new Error('서버 응답이 올바르지 않습니다.');
-        }
+        const rounds = await fetchGame2(accessToken, 2);
+        setData(rounds);
+        setWord(rounds[0].word);
+        setImage(rounds[0].imageUrl);
       } catch (err) {
-        console.error('데이터 불러오기 실패:', err.message);
-        setError('데이터를 불러오는 데 실패했습니다.');
+        showModal('데이터를 불러오는 데 실패했습니다.');
       }
     };
-
-    if (accessToken) {
-      fetchData();
-    }
+    fetchGameData();
   }, [accessToken]);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 0.1) {
-          nextRound();
-          return 10;
-        }
-        return prevTime - 0.1;
-      });
-    }, 100);
-
-    return () => clearInterval(timer);
-  }, [nextRound]);
-
+  // 음성확인과 그에따른 처리 Effect
   useEffect(() => {
     if (listening) {
       if (transcript === word) {
+        setCorrectAnswer((answer) => answer + 1);
+        SpeechRecognition.stopListening();
+        showModal('정답입니다! 🎉');
         nextRound();
         console.log('맞:', transcript);
       } else if (transcript.length >= word.length && transcript !== word) {
         SpeechRecognition.stopListening();
         resetTranscript();
+        setIsModalOpen(true);
+        showModal('틀렸습니다 😞');
         console.log('틀:', transcript);
       }
     }
   }, [transcript, listening, word, nextRound]);
 
+  // 마이크 클릭 이벤트
   const toggleListening = () => {
     if (listening) {
       SpeechRecognition.stopListening();
     } else {
       resetTranscript();
-      SpeechRecognition.startListening({ continuous: true });
+      SpeechRecognition.startListening({ continuous: true, language: 'ko-KR' });
     }
   };
 
@@ -129,13 +126,13 @@ const Game2Page = () => {
           <TimeBar time={timeLeft} />
         </div>
         <div className="top-nav__bookmarker">
-          {round + 1} / {mockdata.data.rounds.length}
+          {round + 1} / {data ? data.length : 0}
         </div>
       </section>
 
       <section className="main-content">
         <div className="main-content__img-wrap">
-          <img src="/character/rabbit.png" alt="캐릭터 이미지" className="main-content__img-wrap--img" />
+          <img src={imageUrl} alt="캐릭터 이미지" className="main-content__img-wrap--img" />
         </div>
         <div className="main-content__card-container">
           <div className="main-content__card-container--word-card">{word}</div>
@@ -147,6 +144,8 @@ const Game2Page = () => {
           </div>
         </div>
       </section>
+
+      <GameModal isOpen={isModalOpen} message={modalMessage} onRequestClose={() => setIsModalOpen(false)} />
     </div>
   );
 };
