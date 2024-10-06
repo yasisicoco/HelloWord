@@ -1,7 +1,7 @@
 // hook
 import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { useSelector } from 'react-redux';
 
@@ -10,6 +10,8 @@ import { fetchGame2 } from '../../api/GameAPI';
 
 // compo
 import TimeBar from '../../components/TimeBar';
+import GameModal from '../../components/GameModal';
+import useTimer from '../../hooks/useTimer';
 
 // style
 import './Game2Page.sass';
@@ -17,77 +19,81 @@ import './Game2Page.sass';
 const Game2Page = () => {
   const nav = useNavigate();
   const [round, setRound] = useState(0);
-  const { transcript, listening, resetTranscript } = useSpeechRecognition();
-  const [timeLeft, setTimeLeft] = useState(10);
   const [word, setWord] = useState('');
   const [imageUrl, setImage] = useState('');
-  const [correctAnswer, setCorrectAnswer] = useState(0);
+  const [correctAnswer, setCorrectAnswer] = useState(0); // 맞은 갯수 카운팅
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달
+  const [modalMessage, setModalMessage] = useState('');
 
   const accessToken = useSelector((state) => state.auth.accessToken);
+  const { transcript, listening, resetTranscript } = useSpeechRecognition();
   const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
 
-  const nextRound = useCallback(() => {
-    if (data) {
+  const showModal = (message) => {
+    setIsModalOpen(true);
+    setModalMessage(message);
+    setTimeout(() => setIsModalOpen(false), 1000);
+  };
+
+  const nextRound = () => {
+    if (data && round < data.length - 1) {
       const nextRoundIndex = round + 1;
       setRound(nextRoundIndex);
       setWord(data[nextRoundIndex].word);
       setImage(data[nextRoundIndex].imageUrl);
-      setTimeLeft(10);
+      resetTimer();
       resetTranscript();
-      if (listening) {
-        SpeechRecognition.stopListening();
-      }
+    } else {
+      // 게임 종료 로직
+      // showModal('게임이 종료되었습니다!');
+      // 필요한 경우 여기에 게임 종료 후 처리 로직 추가
     }
-  }, [round, resetTranscript, listening, data]);
+  };
 
+  const onTimeUp = () => {
+    showModal('시간이 초과되었습니다. 틀렸습니다 😞');
+    setTimeout(nextRound, 1000);
+  };
+
+  // TimeBar 시간초 관리 Effect
+  const { timeLeft, resetTimer } = useTimer(10, onTimeUp);
+
+  // 첫 렌더링 시 토큰, 데이터, 이미지, 단어 받아오는 Effect
   useEffect(() => {
-    const Game2Data = async () => {
+    const fetchGameData = async () => {
       if (!accessToken) return;
-
       try {
         const rounds = await fetchGame2(accessToken, 2);
         setData(rounds);
         setWord(rounds[0].word);
         setImage(rounds[0].imageUrl);
       } catch (err) {
-        setError('데이터를 불러오는 데 실패했습니다.');
-        console.log('err:', error);
+        showModal('데이터를 불러오는 데 실패했습니다.');
       }
     };
-
-    Game2Data();
+    fetchGameData();
   }, [accessToken]);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 0.1) {
-          nextRound();
-          return 10;
-        }
-        return prevTime - 0.1;
-      });
-    }, 100);
-
-    return () => clearInterval(timer);
-  }, [nextRound]);
-
+  // 음성확인과 그에따른 처리 Effect
   useEffect(() => {
     if (listening) {
       if (transcript === word) {
-        const answer = correctAnswer + 1;
-        setCorrectAnswer(answer);
+        setCorrectAnswer((answer) => answer + 1);
+        SpeechRecognition.stopListening();
+        showModal('정답입니다! 🎉');
         nextRound();
         console.log('맞:', transcript);
       } else if (transcript.length >= word.length && transcript !== word) {
         SpeechRecognition.stopListening();
         resetTranscript();
+        setIsModalOpen(true);
+        showModal('틀렸습니다 😞');
         console.log('틀:', transcript);
       }
     }
   }, [transcript, listening, word, nextRound]);
 
+  // 마이크 클릭 이벤트
   const toggleListening = () => {
     if (listening) {
       SpeechRecognition.stopListening();
@@ -134,6 +140,8 @@ const Game2Page = () => {
           </div>
         </div>
       </section>
+
+      <GameModal isOpen={isModalOpen} message={modalMessage} onRequestClose={() => setIsModalOpen(false)} />
     </div>
   );
 };
