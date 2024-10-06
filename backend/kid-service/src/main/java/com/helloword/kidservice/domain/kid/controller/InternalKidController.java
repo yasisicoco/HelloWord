@@ -22,7 +22,7 @@ public class InternalKidController {
 
     @Operation(summary = "아이 경험치 수정", description = "요청한 정보로 아이의 경험치를 수정합니다.")
     @PutMapping("/exp")
-    public void updateKidExp(@ModelAttribute KidExpUpdateRequestDto kidExpUpdateRequestDto) {
+    public void updateKidExp(@RequestBody KidExpUpdateRequestDto kidExpUpdateRequestDto) {
         kidService.increaseExperience(kidExpUpdateRequestDto);
     }
 }
