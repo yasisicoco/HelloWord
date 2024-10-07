@@ -50,15 +50,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
+    public void deleteUser(Long xUserId, Long userId) {
+        checkOwnership(xUserId, userId);
         userRepository.deleteById(userId);
     }
 
     @Override
-    public void updatePassword(Long userId, NewPasswordRequest newPasswordRequest) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new ExceptionResponse(CustomException.NOT_FOUND)
-        );
+    public void updatePassword(Long xUserId, Long userId, NewPasswordRequest newPasswordRequest) {
+        User user = findUserById(userId);
+        checkOwnership(xUserId, userId);
 
         user.changePassword(customPasswordEncoder.encode(newPasswordRequest.getPassword()));
 
@@ -76,5 +76,16 @@ public class UserServiceImpl implements UserService {
         }
 
         return AuthenticateUserResponse.toDto(user);
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new ExceptionResponse(CustomException.NOT_FOUND));
+    }
+
+    private void checkOwnership(Long ownerId, Long requestUserId) {
+        if (!ownerId.equals(requestUserId)) {
+            throw new ExceptionResponse(CustomException.FORBIDDEN);
+        }
     }
 }

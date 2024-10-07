@@ -38,13 +38,13 @@ public class UserController {
 
     @Operation(summary = "회원 삭제", description = "회원을 삭제합니다.")
     @DeleteMapping("/{userId}")
-    public void withdrawal(@PathVariable Long userId) {
-        userService.deleteUser(userId);
+    public void withdrawal(@RequestHeader("X-User-Id") Long xUserId, @PathVariable Long userId) {
+        userService.deleteUser(xUserId, userId);
     }
 
     @Operation(summary = "회원 패스워드 변경", description = "회원의 패스워드를 변경합니다.")
     @PatchMapping("/{userId}")
-    public void changePassword(@PathVariable Long userId, @RequestBody NewPasswordRequest newPasswordRequest) {
-        userService.updatePassword(userId, newPasswordRequest);
+    public void changePassword(@RequestHeader("X-User-Id") Long xUserId, @PathVariable Long userId, @RequestBody NewPasswordRequest newPasswordRequest) {
+        userService.updatePassword(xUserId, userId, newPasswordRequest);
     }
 }
