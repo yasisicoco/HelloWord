@@ -37,19 +37,26 @@ const Game4Page = () => {
   const [isDataLoading, setIsDataLoading] = useState(true);
   const kidId = useSelector((state) => state.kid.selectedKidId); // 선택된 아이 ID 확인
   const accessToken = useSelector((state) => state.auth.accessToken);
+  const [isCorrect, setIsCorrect] = useState(null); // 정답 여부 상태 추가
 
   // 시간 초과 시 라운드 넘기기
   const onTimeUp = () => {
     showModal('시간이 초과되었습니다. 틀렸습니다 😞');
     handleNextRound(false); // 타임아웃 시 틀린 것으로 처리
   };
-  const { timeLeft, resetTimer } = useTimer(10, onTimeUp); // startTimer 추가
 
-  const showModal = (message) => {
+  const showModal = (message, isCorrect) => {
     setIsModalOpen(true);
     setModalMessage(message);
-    setTimeout(() => setIsModalOpen(false), 1000);
+    pauseTimer(); // 모달이 열리면 타이머 일시정지
+    setTimeout(() => {
+      setIsModalOpen(false);
+      resumeTimer(); // 모달이 닫히면 타이머 재개
+    }, 1000);
+    setIsCorrect(isCorrect); // 정답 여부 상태 저장
   };
+
+  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(10, onTimeUp); // pauseTimer, resumeTimer 추가
 
   // 단어 배열을 무작위로 섞는 함수
   const shuffleArray = (array) => {
@@ -64,8 +71,7 @@ const Game4Page = () => {
       currentRoundData.incorrectWords[1]?.word || '',
       currentRoundData.incorrectWords[2]?.word || '',
     ];
-    console.log('###################');
-    console.log(currentRoundData);
+
     setCorrect(correctWord);
     setImage(currentRoundData.imageUrl);
     setSentence(currentRoundData.sentence);
@@ -147,10 +153,10 @@ const Game4Page = () => {
   // 단어 클릭 시 정답 확인 함수
   const handleOptionClick = (selectedOption) => {
     if (selectedOption === correct) {
-      showModal('맞았습니다! 😊');
+      showModal('맞았습니다! 😊', true);
       handleNextRound(true); // 정답 처리 후 다음 라운드로 이동
     } else {
-      showModal('틀렸습니다. 😞');
+      showModal('틀렸습니다. 😞', false);
       handleNextRound(false); // 틀림 처리 후 다음 라운드로 이동
     }
   };
@@ -168,11 +174,6 @@ const Game4Page = () => {
     };
 
     try {
-      // console.log(correctRate);
-      // console.log(resultData);
-      // console.log(totalPlayTime);
-      // console.log(correctRate);
-      // console.log(correctAnswer);
       await fetchGameResult(accessToken, resultData);
       nav('/home'); // 결과 전송 후 결과 페이지로 이동
     } catch (err) {
@@ -235,7 +236,12 @@ const Game4Page = () => {
         </div>
       </section>
 
-      <GameModal isOpen={isModalOpen} message={modalMessage} onRequestClose={() => setIsModalOpen(false)} />
+      <GameModal
+        isOpen={isModalOpen}
+        message={modalMessage}
+        isCorrect={isCorrect} // 정답 여부 전달
+        onRequestClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
