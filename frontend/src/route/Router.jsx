@@ -15,7 +15,6 @@ import Game3Page from '../pages/games/Game3Page';
 import Game4Page from '../pages/games/Game4Page';
 import SelectKidsPage from '../pages/SelectKidsPage';
 import StoryPage from '../pages/StoryPage';
-import ResultPage from '../pages/ResultPage';
 
 function Router() {
   // 보호된 경로 배열
@@ -31,7 +30,6 @@ function Router() {
     { path: '/userpage', element: <UserPage /> },
     { path: '/collection', element: <Collection /> },
     { path: '/settings', element: <Settings /> },
-    { path: '/result', element: <ResultPage /> },
   ];
 
   return (
