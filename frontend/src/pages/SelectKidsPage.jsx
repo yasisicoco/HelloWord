@@ -25,7 +25,6 @@ const SelectKidsPage = () => {
       setIsLoading(true); // 로딩 시작
       const listKids = await UserAPI().getKids(accessToken);
       setKids(listKids.data); // 아이 목록 상태 업데이트
-      console.log(listKids);
     } catch (error) {
       console.error(error);
     } finally {
@@ -52,7 +51,7 @@ const SelectKidsPage = () => {
   const handleStartClick = () => {
     if (selectedKidId) {
       dispatch(setSelectedKid(selectedKidId)); // Redux에 선택된 아이 ID 저장
-      navigate('/home');
+      navigate('/storypage');
     } else {
       alert('학습할 아이를 선택해주세요.');
     }
