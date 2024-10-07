@@ -63,9 +63,10 @@ const Game4Page = () => {
       currentRoundData.incorrectWords[1]?.word || '',
       currentRoundData.incorrectWords[2]?.word || '',
     ];
-
+    console.log('###################');
+    console.log(currentRoundData);
     setCorrect(correctWord);
-    setImage(currentRoundData.correctWord.imageUrl);
+    setImage(currentRoundData.imageUrl);
     setSentence(currentRoundData.sentence);
     setWrong0(incorrectWords[0]);
     setWrong1(incorrectWords[1]);
@@ -87,7 +88,6 @@ const Game4Page = () => {
         const rounds = await fetchGame4(accessToken, kidId);
         setData(rounds); // 전체 데이터를 저장
         setTotalRounds(rounds.length); // 총 라운드 수 설정
-        setVoice(rounds[0].correctWord.voiceUrl); // 첫 번째 라운드의 목소리 URL 저장
         if (rounds && rounds.length > 0) {
           updateRoundData(rounds[0]); // 첫 번째 라운드 데이터 설정
         }

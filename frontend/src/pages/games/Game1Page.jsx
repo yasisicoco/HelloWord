@@ -169,7 +169,7 @@ const Game1Page = () => {
       // console.log(correctRate);
       // console.log(correctAnswer);
       await fecthGameResult(accessToken, resultData);
-      showModal('결과가 전송되었습니다.'); // 모달로 결과 전송 완료 메시지 표시
+      nav('/home'); // 마지막 라운드일 때 홈으로 이동
     } catch (err) {
       showModal('결과 전송에 실패했습니다.');
     }
@@ -222,14 +222,12 @@ const Game1Page = () => {
         </button>
       </section>
 
+      {/* 게임 모달 */}
       <GameModal
         isOpen={isModalOpen}
         message={modalMessage}
         onRequestClose={() => {
           setIsModalOpen(false);
-          if (round === totalRounds - 1) {
-            nav('/home'); // 마지막 라운드일 때 홈으로 이동
-          }
         }}
       />
     </div>
