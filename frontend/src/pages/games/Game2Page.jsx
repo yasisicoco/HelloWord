@@ -117,12 +117,14 @@ const Game2Page = () => {
         setCorrectWords([...correctWords, { id: data[round].id, word: transcript }]); //맞은 단어 넣기
         SpeechRecognition.stopListening();
         showModal('정답입니다! 🎉');
+        console.log('맞:', transcript);
         nextRound();
       } else if (transcript.length >= word.length && transcript !== word) {
         SpeechRecognition.stopListening();
+        console.log('틀:', transcript);
         resetTranscript();
         showModal('틀렸습니다 😞');
-        setTimeout(nextRound, 1000);
+        setTimeout(nextRound, 2000);
       }
     }
   }, [transcript, listening, word]);
