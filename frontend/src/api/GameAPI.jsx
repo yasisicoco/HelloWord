@@ -61,7 +61,7 @@ export const fetchGame2Result = async (accessToken, gameResult) => {
 
 export const fecthGameResult = async (accessToken, data) => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/games/card-result`, data, {
+    const response = await axios.post(`${BASE_URL}/api/games/results`, data, {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`,
     });

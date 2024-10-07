@@ -17,17 +17,15 @@ const UserAPI = () => {
         },
       );
 
-      if (response.status == 200) {
-        return response.data;
-      } else {
-        console.log(`login Server Error: ${response.status}`);
+      if (response.status != 200) {
+        console.log(`login Server Error: ${response}`);
+        return response;
       }
 
       return response.data;
     } catch (error) {
       console.log('Error UserAPI-login: 유저 정보가 존재하지 않거나 서버 에러');
-      return 'fail';
-      // throw error;
+      throw error;
     }
   };
 
@@ -40,14 +38,15 @@ const UserAPI = () => {
         },
       });
 
-      if (response.status == 200) {
-        return !response.data.data;
-      } else {
-        console.log(`isDuplicate Server Error: ${response.status}`);
+      if (response.status != 200) {
+        console.log(`isDuplicate Server Error: ${response}`);
+        return false;
       }
+
+      return response.data.data;
     } catch (error) {
       console.log('Error UserAPI-isDuplicate');
-      return false;
+      throw error;
     }
   };
 
@@ -61,15 +60,15 @@ const UserAPI = () => {
         },
       });
 
-      if (response.status == 200) {
-        return true;
-      } else {
-        console.log(`signUp Server Error: ${response.status}`);
-        return false;
+      if (response.status != 200) {
+        console.log(`signUp Server Error: ${response}`);
+        return response;
       }
+
+      return true;
     } catch (error) {
       console.log('Error UserAPI-signup');
-      return true;
+      throw error;
     }
   };
 
@@ -100,15 +99,13 @@ const UserAPI = () => {
         },
       });
 
-      if (response.status === 200) {
-        console.log('아이 만들기 성공');
-        return response.data;
-      } else {
+      if (response.status != 200) {
         console.log(`createKid Server Error: ${response.status}`);
-        return response.data;
       }
+
+      return response.data;
     } catch (error) {
-      console.error('Error UserAPI-createKid', error.response);
+      console.error('Error UserAPI-createKid');
       throw error;
     }
   };
