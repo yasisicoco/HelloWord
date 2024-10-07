@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 // API import
 import { fetchGame1 } from '../../api/GameAPI';
-import { fecthGameResult } from '../../api/GameAPI'; // API 불러오기
+import { fetchGameResult } from '../../api/GameAPI'; // API 불러오기
 
 // compo
 import TimeBar from '../../components/TimeBar';
@@ -168,7 +168,7 @@ const Game1Page = () => {
       // console.log(totalPlayTime);
       // console.log(correctRate);
       // console.log(correctAnswer);
-      await fecthGameResult(accessToken, resultData);
+      await fetchGameResult(accessToken, resultData);
       nav('/home'); // 마지막 라운드일 때 홈으로 이동
     } catch (err) {
       showModal('결과 전송에 실패했습니다.');

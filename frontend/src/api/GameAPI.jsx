@@ -83,7 +83,7 @@ export const fetchGame3 = async (accessToken, kidId) => {
   }
 };
 
-export const fecthGameResult = async (accessToken, data) => {
+export const fetchGameResult = async (accessToken, data) => {
   try {
     const response = await axios.post(`${BASE_URL}/api/games/results`, data, {
       headers: {

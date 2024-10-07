@@ -5,7 +5,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 // API import
-import { fetchGame3, fecthGameResult } from '../../api/GameAPI';
+import { fetchGame3, fetchGameResult } from '../../api/GameAPI';
 
 // compo
 import TimeBar from '../../components/TimeBar';
@@ -74,7 +74,7 @@ const Game3Page = () => {
     };
 
     try {
-      await fecthGameResult(accessToken, gameResult);
+      await fetchGameResult(accessToken, gameResult);
     } catch (error) {
       console.error('게임 결과 저장 실패:', error);
       showModal('게임 결과 저장에 실패했습니다. 그러나 결과를 확인할 수 있습니다.');
