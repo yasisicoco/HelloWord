@@ -69,15 +69,15 @@ const SignupPage = () => {
       alert('이메일 양식을 확인하세요');
       return;
     }
-
     const emailCheck = await UserAPI().idDuplicate(email);
-    if (!emailCheck) {
+
+    if (emailCheck) {
       alert('중복된 이메일 입니다.');
       return;
     }
 
     // 이메일 체크
-    SetemailCheck(emailCheck);
+    SetemailCheck(!emailCheck);
   };
 
   // 전화번호 자동 변환기
