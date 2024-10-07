@@ -83,9 +83,13 @@ const UserAPI = () => {
       { type: 'application/json' },
     );
 
-    // FormData에 kid 데이터와 파일 추가
-    formData.append('kid', kidData); // kid 데이터를 JSON 문자열로 추가
-    formData.append('profileImage', profileImageFile); // 파일 추가
+    // FormData에 kid 데이터 추가
+    formData.append('kid', kidData);
+
+    // 프로필 이미지 파일이 있을 때만 추가
+    if (profileImageFile) {
+      formData.append('profileImage', profileImageFile); // 파일 추가
+    }
 
     try {
       const response = await axios.post(`${BASE_URL}/api/kids`, formData, {
@@ -95,7 +99,7 @@ const UserAPI = () => {
         },
       });
 
-      if (response.status != 200) {
+      if (response.status !== 200) {
         console.log(`createKid Server Error: ${response.status}`);
       }
 
@@ -126,10 +130,10 @@ const UserAPI = () => {
     }
   };
 
-  // 백 미개발부분 일단 대기
-  const checkStory = async (accessToken, kidId) => {
+  // 아이가 스토리 라인을 읽어봤는지 확인 API
+  const kidSearch = async (accessToken, kidId) => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/kids/kidId?kidId=${kidId}`, {
+      const response = await axios.get(`${BASE_URL}/api/kids/${kidId}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
@@ -147,7 +151,7 @@ const UserAPI = () => {
     }
   };
 
-  return { login, idDuplicate, signUp, createKid, getKids, checkStory };
+  return { login, idDuplicate, signUp, createKid, getKids, kidSearch };
 };
 
 export default UserAPI;

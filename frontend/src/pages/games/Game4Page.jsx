@@ -64,8 +64,7 @@ const Game4Page = () => {
       currentRoundData.incorrectWords[1]?.word || '',
       currentRoundData.incorrectWords[2]?.word || '',
     ];
-    console.log('###################');
-    console.log(currentRoundData);
+
     setCorrect(correctWord);
     setImage(currentRoundData.imageUrl);
     setSentence(currentRoundData.sentence);

@@ -40,10 +40,6 @@ function AddChildModal({ isOpen, closeModal }) {
 
     // 파일 가져오기
     const file = fileInputRef.current.files[0];
-    if (!file) {
-      alert('프로필 이미지를 선택해 주세요.');
-      return;
-    }
 
     try {
       // API 호출
@@ -137,6 +133,7 @@ function AddChildModal({ isOpen, closeModal }) {
             showMonthDropdown
             dropdownMode="select"
             className="addchild-compo__ageinput--ageBox"
+            inputMode="none"
           />
         </div>
 

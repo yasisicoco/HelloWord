@@ -1,9 +1,12 @@
 import { Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-function ProtectedRoute({ hasToken, children }) {
-  if (!hasToken) {
+function ProtectedRoute({ children }) {
+  const check = useSelector((state) => state.auth.accessToken);
+
+  if (!check) {
     // 로그인되지 않은 경우 로그인 페이지로 리디렉션
-    alert('토큰이 만료되었습니다.');
+    alert('다시 로그인 해주세요.');
     return <Navigate to="/login" />;
   }
 

@@ -48,10 +48,15 @@ const SelectKidsPage = () => {
     setSelectedKidId(kidId); // 선택된 아이 ID를 상태에 저장
   };
 
-  const handleStartClick = () => {
+  const handleStartClick = async () => {
     if (selectedKidId) {
       dispatch(setSelectedKid(selectedKidId)); // Redux에 선택된 아이 ID 저장
-      navigate('/storypage');
+      const kid = await UserAPI().kidSearch(accessToken, selectedKidId);
+      if (kid.data.level) {
+        navigate('/home');
+      } else {
+        navigate('/storypage');
+      }
     } else {
       alert('학습할 아이를 선택해주세요.');
     }
