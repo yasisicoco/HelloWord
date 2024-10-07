@@ -6,7 +6,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import { useSelector } from 'react-redux';
 
 // API import
-import { fetchGame2, fetchGame2Result } from '../../api/GameAPI';
+import { fetchGame2, fecthGameResult } from '../../api/GameAPI';
 
 // compo
 import TimeBar from '../../components/TimeBar';
@@ -28,7 +28,8 @@ const Game2Page = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [gameStartTime, setGameStartTime] = useState(null);
   const [correctWords, setCorrectWords] = useState([]);
-  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+  const [isResultOpen, setIsResultOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const accessToken = useSelector((state) => state.auth.accessToken);
   const kidId = useSelector((state) => state.kid.selectedKidId);
@@ -55,6 +56,7 @@ const Game2Page = () => {
   };
 
   const endGame = async () => {
+    setIsLoading(true);
     const endTime = new Date();
     const playTime = Math.round((endTime - gameStartTime) / 1000);
     const correctRate = correctAnswer / data.length;
@@ -69,11 +71,16 @@ const Game2Page = () => {
     };
 
     try {
-      await fetchGame2Result(accessToken, gameResult);
-      setIsResultModalOpen(true);
+      await fecthGameResult(accessToken, gameResult);
     } catch (error) {
-      showModal('게임 결과 저장에 실패했습니다.');
-      nav(-1);
+      console.error('게임 결과 저장 실패:', error);
+      showModal('게임 결과 저장에 실패했습니다. 그러나 결과를 확인할 수 있습니다.');
+    } finally {
+      // 성공하든 실패하든 3초 후에 로딩을 끝내고 결과 창을 표시합니다.
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsResultOpen(true);
+      }, 3000);
     }
   };
 
@@ -107,7 +114,7 @@ const Game2Page = () => {
     if (listening) {
       if (transcript === word) {
         setCorrectAnswer((answer) => answer + 1);
-        setCorrectWords([...correctWords, { id: data[round].id, word: transcript }]);
+        setCorrectWords([...correctWords, { id: data[round].id, word: transcript }]); //맞은 단어 넣기
         SpeechRecognition.stopListening();
         showModal('정답입니다! 🎉');
         nextRound();
@@ -141,6 +148,7 @@ const Game2Page = () => {
 
   return (
     <div className="game2-page">
+      {isLoading && <div className="loading-overlay">로딩 중...</div>}
       <section className="top-nav">
         <button onClick={() => nav(-1)} className="top-nav__back-space">
           뒤로가기
@@ -170,10 +178,9 @@ const Game2Page = () => {
 
       <GameModal isOpen={isModalOpen} message={modalMessage} onRequestClose={() => setIsModalOpen(false)} />
       <GameResult
-        isOpen={isResultModalOpen}
+        isOpen={isResultOpen}
         onClose={() => {
-          setIsResultModalOpen(false);
-          nav(-1);
+          setIsResultOpen(false);
         }}
         correctCount={correctAnswer}
         totalQuestions={data ? data.length : 0}
