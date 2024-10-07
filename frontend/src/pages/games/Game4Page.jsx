@@ -1,16 +1,17 @@
 // hook
+import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 // API import
-import { fetchGame4 } from '../../api/GameAPI';
-import { fetchGameResult } from '../../api/GameAPI'; // API 불러오기
+import { fetchGame4, fetchGameResult } from '../../api/GameAPI';
 
 // compo
 import TimeBar from '../../components/TimeBar';
 import GameModal from '../../components/GameModal';
 import useTimer from '../../hooks/useTimer';
+import ResultModal from '../../components/ResultModal';
 
 // style
 import './Game4Page.sass';
@@ -32,6 +33,7 @@ const Game4Page = () => {
   const [roundStartTime, setRoundStartTime] = useState(null); // 각 라운드 시작 시간
   const [correctWordsList, setCorrectWordsList] = useState([]); // 맞춘 단어 저장 리스트
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false); // 결과 모달
   const [modalMessage, setModalMessage] = useState('');
   const [roundFinished, setRoundFinished] = useState(false); // 라운드 완료 여부 상태 추가
   const [isDataLoading, setIsDataLoading] = useState(true);
@@ -63,9 +65,18 @@ const Game4Page = () => {
     return array.sort(() => Math.random() - 0.5);
   };
 
+  // 정답을 빈칸으로 변환하는 함수
+  const convertAnswerToBlanks = (sentence, answer) => {
+    const blank = '□'; // 빈칸을 사각형으로 표현
+    const blankSentence = sentence.replace(`##${answer}##`, blank.repeat(answer.length));
+    return blankSentence;
+  };
+
   // 라운드 데이터 갱신 함수
   const updateRoundData = (currentRoundData) => {
     const correctWord = currentRoundData.correctWord.word;
+    const sentenceWithBlanks = convertAnswerToBlanks(currentRoundData.sentence, correctWord);
+
     const incorrectWords = [
       currentRoundData.incorrectWords[0]?.word || '',
       currentRoundData.incorrectWords[1]?.word || '',
@@ -74,7 +85,7 @@ const Game4Page = () => {
 
     setCorrect(correctWord);
     setImage(currentRoundData.imageUrl);
-    setSentence(currentRoundData.sentence);
+    setSentence(sentenceWithBlanks); // 빈칸으로 변환된 문장 저장
     setWrong0(incorrectWords[0]);
     setWrong1(incorrectWords[1]);
     setWrong2(incorrectWords[2]);
@@ -142,7 +153,8 @@ const Game4Page = () => {
     if (roundFinished) {
       // 마지막 라운드이면 결과 전송
       if (round === totalRounds - 1) {
-        sendGameResult(); // 마지막 라운드에서 처리 후 즉시 결과 전송
+        setIsResultModalOpen(true); // 마지막 라운드에서 결과 모달 열기
+        pauseTimer(); // 타이머 정지
       } else {
         setRound((prevRound) => prevRound + 1); // 다음 라운드로 이동
       }
@@ -152,30 +164,41 @@ const Game4Page = () => {
 
   // 단어 클릭 시 정답 확인 함수
   const handleOptionClick = (selectedOption) => {
-    if (selectedOption === correct) {
-      showModal('맞았습니다! 😊', true);
+    const isCorrect = selectedOption === correct; // 정답 여부를 확인
+    if (isCorrect) {
+      showModal('맞았습니다! 😊', true); // 정답일 때 true
       handleNextRound(true); // 정답 처리 후 다음 라운드로 이동
     } else {
-      showModal('틀렸습니다. 😞', false);
+      showModal('틀렸습니다. 😞', false); // 오답일 때 false
       handleNextRound(false); // 틀림 처리 후 다음 라운드로 이동
     }
   };
 
-  // 게임 결과 전송 함수
-  const sendGameResult = async () => {
+  // 다시하기 버튼 클릭 시
+  const handleRetry = () => {
+    setIsResultModalOpen(false);
+    setRound(0); // 게임을 다시 시작
+    setCorrectAnswer(0); // 맞은 갯수 초기화
+    setTotalPlayTime(0); // 전체 플레이 시간 초기화
+    updateRoundData(data[0]); // 첫 라운드로 다시 시작
+    resumeTimer(); // 모달이 닫히면 타이머 재개
+  };
+
+  // 그만하기 버튼 클릭 시
+  const handleQuit = async () => {
     const correctRate = correctAnswer / totalRounds;
     const resultData = {
       kidId: kidId,
-      answerWords: correctWordsList, // 맞춘 단어 리스트만 전송
-      gameType: 'FAIRYTALE_GAME',
-      playTime: totalPlayTime, // 전체 라운드에서 걸린 총 시간
-      correctRate: correctRate, // 정답률 계산
+      answerWords: correctWordsList,
+      gameType: 'SPEED_GAME',
+      playTime: totalPlayTime,
+      correctRate: correctRate,
       correctCount: correctAnswer,
     };
 
     try {
       await fetchGameResult(accessToken, resultData);
-      nav('/home'); // 결과 전송 후 결과 페이지로 이동
+      nav('/home'); // 홈으로 이동
     } catch (err) {
       showModal('결과 전송에 실패했습니다.');
     }
@@ -219,7 +242,12 @@ const Game4Page = () => {
             <img className="book-container__img-wrap--img" src={imageUrl} alt="error" />
           </div>
           <div className="book-container__story-wrap">
-            <div className="book-container__story-wrap--text">{sentence}</div>
+            {/* 문장을 빈칸으로 나누어 표현 */}
+            <div className="book-container__story-wrap--text">
+              {sentence
+                .split('')
+                .map((char, index) => (char === '□' ? <span key={index} className="blank"></span> : char))}
+            </div>
           </div>
         </div>
         <div className="card-container">
@@ -241,6 +269,15 @@ const Game4Page = () => {
         message={modalMessage}
         isCorrect={isCorrect} // 정답 여부 전달
         onRequestClose={() => setIsModalOpen(false)}
+      />
+
+      {/* 결과 모달 */}
+      <ResultModal
+        isOpen={isResultModalOpen}
+        correctAnswer={correctAnswer}
+        totalRounds={totalRounds}
+        onRetry={handleRetry}
+        onQuit={handleQuit}
       />
     </div>
   );

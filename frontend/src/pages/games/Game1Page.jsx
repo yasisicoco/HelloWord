@@ -1,11 +1,11 @@
+// hook
 import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 // API import
-import { fetchGame1 } from '../../api/GameAPI';
-import { fetchGameResult } from '../../api/GameAPI'; // API 불러오기
+import { fetchGame1, fetchGameResult } from '../../api/GameAPI';
 
 // compo
 import TimeBar from '../../components/TimeBar';
@@ -33,6 +33,7 @@ const Game1Page = () => {
   const [roundStartTime, setRoundStartTime] = useState(null); // 각 라운드 시작 시간
   const [correctWordsList, setCorrectWordsList] = useState([]); // 맞춘 단어 저장 리스트
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false); // 결과 모달
   const [modalMessage, setModalMessage] = useState('');
   const [roundFinished, setRoundFinished] = useState(false); // 라운드 완료 여부 상태 추가
   const [isDataLoading, setIsDataLoading] = useState(true);
@@ -141,11 +142,13 @@ const Game1Page = () => {
   // roundFinished가 true가 되면 다음 라운드로 이동
   useEffect(() => {
     if (roundFinished) {
-      // 마지막 라운드이면 결과 전송
       if (round === totalRounds - 1) {
-        sendGameResult(); // 마지막 라운드에서 처리 후 즉시 결과 전송
+        setTimeout(() => {
+          setIsResultModalOpen(true); // 마지막 라운드에서 결과 모달 열기
+          pauseTimer(); // 타이머 정지
+        }, 1000); // GameModal이 닫힌 후 결과 모달 띄우기
       } else {
-        setRound((prevRound) => prevRound + 1); // 다음 라운드로 이동
+        setRound((prevRound) => prevRound + 1);
       }
       setRoundFinished(false); // 라운드 완료 상태 초기화
     }
@@ -163,21 +166,31 @@ const Game1Page = () => {
     }
   };
 
-  // 게임 결과 전송 함수
-  const sendGameResult = async () => {
+  // 다시하기 버튼 클릭 시
+  const handleRetry = () => {
+    setIsResultModalOpen(false);
+    setRound(0); // 게임을 다시 시작
+    setCorrectAnswer(0); // 맞은 갯수 초기화
+    setTotalPlayTime(0); // 전체 플레이 시간 초기화
+    updateRoundData(data[0]); // 첫 라운드로 다시 시작
+    resumeTimer(); // 모달이 닫히면 타이머 재개
+  };
+
+  // 그만하기 버튼 클릭 시
+  const handleQuit = async () => {
     const correctRate = correctAnswer / totalRounds;
     const resultData = {
       kidId: kidId,
-      answerWords: correctWordsList, // 맞춘 단어 리스트만 전송
+      answerWords: correctWordsList,
       gameType: 'SPEED_GAME',
-      playTime: totalPlayTime, // 전체 라운드에서 걸린 총 시간
-      correctRate: correctRate, // 정답률 계산
+      playTime: totalPlayTime,
+      correctRate: correctRate,
       correctCount: correctAnswer,
     };
 
     try {
       await fetchGameResult(accessToken, resultData);
-      nav('/home'); // 마지막 라운드일 때 홈으로 이동
+      nav('/home'); // 홈으로 이동
     } catch (err) {
       showModal('결과 전송에 실패했습니다.');
     }
@@ -230,13 +243,11 @@ const Game1Page = () => {
           <img src={imageUrl} alt="캐릭터 이미지" className="main-content__img-wrap--img" />
         </div>
         <div className="main-content__card-container">
-          {/* options 배열을 순회하며 단어들을 렌더링, 클릭 시 handleOptionClick 호출 */}
           {options.map((option, index) => (
             <div
               key={index}
               className="main-content__card-container--card-wrap"
-              onClick={() => handleOptionClick(option)} // 클릭 시 정답 확인 함수 호출
-            >
+              onClick={() => handleOptionClick(option)}>
               {option}
             </div>
           ))}
@@ -244,7 +255,6 @@ const Game1Page = () => {
       </section>
 
       <section className="footer">
-        {/* 재생하기 버튼에 onClick 이벤트 추가 */}
         <button className="footer__play-button" onClick={playVoice}>
           재생하기
         </button>
@@ -254,8 +264,17 @@ const Game1Page = () => {
       <GameModal
         isOpen={isModalOpen}
         message={modalMessage}
-        isCorrect={isCorrect} // 정답 여부 전달
+        isCorrect={isCorrect}
         onRequestClose={() => setIsModalOpen(false)}
+      />
+
+      {/* 결과 모달 */}
+      <ResultModal
+        isOpen={isResultModalOpen}
+        correctAnswer={correctAnswer}
+        totalRounds={totalRounds}
+        onRetry={handleRetry}
+        onQuit={handleQuit}
       />
     </div>
   );
