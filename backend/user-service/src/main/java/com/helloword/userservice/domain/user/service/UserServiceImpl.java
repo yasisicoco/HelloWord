@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.regex.Pattern;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -19,9 +21,21 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder customPasswordEncoder;
 
+    private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    private static final String PHONE_PATTERN = "^010-\\d{4}-\\d{4}$";
+
     @Override
     public void registerUser(SignupRequest signupRequest) {
         signupRequest.setPassword(customPasswordEncoder.encode(signupRequest.getPassword()));
+
+        if (!Pattern.matches(EMAIL_PATTERN, signupRequest.getEmail())) {
+            throw new ExceptionResponse(CustomException.INVALID_EMAIL_FORMAT);
+        }
+
+        if (!Pattern.matches(PHONE_PATTERN, signupRequest.getPhone())) {
+            throw new ExceptionResponse(CustomException.INVALID_PHONE_FORMAT);
+        }
+
         userRepository.save(User.createUser(signupRequest));
     }
 
