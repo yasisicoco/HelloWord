@@ -156,7 +156,7 @@ const Game1Page = () => {
     const resultData = {
       kidId: kidId,
       answerWords: correctWordsList, // 맞춘 단어 리스트만 전송
-      gameType: 'SPEED_CARD',
+      gameType: 'SPEED_GAME',
       playTime: totalPlayTime, // 전체 라운드에서 걸린 총 시간
       correctRate: correctRate, // 정답률 계산
       correctCount: correctAnswer,
@@ -169,7 +169,7 @@ const Game1Page = () => {
       // console.log(correctRate);
       // console.log(correctAnswer);
       await fecthGameResult(accessToken, resultData);
-      nav('/game-result'); // 결과 전송 후 결과 페이지로 이동
+      showModal('결과가 전송되었습니다.'); // 모달로 결과 전송 완료 메시지 표시
     } catch (err) {
       showModal('결과 전송에 실패했습니다.');
     }
@@ -222,7 +222,16 @@ const Game1Page = () => {
         </button>
       </section>
 
-      <GameModal isOpen={isModalOpen} message={modalMessage} onRequestClose={() => setIsModalOpen(false)} />
+      <GameModal
+        isOpen={isModalOpen}
+        message={modalMessage}
+        onRequestClose={() => {
+          setIsModalOpen(false);
+          if (round === totalRounds - 1) {
+            nav('/home'); // 마지막 라운드일 때 홈으로 이동
+          }
+        }}
+      />
     </div>
   );
 };
