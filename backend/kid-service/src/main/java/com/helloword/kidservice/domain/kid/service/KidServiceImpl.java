@@ -64,11 +64,16 @@ public class KidServiceImpl implements KidService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public KidResponseDto getKid(Long userId, Long kidId) {
         Kid kid = findKidById(kidId);
         checkOwnership(kid.getUserId(), userId);
-        return new KidResponseDto(kid);
+        KidResponseDto kidResponseDto = new KidResponseDto(kid);
+        if(kid.getLevel() == 0) {
+            kid.addExperience(Kid.requiredExperience);
+        }
+        return kidResponseDto;
     }
 
     @Transactional
