@@ -14,7 +14,7 @@ public interface UserService {
 
     boolean checkDuplicatePhone(String phone);
 
-    void deleteUser(Long userId);
+    void deleteUser(Long xUserId, Long userId);
 
-    void updatePassword(Long userId, NewPasswordRequest newPasswordRequest);
+    void updatePassword(Long xUserId, Long userId, NewPasswordRequest newPasswordRequest);
 }
