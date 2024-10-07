@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder customPasswordEncoder;
 
     private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-    private static final String PHONE_PATTERN = "^010-\\d{4}-\\d{4}$";
+    private static final String PHONE_PATTERN = "^\\\\d{11}$";
 
     @Override
     public void registerUser(SignupRequest signupRequest) {
