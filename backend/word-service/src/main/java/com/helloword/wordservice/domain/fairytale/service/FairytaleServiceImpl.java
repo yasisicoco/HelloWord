@@ -23,8 +23,8 @@ public class FairytaleServiceImpl implements FairytaleService {
                 5,
                 List.of(
                         new FairytaleResponseDto.Sentence(
-                                "옛날에 엄마와 오빠, 동생이 살았어요. 어느 날 호랑이가 (엄마)를 잡아먹었어요.",
-                                "https://hellowordbucketb206.s3.ap-northeast-2.amazonaws.com//25ae7071-2f4d-49d0-a690-4e828d96ef1e.jpg",
+                                "옛날에 엄마와 오빠, 동생이 살았어요. 어느 날 호랑이가 ##ceperator##를 잡아먹었어요.",
+                                "https://hellowordbucketb206.s3.ap-northeast-2.amazonaws.com/25ae7071-2f4d-49d0-a690-4e828d96ef1e.jpg",
                                 1,
                                 new FairytaleResponseDto.Word(
                                         "엄마",
@@ -32,8 +32,8 @@ public class FairytaleServiceImpl implements FairytaleService {
                                 )
                         ),
                         new FairytaleResponseDto.Sentence(
-                                "오빠와 동생은 무서워서 나무 위로 올라갔어요.",
-                                "https://hellowordbucketb206.s3.ap-northeast-2.amazonaws.com//8384f5bc-fc38-4b98-9800-75fef4e5373d.jpg",
+                                "오빠와 동생은 무서워서 ##ceperator## 위로 올라갔어요.",
+                                "https://hellowordbucketb206.s3.ap-northeast-2.amazonaws.com/8384f5bc-fc38-4b98-9800-75fef4e5373d.jpg",
                                 2,
                                 new FairytaleResponseDto.Word(
                                         "나무",
@@ -41,8 +41,8 @@ public class FairytaleServiceImpl implements FairytaleService {
                                 )
                         ),
                         new FairytaleResponseDto.Sentence(
-                                "하늘에서 줄을 내려줘서 오빠와 동생은 하늘로 올라갔어요.",
-                                "https://hellowordbucketb206.s3.ap-northeast-2.amazonaws.com//9ae3a642-c8cf-4720-8b9a-4d0e22c4973d.jpg",
+                                "하늘에서 줄을 내려줘서 오빠와 동생은 ##ceperator##로 올라갔어요.",
+                                "https://hellowordbucketb206.s3.ap-northeast-2.amazonaws.com/9ae3a642-c8cf-4720-8b9a-4d0e22c4973d.jpg",
                                 3,
                                 new FairytaleResponseDto.Word(
                                         "하늘",
@@ -50,8 +50,8 @@ public class FairytaleServiceImpl implements FairytaleService {
                                 )
                         ),
                         new FairytaleResponseDto.Sentence(
-                                "호랑이도 따라가려다가 줄이 끊어져서 떨어졌어요.",
-                                "https://hellowordbucketb206.s3.ap-northeast-2.amazonaws.com//ef0e1cf7-6cf4-4834-8dd2-d3500264ee62.jpg",
+                                "##ceperator##도 따라가려다가 줄이 끊어져서 떨어졌어요.",
+                                "https://hellowordbucketb206.s3.ap-northeast-2.amazonaws.com/ef0e1cf7-6cf4-4834-8dd2-d3500264ee62.jpg",
                                 4,
                                 new FairytaleResponseDto.Word(
                                         "호랑이",
@@ -59,8 +59,8 @@ public class FairytaleServiceImpl implements FairytaleService {
                                 )
                         ),
                         new FairytaleResponseDto.Sentence(
-                                "그래서 오빠는 달이 되고, 동생은 해가 되었답니다.",
-                                "https://hellowordbucketb206.s3.ap-northeast-2.amazonaws.com//8ffe5c83-d0a0-47a7-9bda-6ff4f58fd9aa.jpg",
+                                "그래서 오빠는 달이 되고, 동생은 ##ceperator##가 되었답니다.",
+                                "https://hellowordbucketb206.s3.ap-northeast-2.amazonaws.com/8ffe5c83-d0a0-47a7-9bda-6ff4f58fd9aa.jpg",
                                 5,
                                 new FairytaleResponseDto.Word(
                                         "해",
