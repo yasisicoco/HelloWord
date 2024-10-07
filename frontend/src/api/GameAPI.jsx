@@ -40,25 +40,6 @@ export const fetchGame2 = async (accessToken, kidId) => {
   }
 };
 
-export const fetchGame2Result = async (accessToken, gameResult) => {
-  try {
-    const response = await axios.post(`${BASE_URL}/api/games/card-result`, gameResult, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    if (response.data.success && response.data.status === 200) {
-      return response.data.data;
-    } else {
-      throw new Error('서버 응답이 올바르지 않습니다.');
-    }
-  } catch (err) {
-    console.error('게임 결과 전송 실패:', err.message);
-    throw err;
-  }
-};
-
 export const fecthGameResult = async (accessToken, data) => {
   try {
     const response = await axios.post(`${BASE_URL}/api/games/results`, data, {
