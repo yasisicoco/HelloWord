@@ -15,6 +15,8 @@ public enum CustomException {
     METHOD_NOT_ALLOWED(405, "MethodNotAllowedException", "허용되지 않은 HTTP 메서드입니다"),
     NOT_ACCEPTABLE(406, "NotAcceptableException", "허용되지 않는 요청입니다"),
     CONFLICT(409, "ConflictException", "충돌이 발생했습니다"),
+    DUPLICATE_EMAIL(409, "DuplicateEmailException", "이미 사용 중인 이메일입니다"),
+    DUPLICATE_PHONE(409, "DuplicatePhoneException", "이미 사용 중인 전화번호입니다"),
     UNSUPPORTED_MEDIA_TYPE(415, "UnsupportedMediaTypeException", "지원하지 않는 미디어 타입입니다"),
     INTERNAL_SERVER_ERROR(500, "InternalServerErrorException", "서버 내부 오류가 발생했습니다");
 
