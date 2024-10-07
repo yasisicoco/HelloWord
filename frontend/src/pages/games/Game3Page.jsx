@@ -28,6 +28,7 @@ const Game3Page = () => {
   const [gameStartTime, setGameStartTime] = useState(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
   const accessToken = useSelector((state) => state.auth.accessToken);
   const kidId = useSelector((state) => state.kid.selectedKidId);
@@ -98,6 +99,7 @@ const Game3Page = () => {
   useEffect(() => {
     const fetchGameData = async () => {
       if (!accessToken) return;
+      setIsDataLoading(true);
       try {
         const rounds = await fetchGame3(accessToken, kidId); // API로부터 rounds 가져오기
 
@@ -117,6 +119,8 @@ const Game3Page = () => {
         }
       } catch (err) {
         showModal('데이터를 불러오는 데 실패했습니다.');
+      } finally {
+        setIsDataLoading(false);
       }
     };
     fetchGameData();
@@ -158,6 +162,26 @@ const Game3Page = () => {
     }
     return [];
   }, [blocks, round]);
+
+  if (isDataLoading) {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          color: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          fontSize: '18px',
+          zIndex: 1000,
+        }}>
+        게임 정보를 불러오는 중이에요!
+      </div>
+    );
+  }
 
   return (
     <div className="game3-page">

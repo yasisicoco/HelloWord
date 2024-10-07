@@ -44,26 +44,6 @@ export const fetchGame2 = async (accessToken, kidId) => {
   }
 };
 
-// 삭제 되어야하는 API
-export const fetchGame2Result = async (accessToken, gameResult) => {
-  try {
-    const response = await axios.post(`${BASE_URL}/api/games/card-result`, gameResult, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    if (response.data.success && response.data.status === 200) {
-      return response.data.data;
-    } else {
-      throw new Error('서버 응답이 올바르지 않습니다.');
-    }
-  } catch (error) {
-    console.error('게임 결과 전송 실패:', error.message);
-    throw error;
-  }
-};
-
 export const fetchGame3 = async (accessToken, kidId) => {
   try {
     const response = await axios.get(`${BASE_URL}/api/games/pair-cards?kidId=${kidId}`, {

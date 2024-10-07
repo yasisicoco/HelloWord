@@ -70,14 +70,13 @@ const Game2Page = () => {
   }, [resetTranscript]);
 
   const fetchGameData = useCallback(async () => {
-    if (!accessToken) {
-      showModal('로그인이 필요합니다.');
-      return;
-    }
+    if (!accessToken) return;
+
     setIsDataLoading(true);
     try {
       const rounds = await fetchGame2(accessToken, kidId);
       if (rounds && rounds.length > 0) {
+        console.log(rounds);
         setData(rounds);
         setWord(rounds[0].word);
         setImage(rounds[0].imageUrl);
@@ -91,7 +90,7 @@ const Game2Page = () => {
     } finally {
       setIsDataLoading(false);
     }
-  }, [accessToken, kidId, showModal]);
+  }, [accessToken, kidId]);
 
   useEffect(() => {
     resetGame();
@@ -137,28 +136,6 @@ const Game2Page = () => {
   // TimeBar 시간초 관리 Effect
   const { timeLeft, resetTimer } = useTimer(10, onTimeUp);
 
-  // 첫 렌더링 시 토큰, 데이터, 이미지, 단어 받아오는 Effect
-  useEffect(() => {
-    const fetchGameData = async () => {
-      if (!accessToken) return;
-      try {
-        const rounds = await fetchGame2(accessToken, kidId);
-        if (rounds && rounds.length > 0) {
-          // rounds가 존재하고 비어있지 않은지 확인
-          setData(rounds);
-          setWord(rounds[0].word);
-          setImage(rounds[0].imageUrl);
-          setGameStartTime(new Date());
-        } else {
-          showModal('게임 데이터가 비어있습니다.');
-        }
-      } catch (err) {
-        showModal('데이터를 불러오는 데 실패했습니다.');
-      }
-    };
-    fetchGameData();
-  }, [accessToken, kidId]); // kidId를 의존성 배열에 추가
-
   // 음성확인과 그에 따른 처리 Effect
   useEffect(() => {
     if (listening) {
@@ -197,7 +174,23 @@ const Game2Page = () => {
   }
 
   if (isDataLoading) {
-    return <div className="loading-overlay">게임 데이터를 불러오는 중...</div>;
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          color: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          fontSize: '18px',
+          zIndex: 1000,
+        }}>
+        게임 정보를 불러오는 중이에요!
+      </div>
+    );
   }
 
   return (
