@@ -54,7 +54,7 @@ public class Kid {
         this.gender = gender;
         this.profileImageUrl = (profileImageUrl != null) ? profileImageUrl : "";
         this.mainCharacter = Character.DUSTY;
-        this.level = 1;
+        this.level = 0;
         this.experience = 0;
     }
 
@@ -68,11 +68,12 @@ public class Kid {
                 .build();
     }
 
+    public static final int requiredExperience = 100;
     public void addExperience(int experiencePoints) {
         this.experience += experiencePoints;
 
-        while (this.experience >= 100) {
-            this.experience -= 100;
+        while (this.experience >= requiredExperience) {
+            this.experience -= requiredExperience;
             this.level++;
         }
     }
