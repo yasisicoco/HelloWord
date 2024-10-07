@@ -11,6 +11,7 @@ import { fetchGameResult } from '../../api/GameAPI'; // API 불러오기
 import TimeBar from '../../components/TimeBar';
 import GameModal from '../../components/GameModal';
 import useTimer from '../../hooks/useTimer';
+import ResultModal from '../../components/ResultModal';
 
 // style
 import './Game1Page.sass';
@@ -175,7 +176,7 @@ const Game1Page = () => {
     };
 
     try {
-      await fecthGameResult(accessToken, resultData);
+      await fetchGameResult(accessToken, resultData);
       nav('/home'); // 마지막 라운드일 때 홈으로 이동
     } catch (err) {
       showModal('결과 전송에 실패했습니다.');
