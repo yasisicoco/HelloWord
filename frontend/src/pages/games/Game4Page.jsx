@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 // API import
 import { fetchGame4 } from '../../api/GameAPI';
-import { fecthGameResult } from '../../api/GameAPI'; // API 불러오기
+import { fetchGameResult } from '../../api/GameAPI'; // API 불러오기
 
 // compo
 import TimeBar from '../../components/TimeBar';
@@ -34,6 +34,7 @@ const Game4Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달
   const [modalMessage, setModalMessage] = useState('');
   const [roundFinished, setRoundFinished] = useState(false); // 라운드 완료 여부 상태 추가
+  const [isDataLoading, setIsDataLoading] = useState(true);
   const kidId = useSelector((state) => state.kid.selectedKidId); // 선택된 아이 ID 확인
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -84,6 +85,8 @@ const Game4Page = () => {
   useEffect(() => {
     const fetchGameData = async () => {
       if (!accessToken) return;
+
+      setIsDataLoading(true);
       try {
         const rounds = await fetchGame4(accessToken, kidId);
         setData(rounds); // 전체 데이터를 저장
@@ -93,6 +96,8 @@ const Game4Page = () => {
         }
       } catch (err) {
         showModal('데이터를 불러오는 데 실패했습니다.');
+      } finally {
+        setIsDataLoading(false);
       }
     };
     fetchGameData();
@@ -168,12 +173,32 @@ const Game4Page = () => {
       // console.log(totalPlayTime);
       // console.log(correctRate);
       // console.log(correctAnswer);
-      await fecthGameResult(accessToken, resultData);
+      await fetchGameResult(accessToken, resultData);
       nav('/home'); // 결과 전송 후 결과 페이지로 이동
     } catch (err) {
       showModal('결과 전송에 실패했습니다.');
     }
   };
+
+  if (isDataLoading) {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          color: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          fontSize: '18px',
+          zIndex: 1000,
+        }}>
+        게임 정보를 불러오는 중이에요!
+      </div>
+    );
+  }
 
   return (
     <div className="game4-page">

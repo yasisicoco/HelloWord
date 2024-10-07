@@ -1,12 +1,12 @@
 // hook
 import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { useSelector } from 'react-redux';
 
 // API import
-import { fetchGame2, fecthGameResult } from '../../api/GameAPI';
+import { fetchGame2, fetchGameResult } from '../../api/GameAPI';
 
 // compo
 import TimeBar from '../../components/TimeBar';
@@ -19,6 +19,7 @@ import './Game2Page.sass';
 
 const Game2Page = () => {
   const nav = useNavigate();
+  const [isListening, setIsListening] = useState(false);
   const [data, setData] = useState(null);
   const [round, setRound] = useState(0);
   const [word, setWord] = useState('');
@@ -30,17 +31,18 @@ const Game2Page = () => {
   const [correctWords, setCorrectWords] = useState([]);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
   const accessToken = useSelector((state) => state.auth.accessToken);
   const kidId = useSelector((state) => state.kid.selectedKidId);
 
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
-  const showModal = (message) => {
+  const showModal = useCallback((message) => {
     setIsModalOpen(true);
     setModalMessage(message);
     setTimeout(() => setIsModalOpen(false), 1000);
-  };
+  }, []);
 
   const nextRound = () => {
     if (data && round < data.length - 1) {
@@ -50,12 +52,53 @@ const Game2Page = () => {
       setImage(data[nextRoundIndex].imageUrl);
       resetTimer();
       resetTranscript();
-    } else {
+    } else if (data) {
       endGame();
     }
   };
 
+  const resetGame = useCallback(() => {
+    setRound(0);
+    setWord('');
+    setImage('');
+    setCorrectAnswer(0);
+    setCorrectWords([]);
+    setGameStartTime(null);
+    setIsResultOpen(false);
+    setIsLoading(false);
+    resetTranscript();
+  }, [resetTranscript]);
+
+  const fetchGameData = useCallback(async () => {
+    if (!accessToken) return;
+
+    setIsDataLoading(true);
+    try {
+      const rounds = await fetchGame2(accessToken, kidId);
+      if (rounds && rounds.length > 0) {
+        console.log(rounds);
+        setData(rounds);
+        setWord(rounds[0].word);
+        setImage(rounds[0].imageUrl);
+        setGameStartTime(new Date());
+      } else {
+        showModal('게임 데이터가 비어있습니다.');
+      }
+    } catch (err) {
+      console.error('데이터 불러오기 실패:', err);
+      showModal('데이터를 불러오는 데 실패했습니다. 다시 시도해 주세요.');
+    } finally {
+      setIsDataLoading(false);
+    }
+  }, [accessToken, kidId]);
+
+  useEffect(() => {
+    resetGame();
+    fetchGameData();
+  }, [resetGame, fetchGameData]);
+
   const endGame = async () => {
+    if (!data) return;
     setIsLoading(true);
     const endTime = new Date();
     const playTime = Math.round((endTime - gameStartTime) / 1000);
@@ -71,7 +114,7 @@ const Game2Page = () => {
     };
 
     try {
-      await fecthGameResult(accessToken, gameResult);
+      await fetchGameResult(accessToken, gameResult);
     } catch (error) {
       console.error('게임 결과 저장 실패:', error);
       showModal('게임 결과 저장에 실패했습니다. 그러나 결과를 확인할 수 있습니다.');
@@ -84,6 +127,7 @@ const Game2Page = () => {
     }
   };
 
+  // 시간초과
   const onTimeUp = () => {
     showModal('시간이 초과되었습니다. 틀렸습니다 😞');
     setTimeout(nextRound, 1000);
@@ -92,60 +136,61 @@ const Game2Page = () => {
   // TimeBar 시간초 관리 Effect
   const { timeLeft, resetTimer } = useTimer(10, onTimeUp);
 
-  // 첫 렌더링 시 토큰, 데이터, 이미지, 단어 받아오는 Effect
-  useEffect(() => {
-    const fetchGameData = async () => {
-      if (!accessToken) return;
-      try {
-        const rounds = await fetchGame2(accessToken, kidId);
-        setData(rounds);
-        setWord(rounds[0].word);
-        setImage(rounds[0].imageUrl);
-        setGameStartTime(new Date());
-      } catch (err) {
-        showModal('데이터를 불러오는 데 실패했습니다.');
-      }
-    };
-    fetchGameData();
-  }, [accessToken]);
-
-  // 음성확인과 그에따른 처리 Effect
+  // 음성확인과 그에 따른 처리 Effect
   useEffect(() => {
     if (listening) {
       if (transcript === word) {
-        setCorrectAnswer((answer) => answer + 1);
-        setCorrectWords([...correctWords, { id: data[round].id, word: transcript }]); //맞은 단어 넣기
-        SpeechRecognition.stopListening();
+        setCorrectAnswer((prev) => prev + 1);
+        setCorrectWords((prev) => [...prev, { id: data[round].wordId, word: transcript }]);
         showModal('정답입니다! 🎉');
         console.log('맞:', transcript);
         nextRound();
       } else if (transcript.length >= word.length && transcript !== word) {
-        SpeechRecognition.stopListening();
         console.log('틀:', transcript);
         resetTranscript();
         showModal('틀렸습니다 😞');
-        setTimeout(nextRound, 2000);
       }
     }
-  }, [transcript, listening, word]);
+  }, [transcript, listening, word, round, data, showModal, nextRound]);
 
   // 마이크 클릭 이벤트
-  const toggleListening = () => {
-    if (listening) {
+  const toggleListening = useCallback(() => {
+    if (isListening) {
       SpeechRecognition.stopListening();
+      setIsListening(false);
     } else {
       resetTranscript();
       SpeechRecognition.startListening({ continuous: true, language: 'ko-KR' });
+      setIsListening(true);
     }
-  };
+  }, [isListening, resetTranscript]);
 
-  const getMicState = () => {
-    if (!listening) return 'mic-off';
-    return listening ? 'mic-on' : 'mic-wait';
-  };
+  const getMicState = useCallback(() => {
+    return isListening ? 'mic-on' : 'mic-off';
+  }, [isListening]);
 
   if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
     return <div>이 브라우저는 음성 인식을 지원하지 않습니다.</div>;
+  }
+
+  if (isDataLoading) {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          color: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          fontSize: '18px',
+          zIndex: 1000,
+        }}>
+        게임 정보를 불러오는 중이에요!
+      </div>
+    );
   }
 
   return (
