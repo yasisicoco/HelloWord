@@ -1,7 +1,6 @@
-// hook
 import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 // API import
@@ -10,7 +9,6 @@ import { fetchGame3, fetchGameResult } from '../../api/GameAPI';
 // compo
 import TimeBar from '../../components/TimeBar';
 import GameModal from '../../components/GameModal';
-import GameResult from '../../components/GameResult';
 import useTimer from '../../hooks/useTimer';
 
 // style
@@ -18,109 +16,76 @@ import './Game3Page.sass';
 
 const Game3Page = () => {
   const nav = useNavigate();
-  const [blocks, setBlocks] = useState([]);
+  const [data, setData] = useState(null);
   const [round, setRound] = useState(0);
   const [selectedCards, setSelectedCards] = useState([]);
   const [correctWords, setCorrectWords] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState(0);
+  const [totalRounds, setTotalRounds] = useState(0);
+  const [totalPlayTime, setTotalPlayTime] = useState(0);
+  const [roundStartTime, setRoundStartTime] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const [gameStartTime, setGameStartTime] = useState(null);
-  const [isResultOpen, setIsResultOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [roundFinished, setRoundFinished] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(true);
-  const [isCorrect, setIsCorrect] = useState(null); // 정답 여부 상태 추가
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [blocks, setBlocks] = useState([]);
 
-  const accessToken = useSelector((state) => state.auth.accessToken);
   const kidId = useSelector((state) => state.kid.selectedKidId);
+  const accessToken = useSelector((state) => state.auth.accessToken);
 
-  // Fisher-Yates 알고리즘을 사용하여 배열을 섞는 함수
   const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
-  const shuffledBlocks = useMemo(() => shuffleArray([...blocks]), [blocks]);
-
-  const showModal = (message) => {
-    setIsModalOpen(true);
-    setModalMessage(message);
-    pauseTimer(); // 모달이 열리면 타이머 일시정지
-    setTimeout(() => {
-      setIsModalOpen(false);
-      resumeTimer(); // 모달이 닫히면 타이머 재개
-    }, 1000);
-  };
-
-  const nextRound = () => {
-    if (round < 4) {
-      setRound((prevRound) => prevRound + 1);
-      setSelectedCards([]); // 선택된 카드 초기화
-      resetTimer();
-    } else {
-      endGame();
-    }
-  };
-
-  const endGame = async () => {
-    setIsLoading(true);
-    const endTime = new Date();
-    const playTime = Math.round((endTime - gameStartTime) / 1000);
-    const correctRate = correctAnswer / 20; // 총 5라운드, 라운드당 4개의 단어
-
-    const gameResult = {
-      kidId: kidId,
-      answerWords: correctWords,
-      gameType: 'PAIR_GAME',
-      playTime: playTime,
-      correctRate: correctRate,
-      correctCount: correctAnswer,
-    };
-
-    try {
-      await fetchGameResult(accessToken, gameResult);
-    } catch (error) {
-      console.error('게임 결과 저장 실패:', error);
-      showModal('게임 결과 저장에 실패했습니다. 그러나 결과를 확인할 수 있습니다.');
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-        setIsResultOpen(true);
-      }, 3000);
-    }
+    return array.sort(() => Math.random() - 0.5);
   };
 
   const onTimeUp = () => {
     showModal('시간이 초과되었습니다. 틀렸습니다 😞');
-    setTimeout(nextRound, 1000);
+    handleNextRound(false);
   };
 
-  // TimeBar 시간초 관리 Effect
-  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(10, onTimeUp); // pauseTimer, resumeTimer 추가
+  const showModal = (message, isCorrect) => {
+    setIsModalOpen(true);
+    setModalMessage(message);
+    pauseTimer();
+    setTimeout(() => {
+      setIsModalOpen(false);
+      resumeTimer();
+    }, 1000);
+    setIsCorrect(isCorrect);
+  };
 
-  // 첫 렌더링 시 토큰, 데이터, 이미지, 단어 받아오는 Effect
+  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(20, onTimeUp);
+
+  const updateRoundData = (currentRoundData) => {
+    const wordCards = currentRoundData.words.map((word) => ({
+      type: 'word',
+      id: word.wordId,
+      content: word.word,
+      isMatched: false,
+    }));
+    const imageCards = currentRoundData.words.map((word) => ({
+      type: 'image',
+      id: word.wordId,
+      content: word.imageUrl,
+      isMatched: false,
+    }));
+    const allCards = [...wordCards, ...imageCards];
+    const shuffledBlocks = shuffleArray(allCards);
+    setBlocks(shuffledBlocks);
+    resetTimer();
+    setRoundStartTime(Date.now());
+  };
+
   useEffect(() => {
     const fetchGameData = async () => {
       if (!accessToken) return;
       setIsDataLoading(true);
       try {
-        const rounds = await fetchGame3(accessToken, kidId); // API로부터 rounds 가져오기
-
-        if (rounds && rounds.length >= 5) {
-          const allRounds = rounds.map((round) =>
-            shuffleArray(
-              round.words.flatMap((word) => [
-                { type: 'image', id: `${word.word_id}-image`, content: word.imageUrl },
-                { type: 'word', id: `${word.word_id}-word`, content: word.word },
-              ]),
-            ),
-          );
-          setBlocks(allRounds);
-          setGameStartTime(new Date());
-        } else {
-          showModal('데이터가 충분하지 않습니다.');
+        const rounds = await fetchGame3(accessToken, kidId);
+        setData(rounds);
+        setTotalRounds(rounds.length);
+        if (rounds && rounds.length > 0) {
+          updateRoundData(rounds[0]);
         }
       } catch (err) {
         showModal('데이터를 불러오는 데 실패했습니다.');
@@ -129,44 +94,87 @@ const Game3Page = () => {
       }
     };
     fetchGameData();
-  }, [accessToken]);
+  }, [accessToken, kidId]);
+
+  useEffect(() => {
+    if (data && data[round]) {
+      updateRoundData(data[round]);
+    }
+  }, [round, data]);
+
+  const handleNextRound = (isAllCorrect) => {
+    const roundEndTime = Date.now();
+    const timeTaken = (roundEndTime - roundStartTime) / 1000;
+    setTotalPlayTime((prevTime) => prevTime + timeTaken);
+
+    if (isAllCorrect) {
+      setCorrectAnswer((prevCount) => prevCount + 4); // 4 pairs per round
+    }
+
+    setRoundFinished(true);
+  };
+
+  useEffect(() => {
+    if (roundFinished) {
+      if (round === totalRounds - 1) {
+        sendGameResult();
+      } else {
+        setRound((prevRound) => prevRound + 1);
+      }
+      setRoundFinished(false);
+      setSelectedCards([]);
+    }
+  }, [roundFinished, round, totalRounds]);
 
   const handleCardClick = (block) => {
-    if (selectedCards.includes(block) || selectedCards.length >= 2) return;
+    if (selectedCards.includes(block) || selectedCards.length >= 2 || block.isMatched) return;
 
     const newSelectedCards = [...selectedCards, block];
     setSelectedCards(newSelectedCards);
 
     if (newSelectedCards.length === 2) {
-      if (
-        newSelectedCards[0].type !== newSelectedCards[1].type &&
-        newSelectedCards[0].id.split('-')[0] === newSelectedCards[1].id.split('-')[0]
-      ) {
-        // 카드가 매칭되었을 경우
-        setCorrectAnswer((prev) => prev + 1);
-        setCorrectWords((prevWords) => [...prevWords, newSelectedCards[0].id.split('-')[0]]);
+      if (newSelectedCards[0].id === newSelectedCards[1].id && newSelectedCards[0].type !== newSelectedCards[1].type) {
+        showModal('맞았습니다! 😊', true);
+        setCorrectWords((prevWords) => [
+          ...prevWords,
+          { id: newSelectedCards[0].id, word: newSelectedCards.find((card) => card.type === 'word').content },
+        ]);
         setTimeout(() => {
+          setBlocks((prevBlocks) =>
+            prevBlocks.map((b) => (b.id === newSelectedCards[0].id ? { ...b, isMatched: true } : b)),
+          );
           setSelectedCards([]);
-          if (correctAnswer + 1 === 4) {
-            nextRound(); // 4개의 단어를 모두 맞추었을 때 다음 라운드로 넘어감
+          if (blocks.filter((b) => !b.isMatched).length === 2) {
+            handleNextRound(true);
           }
-        }, 500);
+        }, 1000);
       } else {
-        // 카드가 매칭되지 않았을 경우
+        showModal('틀렸습니다. 😞', false);
         setTimeout(() => {
           setSelectedCards([]);
-          showModal('틀렸습니다 😞');
         }, 1000);
       }
     }
   };
 
-  const currentBlocks = useMemo(() => {
-    if (blocks.length > round) {
-      return blocks[round];
+  const sendGameResult = async () => {
+    const correctRate = correctAnswer / (totalRounds * 4);
+    const resultData = {
+      kidId: kidId,
+      answerWords: correctWords,
+      gameType: 'PAIR_GAME',
+      playTime: totalPlayTime,
+      correctRate: correctRate,
+      correctCount: correctAnswer,
+    };
+
+    try {
+      await fetchGameResult(accessToken, resultData);
+      nav('/home');
+    } catch (err) {
+      showModal('결과 전송에 실패했습니다.');
     }
-    return [];
-  }, [blocks, round]);
+  };
 
   if (isDataLoading) {
     return (
@@ -190,25 +198,27 @@ const Game3Page = () => {
 
   return (
     <div className="game3-page">
-      {isLoading && <div className="loading-overlay">로딩 중...</div>}
       <section className="top-nav">
         <button onClick={() => nav(-1)} className="top-nav__back-space">
           뒤로가기
         </button>
         <div className="top-nav__time-stamp">
-          <TimeBar className="top-nav__time-stamp--timebar" time={timeLeft} />
+          <TimeBar time={timeLeft} />
         </div>
-        <div className="top-nav__bookmarker">{round + 1} / 5</div>
+        <div className="top-nav__bookmarker">
+          {round + 1} / {totalRounds}
+        </div>
       </section>
 
       <section className="main-content">
-        {currentBlocks.map((block, index) => (
+        {blocks.map((block) => (
           <div
-            key={block.id}
-            className={`main-content__card ${selectedCards.includes(block) ? 'selected' : ''}`}
+            key={`${block.id}-${block.type}`}
+            className={`main-content__card ${selectedCards.includes(block) ? 'main-content__card--selected' : ''}`}
+            style={{ visibility: block.isMatched ? 'hidden' : 'visible' }}
             onClick={() => handleCardClick(block)}>
             {block.type === 'image' ? (
-              <img className="main-content__card--img" src={block.content} alt={`Game Image ${index + 1}`} />
+              <img src={block.content} alt="Game Image" className="main-content__card--img" />
             ) : (
               <div className="main-content__card--word">{block.content}</div>
             )}
@@ -219,16 +229,8 @@ const Game3Page = () => {
       <GameModal
         isOpen={isModalOpen}
         message={modalMessage}
-        isCorrect={isCorrect} // 정답 여부 전달
+        isCorrect={isCorrect}
         onRequestClose={() => setIsModalOpen(false)}
-      />
-      <GameResult
-        isOpen={isResultOpen}
-        onClose={() => {
-          setIsResultOpen(false);
-        }}
-        correctCount={correctAnswer}
-        totalQuestions={20} // 총 20개의 단어 (5 라운드 * 4 단어)
       />
     </div>
   );
