@@ -32,6 +32,7 @@ const Game2Page = () => {
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [isCorrect, setIsCorrect] = useState(null); // 정답 여부 상태 추가
 
   const accessToken = useSelector((state) => state.auth.accessToken);
   const kidId = useSelector((state) => state.kid.selectedKidId);
@@ -41,7 +42,11 @@ const Game2Page = () => {
   const showModal = useCallback((message) => {
     setIsModalOpen(true);
     setModalMessage(message);
-    setTimeout(() => setIsModalOpen(false), 1000);
+    pauseTimer(); // 모달이 열리면 타이머 일시정지
+    setTimeout(() => {
+      setIsModalOpen(false);
+      resumeTimer(); // 모달이 닫히면 타이머 재개
+    }, 1000);
   }, []);
 
   const nextRound = () => {
@@ -134,7 +139,7 @@ const Game2Page = () => {
   };
 
   // TimeBar 시간초 관리 Effect
-  const { timeLeft, resetTimer } = useTimer(10, onTimeUp);
+  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(10, onTimeUp); // pauseTimer, resumeTimer 추가
 
   // 음성확인과 그에 따른 처리 Effect
   useEffect(() => {
@@ -143,10 +148,8 @@ const Game2Page = () => {
         setCorrectAnswer((prev) => prev + 1);
         setCorrectWords((prev) => [...prev, { id: data[round].wordId, word: transcript }]);
         showModal('정답입니다! 🎉');
-        console.log('맞:', transcript);
         nextRound();
       } else if (transcript.length >= word.length && transcript !== word) {
-        console.log('틀:', transcript);
         resetTranscript();
         showModal('틀렸습니다 😞');
       }
@@ -223,7 +226,12 @@ const Game2Page = () => {
         </div>
       </section>
 
-      <GameModal isOpen={isModalOpen} message={modalMessage} onRequestClose={() => setIsModalOpen(false)} />
+      <GameModal
+        isOpen={isModalOpen}
+        message={modalMessage}
+        isCorrect={isCorrect} // 정답 여부 전달
+        onRequestClose={() => setIsModalOpen(false)}
+      />
       <GameResult
         isOpen={isResultOpen}
         onClose={() => {
