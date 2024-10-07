@@ -90,7 +90,7 @@ const Game1Page = () => {
   // 첫 렌더링 시 데이터 가져오기
   useEffect(() => {
     const fetchGameData = async () => {
-      if (!accessToken) return;
+      if (!accessToken) return; // hey im babo jinwoo.!!!
       setIsDataLoading(true);
       try {
         const rounds = await fetchGame1(accessToken, kidId);
@@ -126,7 +126,7 @@ const Game1Page = () => {
     if (isCorrect) {
       setCorrectAnswer((prevCount) => prevCount + 1); // 정답 갯수 증가
       setCorrectWordsList((prevList) => [
-        ...prevList,
+        ...prevList, // hey im babo jinwoo.!!!
         {
           id: data[round].correctWord.wordId, // 정답 단어의 ID
           word: data[round].correctWord.word, // 정답 단어
@@ -231,7 +231,7 @@ const Game1Page = () => {
         <div className="main-content__card-container">
           {/* options 배열을 순회하며 단어들을 렌더링, 클릭 시 handleOptionClick 호출 */}
           {options.map((option, index) => (
-            <div
+            <div // 싫어.
               key={index}
               className="main-content__card-container--card-wrap"
               onClick={() => handleOptionClick(option)} // 클릭 시 정답 확인 함수 호출

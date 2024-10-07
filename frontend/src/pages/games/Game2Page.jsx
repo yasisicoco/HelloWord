@@ -32,48 +32,66 @@ const Game2Page = () => {
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(true);
-  const [isCorrect, setIsCorrect] = useState(null); // 정답 여부 상태 추가
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [totalRounds, setTotalRounds] = useState(0);
+  const [totalPlayTime, setTotalPlayTime] = useState(0);
+  const [roundStartTime, setRoundStartTime] = useState(null);
 
   const accessToken = useSelector((state) => state.auth.accessToken);
   const kidId = useSelector((state) => state.kid.selectedKidId);
-
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
-  const showModal = useCallback((message) => {
+  // 시간 초과 시 라운드 넘기기
+  const onTimeUp = () => {
+    showModal('시간이 초과되었습니다. 😞', false);
+    handleNextRound(false);
+  };
+
+  // 모달 표시 함수
+  const showModal = (message, isCorrect) => {
     setIsModalOpen(true);
     setModalMessage(message);
-    pauseTimer(); // 모달이 열리면 타이머 일시정지
+    pauseTimer();
     setTimeout(() => {
       setIsModalOpen(false);
-      resumeTimer(); // 모달이 닫히면 타이머 재개
+      resumeTimer();
     }, 1000);
-  }, []);
+    setIsCorrect(isCorrect);
+  };
 
-  const nextRound = () => {
-    if (data && round < data.length - 1) {
+  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(10, onTimeUp);
+
+  // 다음 라운드로 이동하는 함수
+  const handleNextRound = (isCorrect) => {
+    const roundEndTime = Date.now();
+    const timeTaken = (roundEndTime - roundStartTime) / 1000;
+    setTotalPlayTime((prevTime) => prevTime + timeTaken);
+
+    if (isCorrect) {
+      setCorrectAnswer((prevCount) => prevCount + 1);
+      setCorrectWords((prevList) => [
+        ...prevList,
+        {
+          id: data[round].wordId,
+          word: data[round].word,
+        },
+      ]);
+    }
+
+    if (round < totalRounds - 1) {
       const nextRoundIndex = round + 1;
       setRound(nextRoundIndex);
       setWord(data[nextRoundIndex].word);
       setImage(data[nextRoundIndex].imageUrl);
       resetTimer();
       resetTranscript();
-    } else if (data) {
-      endGame();
+      setRoundStartTime(Date.now());
+    } else {
+      sendGameResult();
     }
   };
 
-  const resetGame = useCallback(() => {
-    setRound(0);
-    setWord('');
-    setImage('');
-    setCorrectAnswer(0);
-    setCorrectWords([]);
-    setGameStartTime(null);
-    setIsResultOpen(false);
-    setIsLoading(false);
-    resetTranscript();
-  }, [resetTranscript]);
-
+  // 게임 데이터 가져오기
   const fetchGameData = useCallback(async () => {
     if (!accessToken) return;
 
@@ -81,83 +99,68 @@ const Game2Page = () => {
     try {
       const rounds = await fetchGame2(accessToken, kidId);
       if (rounds && rounds.length > 0) {
-        console.log(rounds);
         setData(rounds);
         setWord(rounds[0].word);
         setImage(rounds[0].imageUrl);
         setGameStartTime(new Date());
+        setTotalRounds(rounds.length);
+        setRoundStartTime(Date.now());
       } else {
-        showModal('게임 데이터가 비어있습니다.');
+        showModal('게임 데이터가 비어있습니다.', false);
       }
     } catch (err) {
       console.error('데이터 불러오기 실패:', err);
-      showModal('데이터를 불러오는 데 실패했습니다. 다시 시도해 주세요.');
+      showModal('데이터를 불러오는 데 실패했습니다. 다시 시도해 주세요.', false);
     } finally {
       setIsDataLoading(false);
     }
   }, [accessToken, kidId]);
 
-  useEffect(() => {
-    resetGame();
-    fetchGameData();
-  }, [resetGame, fetchGameData]);
-
-  const endGame = async () => {
+  // 게임 결과 전송 함수
+  const sendGameResult = async () => {
     if (!data) return;
     setIsLoading(true);
-    const endTime = new Date();
-    const playTime = Math.round((endTime - gameStartTime) / 1000);
-    const correctRate = correctAnswer / data.length;
+    const correctRate = correctAnswer / totalRounds;
 
     const gameResult = {
       kidId: kidId,
       answerWords: correctWords,
       gameType: 'SPEECH_GAME',
-      playTime: playTime,
+      playTime: Math.round(totalPlayTime),
       correctRate: correctRate,
       correctCount: correctAnswer,
     };
 
     try {
       await fetchGameResult(accessToken, gameResult);
-    } catch (error) {
-      console.error('게임 결과 저장 실패:', error);
-      showModal('게임 결과 저장에 실패했습니다. 그러나 결과를 확인할 수 있습니다.');
+      nav('/home');
+    } catch (err) {
+      showModal('결과 전송에 실패했습니다.', false);
     } finally {
-      // 성공하든 실패하든 3초 후에 로딩을 끝내고 결과 창을 표시합니다.
-      setTimeout(() => {
-        setIsLoading(false);
-        setIsResultOpen(true);
-      }, 3000);
+      setIsLoading(false);
     }
   };
 
-  // 시간초과
-  const onTimeUp = () => {
-    showModal('시간이 초과되었습니다. 틀렸습니다 😞');
-    setTimeout(nextRound, 1000);
-  };
+  // 초기 데이터 로드
+  useEffect(() => {
+    fetchGameData();
+  }, [fetchGameData]);
 
-  // TimeBar 시간초 관리 Effect
-  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(10, onTimeUp); // pauseTimer, resumeTimer 추가
-
-  // 음성확인과 그에 따른 처리 Effect
+  // 음성 인식 결과 처리
   useEffect(() => {
     if (listening) {
       if (transcript === word) {
-        setCorrectAnswer((prev) => prev + 1);
-        setCorrectWords((prev) => [...prev, { id: data[round].wordId, word: transcript }]);
-        showModal('정답입니다! 🎉');
-        nextRound();
+        showModal('정답입니다! 🎉', true);
+        handleNextRound(true);
       } else if (transcript.length >= word.length && transcript !== word) {
         resetTranscript();
-        showModal('틀렸습니다 😞');
+        showModal('틀렸습니다 😞', false);
       }
     }
-  }, [transcript, listening, word, round, data, showModal, nextRound]);
+  }, [transcript, listening, word, round, data]);
 
-  // 마이크 클릭 이벤트
-  const toggleListening = useCallback(() => {
+  // 마이크 토글 함수
+  const toggleListening = () => {
     if (isListening) {
       SpeechRecognition.stopListening();
       setIsListening(false);
@@ -166,8 +169,9 @@ const Game2Page = () => {
       SpeechRecognition.startListening({ continuous: true, language: 'ko-KR' });
       setIsListening(true);
     }
-  }, [isListening, resetTranscript]);
+  };
 
+  // 마이크 상태 가져오기
   const getMicState = useCallback(() => {
     return isListening ? 'mic-on' : 'mic-off';
   }, [isListening]);
@@ -207,7 +211,7 @@ const Game2Page = () => {
           <TimeBar time={timeLeft} />
         </div>
         <div className="top-nav__bookmarker">
-          {round + 1} / {data ? data.length : 0}
+          {round + 1} / {totalRounds}
         </div>
       </section>
 
@@ -229,7 +233,7 @@ const Game2Page = () => {
       <GameModal
         isOpen={isModalOpen}
         message={modalMessage}
-        isCorrect={isCorrect} // 정답 여부 전달
+        isCorrect={isCorrect}
         onRequestClose={() => setIsModalOpen(false)}
       />
       <GameResult
@@ -238,7 +242,7 @@ const Game2Page = () => {
           setIsResultOpen(false);
         }}
         correctCount={correctAnswer}
-        totalQuestions={data ? data.length : 0}
+        totalQuestions={totalRounds}
       />
     </div>
   );
