@@ -3,6 +3,7 @@ package com.helloword.wordservice.domain.word.service;
 import com.helloword.wordservice.domain.recognitionrate.model.RecognitionRate;
 import com.helloword.wordservice.domain.recognitionrate.repository.RecognitionRateRepository;
 import com.helloword.wordservice.domain.word.dto.response.GameWordResponseDto;
+import com.helloword.wordservice.domain.word.dto.response.WordsResponseDto;
 import com.helloword.wordservice.domain.word.model.AnswerWordLog;
 import com.helloword.wordservice.domain.word.model.Word;
 import com.helloword.wordservice.domain.word.repository.WordRepository;
@@ -75,8 +76,9 @@ public class WordServiceImpl implements WordService {
     }
 
     @Override
-    public List<Word> getAllWords() {
-        return wordRepository.findAll();
+    public WordsResponseDto getAllWords() {
+        WordsResponseDto wordsResponseDto = new WordsResponseDto(wordRepository.findAll().stream().map(WordsResponseDto.WordData::new).toList());
+        return wordsResponseDto;
     }
 
     @Transactional
