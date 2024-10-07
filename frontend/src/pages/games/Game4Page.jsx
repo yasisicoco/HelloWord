@@ -65,9 +65,18 @@ const Game4Page = () => {
     return array.sort(() => Math.random() - 0.5);
   };
 
+  // 정답을 빈칸으로 변환하는 함수
+  const convertAnswerToBlanks = (sentence, answer) => {
+    const blank = '□'; // 빈칸을 사각형으로 표현
+    const blankSentence = sentence.replace(`##${answer}##`, blank.repeat(answer.length));
+    return blankSentence;
+  };
+
   // 라운드 데이터 갱신 함수
   const updateRoundData = (currentRoundData) => {
     const correctWord = currentRoundData.correctWord.word;
+    const sentenceWithBlanks = convertAnswerToBlanks(currentRoundData.sentence, correctWord);
+
     const incorrectWords = [
       currentRoundData.incorrectWords[0]?.word || '',
       currentRoundData.incorrectWords[1]?.word || '',
@@ -76,7 +85,7 @@ const Game4Page = () => {
 
     setCorrect(correctWord);
     setImage(currentRoundData.imageUrl);
-    setSentence(currentRoundData.sentence);
+    setSentence(sentenceWithBlanks); // 빈칸으로 변환된 문장 저장
     setWrong0(incorrectWords[0]);
     setWrong1(incorrectWords[1]);
     setWrong2(incorrectWords[2]);
@@ -233,7 +242,12 @@ const Game4Page = () => {
             <img className="book-container__img-wrap--img" src={imageUrl} alt="error" />
           </div>
           <div className="book-container__story-wrap">
-            <div className="book-container__story-wrap--text">{sentence}</div>
+            {/* 문장을 빈칸으로 나누어 표현 */}
+            <div className="book-container__story-wrap--text">
+              {sentence
+                .split('')
+                .map((char, index) => (char === '□' ? <span key={index} className="blank"></span> : char))}
+            </div>
           </div>
         </div>
         <div className="card-container">
