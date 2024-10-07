@@ -222,6 +222,7 @@ const Game1Page = () => {
         </button>
       </section>
 
+      {/* 게임 모달 */}
       <GameModal
         isOpen={isModalOpen}
         message={modalMessage}
