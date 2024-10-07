@@ -7,15 +7,11 @@ const UserAPI = () => {
   const login = async (email, password) => {
     const data = { email: email, password: password };
     try {
-      const response = await axios.post(
-        `${BASE_URL}/api/auth/login`, // 요청을 보낼 경로
-        data,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const response = await axios.post(`${BASE_URL}/api/auth/login`, data, {
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+      });
 
       if (response.status != 200) {
         console.log(`login Server Error: ${response}`);
@@ -40,7 +36,7 @@ const UserAPI = () => {
 
       if (response.status != 200) {
         console.log(`isDuplicate Server Error: ${response}`);
-        return false;
+        return true;
       }
 
       return response.data.data;
@@ -62,7 +58,7 @@ const UserAPI = () => {
 
       if (response.status != 200) {
         console.log(`signUp Server Error: ${response}`);
-        return response;
+        return false;
       }
 
       return true;
@@ -119,18 +115,39 @@ const UserAPI = () => {
         },
       });
 
-      if (response.status == 200) {
-        return response.data;
-      } else {
+      if (response.status != 200) {
         console.log(`createKid Server Error: ${response.status}`);
-        return response.data;
       }
+
+      return response.data;
     } catch (error) {
       console.log('Error UserAPI-getKids');
+      throw error;
     }
   };
 
-  return { login, idDuplicate, signUp, createKid, getKids };
+  // 백 미개발부분 일단 대기
+  const checkStory = async (accessToken, kidId) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/kids/kidId?kidId=${kidId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.status != 200) {
+        console.log(`checkStory Server Error: ${response.status}`);
+      }
+
+      return response.data;
+    } catch (error) {
+      console.log('Error UserAPI-checkStory');
+      throw error;
+    }
+  };
+
+  return { login, idDuplicate, signUp, createKid, getKids, checkStory };
 };
 
 export default UserAPI;

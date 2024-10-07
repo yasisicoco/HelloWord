@@ -10,14 +10,16 @@ export const fetchGame1 = async (accessToken, kidId) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    if (response.data.success && response.data.status === 200) {
-      return response.data.data.rounds; // 성공적으로 데이터를 가져온 경우 rounds 반환
-    } else {
+
+    if (response.status != 200) {
+      console.log(`fetchGame1 API Error: ${response.status}`);
       throw new Error('서버 응답이 올바르지 않습니다.');
     }
-  } catch (err) {
-    console.error('데이터 불러오기 실패:', err.message);
-    throw err; // 호출한 쪽에서 에러를 처리하도록 재던짐
+
+    return response.data.data.rounds; // 성공적으로 데이터를 가져온 경우 rounds 반환
+  } catch (error) {
+    console.error('데이터 불러오기 실패:', error.message);
+    throw error; // 호출한 쪽에서 에러를 처리하도록 재던짐
   }
 };
 
@@ -29,14 +31,36 @@ export const fetchGame2 = async (accessToken, kidId) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+
+    if (response.status != 200) {
+      console.log(`fetchGame2 API Error: ${response.status}`);
+      throw new Error('서버 응답이 올바르지 않습니다.');
+    }
+
+    return response.data.data.rounds; // 성공적으로 데이터를 가져온 경우 rounds 반환
+  } catch (error) {
+    console.error('데이터 불러오기 실패:', error.message);
+    throw error; // 호출한 쪽에서 에러를 처리하도록 재던짐
+  }
+};
+
+// 삭제 되어야하는 API
+export const fetchGame2Result = async (accessToken, gameResult) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/games/card-result`, gameResult, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     if (response.data.success && response.data.status === 200) {
-      return response.data.data.rounds; // 성공적으로 데이터를 가져온 경우 rounds 반환
+      return response.data.data;
     } else {
       throw new Error('서버 응답이 올바르지 않습니다.');
     }
-  } catch (err) {
-    console.error('데이터 불러오기 실패:', err.message);
-    throw err; // 호출한 쪽에서 에러를 처리하도록 재던짐
+  } catch (error) {
+    console.error('게임 결과 전송 실패:', error.message);
+    throw error;
   }
 };
 
@@ -47,12 +71,13 @@ export const fecthGameResult = async (accessToken, data) => {
       Authorization: `Bearer ${accessToken}`,
     });
     if (response.data.status != 200) {
-      return response.data;
+      console.log(`fetchGameresult API Error: ${response.status}`);
+      throw new Error('서버 응답이 올바르지 않습니다.');
     }
 
     return response.data;
-  } catch (err) {
-    console.error('데이터 불러오기 실패:', err.message);
-    throw err;
+  } catch (error) {
+    console.error('결과 전송하기 실패:', error.message);
+    throw error;
   }
 };
