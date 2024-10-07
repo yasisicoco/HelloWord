@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder customPasswordEncoder;
 
     private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-    private static final String PHONE_PATTERN = "^\\\\d{11}$";
+    private static final String PHONE_PATTERN = "^\\d{11}$";
 
     @Override
     public void registerUser(SignupRequest signupRequest) {
@@ -34,6 +34,14 @@ public class UserServiceImpl implements UserService {
 
         if (!Pattern.matches(PHONE_PATTERN, signupRequest.getPhone())) {
             throw new ExceptionResponse(CustomException.INVALID_PHONE_FORMAT);
+        }
+
+        if(checkDuplicateEmail(signupRequest.getEmail())) {
+            throw new ExceptionResponse(CustomException.DUPLICATE_EMAIL);
+        }
+
+        if(checkDuplicatePhone(signupRequest.getPhone())) {
+            throw new ExceptionResponse(CustomException.DUPLICATE_PHONE);
         }
 
         userRepository.save(User.createUser(signupRequest));
