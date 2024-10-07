@@ -3,6 +3,7 @@ package com.helloword.wordservice.domain.word.controller;
 import com.helloword.wordservice.domain.fairytale.dto.response.FairytaleResponseDto;
 import com.helloword.wordservice.domain.fairytale.service.FairytaleService;
 import com.helloword.wordservice.domain.word.dto.response.GameWordResponseDto;
+import com.helloword.wordservice.domain.word.dto.response.WordsResponseDto;
 import com.helloword.wordservice.domain.word.model.Word;
 import com.helloword.wordservice.domain.word.service.WordService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +26,7 @@ public class InternalWordController {
 
     @Operation(summary = "모든 단어 조회", description = "모든 단어를 조회합니다.")
     @GetMapping("/all")
-    public List<Word> getAllWords() {
+    public WordsResponseDto getAllWords() {
         return wordService.getAllWords();
     }
 
