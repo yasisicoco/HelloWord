@@ -8,6 +8,6 @@ import com.helloword.collectionservice.domain.collection.dto.response.WordsRespo
 @FeignClient(name = "word-service")
 public interface WordServiceClient {
 
-	@GetMapping("/internal/words")
+	@GetMapping("/internal/words/all")
 	WordsResponseDto getWords();
 }
