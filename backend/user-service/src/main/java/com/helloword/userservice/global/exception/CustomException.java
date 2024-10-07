@@ -6,7 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum CustomException {
-
+    INVALID_EMAIL_FORMAT(400, "InvalidEmailFormatException", "이메일 형식이 올바르지 않습니다"),
+    INVALID_PHONE_FORMAT(400, "InvalidPhoneFormatException", "전화번호 형식이 올바르지 않습니다"),
     BAD_REQUEST(400, "BadRequestException", "잘못된 요청입니다"),
     UNAUTHORIZED(401, "UnauthorizedException", "인증이 필요합니다"),
     FORBIDDEN(403, "AccessDeniedException", "권한이 없습니다"),
