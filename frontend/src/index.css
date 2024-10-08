@@ -8,7 +8,6 @@ body {
 }
 
 @media all and (display-mode: standalone) {
-
   html,
   body {
     height: 100vh;

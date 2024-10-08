@@ -98,7 +98,6 @@ export const fetchGame4 = async (accessToken, kidId) => {
       console.log(`fetchGame4 API Error: ${response.status}`);
       throw new Error('서버 응답이 올바르지 않습니다.');
     }
-    console.log(response.data.data.rounds);
 
     return response.data.data.rounds; // 성공적으로 데이터를 가져온 경우 rounds 반환
   } catch (error) {
