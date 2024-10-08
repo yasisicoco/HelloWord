@@ -11,6 +11,17 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: pyb.ssafy@gmail.com
+    password: "{cipher}cee5baa7a61e300a13701e83ee4a04b0cea64d07d2b6286cca6216f2d8e5a590a75c9495cb89da49411d471627395bed"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
