@@ -1,95 +1,120 @@
-.signup-page
-  display: flex
-  width: 100vw
-  height: 100vh
-  flex-direction: column
-  justify-content: center
-  align-items: center
+body, html
+    margin: 0
+    padding: 0
+    font-family: 'CookieRun-Regular', serif
 
-  background-image: url('../background/loginbg.png')
-  background-size: cover
-  background-position: center
-  background-repeat: no-repeat
-
-.signup-form
-  display: flex
-  flex-direction: column
-  background: rgba(255,188,125, 1)
-  height: 85%
-  width: 33%
-  border-radius: 10px
-  padding: 16px
-  box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
-  filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
-    
-  &__text
-    font-weight: bold
-    margin-bottom: 5px
-
-  &__input
-    height: 10%
-    margin-bottom: 5px
-
-    &--box1
-      height: 100%
-      width: 100%
-      box-sizing: border-box
-      padding: 5px
-      border-radius: 10px
-      border: solid 0px rgba( 0, 0, 0, 1)
-      box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
-      filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
-
-  &__input2
+.signup-container
     display: flex
-    justify-content: space-between
-    height: 10%
-    margin-bottom: 5px
-    
-    &--box2
-      height: 100%
-      width: 100%
-      margin-right: 10px
-      box-sizing: border-box
-      padding: 5px
-      border-radius: 10px
-      border: solid 0px rgba( 0, 0, 0, 1)
-      box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
-      filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+    flex-direction: column
+    height: 100vh
+    justify-content: flex-start
+    padding: 0
 
-    &--button0
-      height: 100%
-      width: 35%
-      box-sizing: border-box
-      border-radius: 10px
-      border: solid 0px rgba( 0, 0, 0, 1)
-      box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
-      filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
-      background-color: rgb(255, 224, 118)
-      font-weight: bolder
-    
-  
-  &__buttonO
-    height: 10%
-    margin-top: 10px
-    border-radius: 10px
-    border: solid 0px rgba( 0, 0, 0, 1)
-    box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
-    filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
-    background-color: rgb(255, 224, 118)
-    font-weight: bolder
+    .header
+        display: flex
+        justify-content: center
+        align-items: center
+        padding: 10px 20px
+        position: relative
+        margin-top: 0.8rem
 
-  &__buttonX
-    height: 10%
-    margin-top: 10px
-    border-radius: 10px
-    border: solid 0px rgba( 0, 0, 0, 1)
-    box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
-    filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
-    background-color: rgb(219, 219, 219)
-    font-weight: bolder
+        .back-button
+            position: absolute
+            left: 10px
+            font-size: 16px
+            background: none
+            border: none
+            cursor: pointer
+            color: #7572B4
 
-  &__close
-    display: flex
-    justify-content: end
-    font-size: 16px
+            .back-icon
+                font-size: 24px
+                font-weight: bold
+
+        .header-title
+            font-size: 20px
+            font-weight: bold
+            color: #7572B4
+
+    .progress-bar
+        width: 100%
+        height: 4px
+        background-color: #e0e0e0
+        margin-top: 0.8rem
+
+        .progress
+            height: 100%
+            background-color: #7572B4
+            transition: width 0.3s ease
+
+    .step-content
+        padding: 1.5rem
+        display: flex
+        flex-direction: column
+        justify-content: flex-start
+
+        .input-container
+            margin-bottom: 1.5rem
+
+            label
+                display: block
+                margin-bottom: 10px
+                font-weight: bold
+                font-size: 20px
+                margin: 2rem 0 1rem 0
+
+            input
+                width: 100%
+                padding: 10px 11px
+                border: 1px solid #ddd
+                border-radius: 4px
+                font-size: 16px
+                height: 50px
+
+                &:focus
+                    outline: none
+
+                &.error
+                    border: 1px solid red
+
+            .error-message
+                color: red
+                font-size: 12px
+                margin-top: 5px
+
+            .input-with-button
+                display: flex
+
+                input
+                    flex-grow: 1
+
+                .check-button
+                    background-color: #7572B4
+                    color: white
+                    border: none
+                    padding: 10px 15px
+                    margin-left: 10px
+                    cursor: pointer
+                    border-radius: 4px
+                    white-space: nowrap
+
+                    &:disabled
+                        background-color: #ccc
+                        cursor: not-allowed
+
+    .next-button
+        position: fixed
+        left: 0
+        width: 100%
+        padding: 15px 0
+        background-color: #7572B4
+        color: white
+        border: none
+        cursor: pointer
+        font-size: 18px
+        text-align: center
+        z-index: 10
+        transition: none
+
+        &.with-transition
+            transition: bottom 0.3s ease-in-out

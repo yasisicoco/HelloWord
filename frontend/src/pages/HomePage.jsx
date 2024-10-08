@@ -1,11 +1,7 @@
-// hook, lib
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-
 import UserAPI from '../api/UserAPI';
-
-// img, component
 import EmblaCarousel from '../components/EmblaCarousel';
 import Button from '../components/Button';
 import './HomePage.sass';
@@ -17,10 +13,9 @@ import User from '../assets/homeIcon/User.png';
 import GoldMedal from '../assets/homeIcon/GoldMedal.png';
 import Settings from '../assets/homeIcon/Settings.png';
 
-// 캐릭터 이미지 파일
-import charImage1 from '../assets/character/mini.png'; // 레벨 1~4
-import charImage2 from '../assets/character/middle.png'; // 레벨 5~9
-import charImage3 from '../assets/character/adult.png'; // 레벨 10 이상
+import charImage1 from '../assets/character/mini.png';
+import charImage2 from '../assets/character/middle.png';
+import charImage3 from '../assets/character/adult.png';
 
 const HomePage = () => {
   const [exp, setExp] = useState(0);

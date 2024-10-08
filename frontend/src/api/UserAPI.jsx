@@ -7,6 +7,7 @@ const UserAPI = () => {
   const login = async (email, password) => {
     const data = { email: email, password: password };
     try {
+
       const response = await axios.post(`${BASE_URL}/api/auth/login`, data, {
         headers: {
           'Content-Type': 'application/json',
@@ -46,9 +47,10 @@ const UserAPI = () => {
     }
   };
 
-  // 유저 회원가입
   const signUp = async (email, password, username, phone) => {
     const data = { email: email, password: password, username: username, phone: phone };
+    console.log("asdasd");
+    console.log(data);
     try {
       const response = await axios.post(`${BASE_URL}/api/users`, data, {
         headers: {
@@ -60,7 +62,6 @@ const UserAPI = () => {
         console.log(`signUp Server Error: ${response}`);
         return false;
       }
-
       return true;
     } catch (error) {
       console.log('Error UserAPI-signup');
@@ -68,7 +69,7 @@ const UserAPI = () => {
     }
   };
 
-  const createKid = async (name, birthDate, profileImageFile, accessToken) => {
+  const createKid = async (name, birthDate, profileImageFile, accessToken, gender) => {
     const formData = new FormData();
 
     // kid 객체를 JSON으로 구성하여 추가
@@ -77,7 +78,7 @@ const UserAPI = () => {
         JSON.stringify({
           name: name,
           birthDate: birthDate,
-          gender: 'M',
+          gender: gender,
         }),
       ],
       { type: 'application/json' },
@@ -130,6 +131,7 @@ const UserAPI = () => {
     }
   };
 
+
   // 아이가 스토리 라인을 읽어봤는지 확인 API
   const kidSearch = async (accessToken, kidId) => {
     try {
@@ -140,7 +142,53 @@ const UserAPI = () => {
         },
       });
 
-      if (response.status != 200) {
+      if (response.status == 200) {
+        return response.data;
+      } else {
+        console.log(`createKid Server Error: ${response.status}`);
+        return response.data;
+      }
+    } catch (error) {
+      console.log('Error UserAPI-getKids');
+    }
+  };
+
+  // 인증번호 확인
+  const verifyEmailCode = async (accessToken, email, code) => {
+
+    try {
+      const response = await axios.post(`${BASE_URL}/api/users/send-code`, { email, code }, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.status == 200) {
+        return response.data;
+      } else {
+        console.log(`createKid Server Error: ${response.status}`);
+        return response.data;
+      }
+    } catch (error) {
+      console.log('Error UserAPI-getKids');
+    }
+  };
+
+
+  // 인증번호 보내기
+  const sendEmailCode = async (accessToken, email) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/users/send-code`,
+        { email },  // 여기는 요청의 body로, email을 포함한 객체가 전달됩니다.
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}` // 인증 헤더 추가
+          }
+        }
+      );
+
+      if (response.status !== 200) {
         console.log(`checkStory Server Error: ${response.status}`);
       }
 
@@ -151,7 +199,8 @@ const UserAPI = () => {
     }
   };
 
-  return { login, idDuplicate, signUp, createKid, getKids, kidSearch };
+
+  return { login, idDuplicate, signUp, createKid, getKids, kidSearch, verifyEmailCode, sendEmailCode };
 };
 
 export default UserAPI;

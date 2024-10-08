@@ -1,175 +1,228 @@
-import { useState, useEffect } from 'react';
-import { IoClose } from 'react-icons/io5';
-import { FaCheckCircle } from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './SignUp.sass';
 import UserAPI from '../api/UserAPI';
 
-import './Signup.sass';
+const SignUpPage = () => {
+  const [step, setStep] = useState(1);
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [buttonBottom, setButtonBottom] = useState(0);
+  const [isTransition, setIsTransition] = useState(false);
+  const [emailChecked, setEmailChecked] = useState(false);
+  const [emailValid, setEmailValid] = useState(true);
 
-const SignupPage = () => {
+  const emailRef = useRef(null);
+  const usernameRef = useRef(null);
+  const phoneRef = useRef(null);
+  const passwordRef = useRef(null);
+
   const navigate = useNavigate();
 
-  // 유저 정보
-  const [email, SetEmail] = useState('');
-  const [password1, SetPassword1] = useState('');
-  const [password2, SetPassword2] = useState('');
-  const [phone, SetPhone] = useState('');
-  const [username, SetName] = useState('');
-
-  // 에러 여부 확인 (실시간 확인)
-  const [isEmailCheck, SetemailCheck] = useState(false);
-  const [passCheck, SetpasswordCheck] = useState(false);
-  const [phoneCheck, SetphoneCheck] = useState(false);
-  // 모든 조건 확인 완료 시 회원가입 버튼 활성화
-  const [allCheck, SetAllCheck] = useState(false);
-
-  // 휴대폰 양식 확인
-  const [phoneChange, SetChangePhone] = useState('');
+  useEffect(() => {
+    if (step === 1) emailRef.current?.focus();
+    if (step === 2) usernameRef.current?.focus();
+    if (step === 3) phoneRef.current?.focus();
+    if (step === 4) passwordRef.current?.focus();
+  }, [step]);
 
   useEffect(() => {
-    // 비밀번호 체크
-    SetpasswordCheck((password1 === password2) & password1 & password2);
+    const resizeHandler = () => {
+      if (visualViewport) {
+        const viewportHeight = visualViewport.height;
+        const windowHeight = window.innerHeight;
 
-    // 휴대폰 체크
-    if (phone.length === 10) {
-      SetChangePhone(phoneChange.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3'));
-      SetphoneCheck(true);
-    } else if (phone.length === 11) {
-      SetChangePhone(phoneChange.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'));
-      SetphoneCheck(true);
-    } else {
-      SetphoneCheck(false);
+        if (viewportHeight < windowHeight) {
+          setIsTransition(false);
+          setButtonBottom(windowHeight - viewportHeight);
+        } else {
+          setIsTransition(true);
+          setButtonBottom(0);
+        }
+      }
+    };
+
+    if (visualViewport) {
+      visualViewport.addEventListener('resize', resizeHandler);
     }
 
-    // 전부 확인
-    SetAllCheck(isEmailCheck & passCheck & phoneCheck);
-  }, [passCheck, isEmailCheck, password1, password2, phone, phoneCheck]);
+    return () => {
+      visualViewport && visualViewport.removeEventListener('resize', resizeHandler);
+    };
+  }, []);
 
-  useEffect(() => {
-    SetemailCheck(false);
-  }, [email]);
+  const handleNext = async () => {
+    if (step < 4) {
+      setStep(step + 1);
+    } else if (step === 4) {
+      await handleSignUp();
+    }
+  };
 
-  // 회원가입 정보 전달
-  const handleSignUp = async (event) => {
-    event.preventDefault();
-    // 여기다가 회원가입 정보 전달하기
-    const response = await UserAPI().signUp(email, password1, username, phone);
-    if (response) {
+  const handleBack = () => {
+    if (step === 1) {
+      navigate('/login');
+    } else if (step > 1) {
+      setStep(step - 1);
+    }
+  };
+
+  const handleEmailCheck = () => {
+    if (emailValid) {
+      setEmailChecked(true);
+    }
+  };
+
+  const handleEmailChange = (e) => {
+    const emailValue = e.target.value;
+    setEmail(emailValue);
+
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    setEmailValid(emailPattern.test(emailValue));
+  };
+
+  const handlePhoneChange = (e) => {
+    let value = e.target.value.replace(/[^0-9]/g, '');
+    if (value.length > 3 && value.length <= 7) {
+      value = value.replace(/(\d{3})(\d{1,4})/, '$1-$2');
+    } else if (value.length > 7) {
+      value = value.replace(/(\d{3})(\d{4})(\d{1,4})/, '$1-$2-$3');
+    }
+    setPhone(value);
+  };
+
+  const isPasswordMismatch = password && confirmPassword && password !== confirmPassword;
+
+  const isNextButtonDisabled = () => {
+    if (step === 1 && (!email || !emailChecked)) return true;
+    if (step === 2 && !username) return true;
+    if (step === 3 && !phone) return true;
+    if (step === 4 && (!password || password !== confirmPassword)) return true;
+    return false;
+  };
+
+  const handleSignUp = async () => {
+    console.log('회원가입 함수 호출');
+
+    const sanitizedPhone = phone.replace(/-/g, '');
+
+    const success = await UserAPI().signUp(email, password, username, sanitizedPhone);
+
+    if (success) {
+      console.log('회원가입 성공');
       navigate('/login');
     } else {
-      alert('서버 오류로 인하여 재가입 해주세요.');
+      console.log('회원가입 실패');
     }
   };
 
-  // 아이디 유효성 검사 및 중복 검사 Handler
-  const idCheckHandler = async (email) => {
-    const emailRegEx = /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/i;
-    if (!emailRegEx.test(email)) {
-      SetemailCheck(false);
-      alert('이메일 양식을 확인하세요');
-      return;
-    }
-    const emailCheck = await UserAPI().idDuplicate(email);
-
-    if (emailCheck) {
-      alert('중복된 이메일 입니다.');
-      return;
-    }
-
-    // 이메일 체크
-    SetemailCheck(!emailCheck);
-  };
-
-  // 전화번호 자동 변환기
-  const phoneNumberChange = async (phone) => {
-    const num = phone.replaceAll('-', '');
-    SetPhone(num);
-    // 휴대폰 번호 유효성 검증
-    const regex1 = /^[0-9\b -]{0,15}$/; // 특수문자 방지
-    const regex2 = /^[0-9\b -]{0,11}$/; // 12글자 이상 방지
-    if (regex1.test(num)) {
-      if (regex2.test(num)) {
-        SetChangePhone(num);
-      } else {
-        alert('전화번호는 11 글자 이하로 작성해주세요.');
-        SetPhone(num.slice(0, 11));
-      }
-    } else {
-      alert('전화번호는 숫자만 입력할 수 있습니다.');
-    }
-  };
 
   return (
-    <section className="signup-page">
-      <form onSubmit={handleSignUp} className="signup-form">
-        <div className="signup-form__close">
-          <IoClose className="" onClick={() => navigate('/login')} />
-        </div>
-        <p className="signup-form__text">이메일</p>
-        <div className="signup-form__input2">
-          <input
-            type="text"
-            id="userId"
-            className="signup-form__input2--box2"
-            onChange={(e) => SetEmail(e.target.value)}
-          />
-          <button
-            className="signup-form__input2--button0"
-            onClick={(e) => {
-              e.preventDefault();
-              idCheckHandler(email);
-            }}>
-            {isEmailCheck ? (
-              <>
-                <FaCheckCircle />
-              </>
-            ) : (
-              '중복확인'
-            )}
-          </button>
-        </div>
-        <p className="signup-form__text">비밀번호</p>
-        <div className="signup-form__input">
-          <input
-            type="password"
-            id="password1"
-            className="signup-form__input--box1"
-            onChange={(p1) => SetPassword1(p1.target.value)}></input>
-        </div>
-        <p className="signup-form__text">비밀번호 확인</p>
-        <div className="signup-form__input">
-          <input
-            type="password"
-            id="password2"
-            className="signup-form__input--box1"
-            onChange={(p2) => SetPassword2(p2.target.value)}></input>
-        </div>
-        <p className="signup-form__text">이름</p>
-        <div className="signup-form__input">
-          <input
-            type="text"
-            id="username"
-            className="signup-form__input--box1"
-            onChange={(name) => SetName(name.target.value)}></input>
-        </div>
-        <p className="signup-form__text">전화번호</p>
-        <div className="signup-form__input">
-          <input
-            type="text"
-            id="phone"
-            className="signup-form__input--box1"
-            value={phoneChange}
-            onChange={(phone) => phoneNumberChange(phone.target.value)}></input>
-        </div>
-        <button
-          id="loginBut"
-          className={`${allCheck ? 'signup-form__buttonO' : 'signup-form__buttonX'}`}
-          disabled={!allCheck}>
-          회원 가입
+    <div className="signup-container">
+      <div className="header">
+        <button className="back-button" onClick={handleBack}>
+          <span className="back-icon">&lt;</span>
         </button>
-      </form>
-    </section>
+        <h1 className="header-title">회원가입</h1>
+      </div>
+
+      <div className="progress-bar">
+        <div className="progress" style={{ width: `${(step / 4) * 100}%` }}></div>
+      </div>
+
+      <div className="step-content">
+        {step === 1 && (
+          <div className="input-container">
+            <label htmlFor="email">이메일을 입력해 주세요.</label>
+            <div className="input-with-button">
+              <input
+                id="email"
+                type="email"
+                value={email}
+                ref={emailRef}
+                onChange={handleEmailChange}
+                placeholder="이메일 입력"
+                className={!emailValid ? 'error' : ''}
+              />
+              <button
+                className="check-button"
+                onClick={handleEmailCheck}
+                disabled={!emailValid}
+              >
+                {emailChecked ? '✔' : '확인'}
+              </button>
+            </div>
+            {!emailValid && (
+              <small className="error-message">올바른 이메일을 입력하세요.</small>
+            )}
+          </div>
+        )}
+        {step === 2 && (
+          <div className="input-container">
+            <label htmlFor="username">이름을 입력해 주세요.</label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              ref={usernameRef}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="이름 입력"
+            />
+          </div>
+        )}
+        {step === 3 && (
+          <div className="input-container">
+            <label htmlFor="phone">전화번호를 입력해 주세요.</label>
+            <input
+              id="phone"
+              type="tel"
+              value={phone}
+              ref={phoneRef}
+              onChange={handlePhoneChange}
+              placeholder="전화번호 입력"
+            />
+          </div>
+        )}
+        {step === 4 && (
+          <div className="input-container">
+            <label htmlFor="password">비밀번호를 입력해 주세요.</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              ref={passwordRef}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호 입력"
+            />
+            <label htmlFor="confirm-password">비밀번호 확인</label>
+            <input
+              id="confirm-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="비밀번호 확인 입력"
+              className={isPasswordMismatch ? 'error' : ''}
+            />
+            {isPasswordMismatch && (
+              <small className="error-message">비밀번호가 일치하지 않습니다.</small>
+            )}
+          </div>
+        )}
+      </div>
+
+      <button
+        className={`next-button ${isTransition ? 'with-transition' : ''}`}
+        style={{ bottom: `${buttonBottom}px`, backgroundColor: isNextButtonDisabled() ? '#ccc' : '#007bff' }}
+        onClick={handleNext}
+        disabled={isNextButtonDisabled()}
+      >
+        {step === 4 ? '회원가입' : '다음'}
+      </button>
+    </div>
   );
 };
 
-export default SignupPage;
+export default SignUpPage;

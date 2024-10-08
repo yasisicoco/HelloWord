@@ -1,4 +1,4 @@
-.password-page
+.signup-page
   display: flex
   width: 100vw
   height: 100vh
@@ -11,7 +11,7 @@
   background-position: center
   background-repeat: no-repeat
 
-.password-form
+.signup-form
   display: flex
   flex-direction: column
   background: rgba(255,188,125, 1)
@@ -21,7 +21,7 @@
   padding: 16px
   box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
   filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
-
+    
   &__text
     font-weight: bold
     margin-bottom: 5px
@@ -41,12 +41,15 @@
       filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
 
   &__input2
+    display: flex
+    justify-content: space-between
     height: 10%
     margin-bottom: 5px
-
+    
     &--box2
       height: 100%
       width: 100%
+      margin-right: 10px
       box-sizing: border-box
       padding: 5px
       border-radius: 10px
@@ -54,6 +57,18 @@
       box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
       filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
 
+    &--button0
+      height: 100%
+      width: 35%
+      box-sizing: border-box
+      border-radius: 10px
+      border: solid 0px rgba( 0, 0, 0, 1)
+      box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+      filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+      background-color: rgb(255, 224, 118)
+      font-weight: bolder
+    
+  
   &__buttonO
     height: 10%
     margin-top: 10px

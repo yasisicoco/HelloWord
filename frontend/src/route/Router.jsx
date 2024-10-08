@@ -8,20 +8,21 @@ import HomePage from '../pages/HomePage';
 import UserPage from '../pages/UserPage';
 import Collection from '../pages/Collection';
 import Settings from '../pages/Settings';
-import PasswordPage from '../pages/PasswordPage';
 import Game1Page from '../pages/games/Game1Page';
 import Game2Page from '../pages/games/Game2Page';
 import Game3Page from '../pages/games/Game3Page';
 import Game4Page from '../pages/games/Game4Page';
-import SelectKidsPage from '../pages/SelectKidsPage';
 import StoryPage from '../pages/StoryPage';
+import PasswordResetPage from '../pages/PasswordResetPage'
+import ProfileSelectionPage from '../pages/ProfileSelectionPage'
+import AddProfilePage from '../pages/AddProfilePage'
 
 function Router() {
   // 보호된 경로 배열
   const protectedRoutes = [
     // 아래로 쭈욱 추가
     { path: '/home', element: <HomePage /> },
-    { path: '/selectkids', element: <SelectKidsPage /> },
+    { path: '/select-kid', element: <ProfileSelectionPage /> },
     { path: '/storypage', element: <StoryPage /> },
     { path: '/game1', element: <Game1Page /> },
     { path: '/game2', element: <Game2Page /> },
@@ -30,6 +31,7 @@ function Router() {
     { path: '/userpage', element: <UserPage /> },
     { path: '/collection', element: <Collection /> },
     { path: '/settings', element: <Settings /> },
+    { path: "/add-profile", element: <AddProfilePage /> }
   ];
 
   return (
@@ -38,9 +40,9 @@ function Router() {
       <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
-      <Route path="/password" element={<PasswordPage />} />
+      <Route path="/find/password" element={<PasswordResetPage />} />
+      <Route path="/find/id" element={<PasswordResetPage />} />
 
-      {/* 보호된 경로 */}
       {protectedRoutes.map(({ path, element }) => (
         <Route key={path} path={path} element={<ProtectedRoute>{element}</ProtectedRoute>} />
       ))}
