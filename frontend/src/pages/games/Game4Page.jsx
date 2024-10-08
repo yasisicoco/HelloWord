@@ -58,7 +58,7 @@ const Game4Page = () => {
     setIsCorrect(isCorrect); // 정답 여부 상태 저장
   };
 
-  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(10, onTimeUp); // pauseTimer, resumeTimer 추가
+  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(20, onTimeUp); // pauseTimer, resumeTimer 추가
 
   // 단어 배열을 무작위로 섞는 함수
   const shuffleArray = (array) => {
