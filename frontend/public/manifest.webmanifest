@@ -9,13 +9,13 @@
   "orientation": "landscape",
   "icons": [
     {
-      "src": "/icons/android-chrome-512x512.png",
+      "src": "/icons/android-launchericon-512-512.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any"
     },
     {
-      "src": "/icons/android-chrome-192x192.png",
+      "src": "/icons/android-launchericon-192-192.png",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any"
