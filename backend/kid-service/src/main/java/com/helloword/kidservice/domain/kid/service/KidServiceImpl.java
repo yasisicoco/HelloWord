@@ -1,10 +1,13 @@
 package com.helloword.kidservice.domain.kid.service;
 
 import com.helloword.kidservice.domain.kid.dto.request.*;
+import com.helloword.kidservice.domain.kid.dto.response.GameStatsResponseDto;
 import com.helloword.kidservice.domain.kid.dto.response.KidResponseDto;
+import com.helloword.kidservice.domain.kid.dto.response.LearningStatsResponseDto;
 import com.helloword.kidservice.domain.kid.model.Kid;
 import com.helloword.kidservice.domain.kid.repository.KidRepository;
 import com.helloword.kidservice.global.client.CollectionServiceClient;
+import com.helloword.kidservice.global.client.LogServiceClient;
 import com.helloword.kidservice.global.client.ProbabilityServiceClient;
 import com.helloword.kidservice.global.exception.MainException;
 import com.helloword.kidservice.global.utils.FileService;
@@ -32,6 +35,7 @@ public class KidServiceImpl implements KidService {
     private final KidRepository kidRepository;
     private final ProbabilityServiceClient probabilityServiceClient;
     private final CollectionServiceClient collectionServiceClient;
+    private final LogServiceClient logServiceClient;
 
     @Transactional
     @Override
@@ -58,7 +62,7 @@ public class KidServiceImpl implements KidService {
 
     @Override
     public List<KidResponseDto> getKidsByUserId(Long userId) {
-        return  kidRepository.findByUserId(userId)
+        return kidRepository.findByUserId(userId)
                 .stream()
                 .map(KidResponseDto::new)  // Kid -> KidResponseDto 변환
                 .collect(Collectors.toList());
@@ -70,7 +74,7 @@ public class KidServiceImpl implements KidService {
         Kid kid = findKidById(kidId);
         checkOwnership(kid.getUserId(), userId);
         KidResponseDto kidResponseDto = new KidResponseDto(kid);
-        if(kid.getLevel() == 0) {
+        if (kid.getLevel() == 0) {
             kid.addExperience(Kid.requiredExperience);
         }
         return kidResponseDto;
@@ -135,6 +139,20 @@ public class KidServiceImpl implements KidService {
         Period period = Period.between(birthDate, currentDate);
         int ageInMonths = period.getYears() * 12 + period.getMonths();
         return ageInMonths;
+    }
+
+    @Override
+    public LearningStatsResponseDto getLearningStats(Long userId, Long kidId) {
+        Kid kid = findKidById(kidId);
+        checkOwnership(userId, kid.getUserId());
+        return logServiceClient.getLearningStats(kidId);
+    }
+
+    @Override
+    public GameStatsResponseDto getGameStats(Long userId, Long kidId) {
+        Kid kid = findKidById(kidId);
+        checkOwnership(userId, kid.getUserId());
+        return logServiceClient.getGameStats(kidId);
     }
 
     private Kid findKidById(Long kidId) {

@@ -4,7 +4,9 @@ import com.helloword.kidservice.domain.kid.dto.request.CraeteKidRequestDto;
 import com.helloword.kidservice.domain.kid.dto.request.KidExpUpdateRequestDto;
 import com.helloword.kidservice.domain.kid.dto.request.UpdateKidRequestDto;
 import com.helloword.kidservice.domain.kid.dto.request.UpdateMainCharactorRequestDto;
+import com.helloword.kidservice.domain.kid.dto.response.GameStatsResponseDto;
 import com.helloword.kidservice.domain.kid.dto.response.KidResponseDto;
+import com.helloword.kidservice.domain.kid.dto.response.LearningStatsResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -25,4 +27,8 @@ public interface KidService {
     void increaseExperience(KidExpUpdateRequestDto kidExpUpdateRequestDto);
 
     Integer getKidAgeById(Long kidId);
+
+    LearningStatsResponseDto getLearningStats(Long userId, Long kidId);
+
+    GameStatsResponseDto getGameStats(Long userId, Long kidId);
 }
