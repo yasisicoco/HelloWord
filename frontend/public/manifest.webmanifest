@@ -15,16 +15,16 @@
       "purpose": "any"
     },
     {
-      "src": "/icons/android-launchericon-192-192.png",
-      "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "any"
-    },
-    {
       "src": "/icons/android-chrome-512x512-maskable.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
+    },
+    {
+      "src": "/icons/android-launchericon-192-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
     },
     {
       "src": "/icons/android-chrome-192x192-maskable.png",
