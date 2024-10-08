@@ -11,17 +11,26 @@
     {
       "src": "/icons/android-chrome-512x512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any"
     },
     {
       "src": "/icons/android-chrome-192x192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/android-chrome-512x512-maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     },
     {
       "src": "/icons/favicon.ico",
       "type": "image/x-icon",
-      "sizes": "48x48"
+      "sizes": "48x48",
+      "purpose": "any"
     }
   ]
 }
