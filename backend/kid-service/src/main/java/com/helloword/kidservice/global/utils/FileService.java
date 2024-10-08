@@ -32,12 +32,12 @@ public class FileService {
     @Value("${aws.s3.base-url}")
     private String baseUrl;
 
-    private static final int IMAGE_SIZE = 50;
+    private static final int MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     private final S3Client s3Client;
 
     public String uploadImage(MultipartFile file) {
-        validateFile(file, IMAGE_SIZE, new String[]{"jpg", "jpeg", "png"});
+        validateFile(file, new String[]{"jpg", "jpeg", "png"});
 
         try {
             BufferedImage image = ImageIO.read(file.getInputStream());
@@ -72,9 +72,9 @@ public class FileService {
         return baseUrl + fileName;
     }
 
-    private void validateFile(MultipartFile file, int sizeThreshold, String[] exts) throws MainException {
+    private void validateFile(MultipartFile file, String[] exts) throws MainException {
 
-        if (file.getSize() <= sizeThreshold) {
+        if (file.getSize() > MAX_FILE_SIZE) {
             throw new MainException(FILE_SIZE_EXCEEDED);
         }
 
