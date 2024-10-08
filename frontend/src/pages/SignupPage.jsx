@@ -113,7 +113,7 @@ const SignUpPage = () => {
 
     if (success) {
       console.log('회원가입 성공');
-      navigate('/home');
+      navigate('/login');
     } else {
       console.log('회원가입 실패');
     }

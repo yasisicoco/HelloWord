@@ -46,13 +46,17 @@ const ProfileSelectionPage = () => {
   };
 
   // 선택 버튼 클릭 시 호출되는 함수
-  const handleSelectButtonClick = () => {
+  const handleSelectButtonClick = async () => {
     if (selectedProfile) {
       // Redux에 선택된 아이 ID 저장
       dispatch(setSelectedKid(selectedProfile));
 
-      // '/home' 경로로 이동
-      navigate('/home');
+      const kid = await UserAPI().kidSearch(accessToken, selectedProfile);
+      if (kid.data.level) {
+        navigate('/home');
+      } else {
+        navigate('/storypage');
+      }
     }
   };
 

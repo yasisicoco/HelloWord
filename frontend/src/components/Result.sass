@@ -1,0 +1,51 @@
+.resultModal-page
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  padding: 20px
+
+  &__title
+    font-size: 24px
+    font-weight: bold
+    margin-bottom: 20px
+
+  &__medals
+    display: flex
+    justify-content: center
+    margin-bottom: 20px
+  
+  &__buttons
+    display: flex
+    justify-content: space-between
+    width: 100%
+  
+    &--button
+      flex: 1
+      padding: 10px 20px
+      font-size: 16px
+      font-weight: bold
+      border: none
+      border-radius: 8px
+      cursor: pointer
+      transition: background-color 0.3s ease
+
+.retry-button
+  background-color: #4caf50
+  color: white
+  margin-right: 10px
+
+.quit-button
+  background-color: #f44336
+  color: white
+
+.retry-button:hover, .quit-button:hover
+  opacity: 0.8
+
+.resultModal-medal
+  width: 60px
+  height: 60px
+  margin: 0 5px
+
+.gray-medal
+  filter: grayscale(100%) // 회색 필터 적용

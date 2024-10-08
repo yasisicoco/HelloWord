@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './TimeBar.sass';
 
 const TimeBar = ({ time }) => {
-  const progress = Math.max(0, Math.min(100, (time / 10) * 100));
+  const [maxTime, setMaxTime] = useState(time <= 10 ? 10 : 20);
+
+  useEffect(() => {
+    // 최초 렌더링 시에만 maxTime 설정 time바뀔때마다 width가 바뀌어서 설정
+    setMaxTime(time <= 10 ? 10 : 20);
+  }, []); // 빈 배열로 설정해서 컴포넌트 마운트 시 한 번만 실행되도록 함
+
+  const progress = Math.max(0, Math.min(100, (time / maxTime) * 100));
 
   return (
     <div className="timebar-compo">

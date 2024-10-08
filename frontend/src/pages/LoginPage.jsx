@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import UserAPI from '../api/UserAPI';
 import { setTokens } from '../features/Auth/authSlice';
+import xIcon from '../assets/homeIcon/x-icon.png';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -95,7 +96,7 @@ const LoginPage = () => {
               onChange={(e) => setEmail(e.target.value)}
               onKeyPress={handleEmailKeyPress}
             />
-            {email && <img className="clear-icon" src="../assets/homeIcon/x-icon.png" onClick={() => handleClearInput(setEmail)} />}
+            {email && <img className="clear-icon" src={xIcon} onClick={() => handleClearInput(setEmail)} />}
 
           </div>
         </div>
@@ -109,7 +110,7 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               onKeyPress={handlePasswordKeyPress}
             />
-            {password && <span className="clear-icon" onClick={() => handleClearInput(setPassword)}>✕</span>}
+            {/* {password && <span className="clear-icon" onClick={() => handleClearInput(setPassword)}>✕</span>} */}
           </div>
         </div>
         <button type="submit" className="login-button" disabled={!isFormValid}>
