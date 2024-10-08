@@ -10,7 +10,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker,native
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://config-server:8888/actuator/health" ]
-      interval: 3s
+      interval: 10s
       timeout: 5s
       retries: 5
 
@@ -26,7 +26,7 @@ services:
       - backend-network
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://discovery-server:8761/actuator/health" ]
-      interval: 3s
+      interval: 10s
       timeout: 5s
       retries: 5
     environment:
