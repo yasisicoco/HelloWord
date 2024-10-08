@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ExceptionResponse extends RuntimeException {
+public class MainException extends RuntimeException {
 
-    private CustomException customException;
+    private CustomException errorCode;
 }
