@@ -39,15 +39,20 @@ const Game2Page = () => {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
+  // 시간초과
   const onTimeUp = () => {
     showModal('시간이 초과되었습니다. 틀렸습니다 😞', false);
-    handleNextRound(false);
+    SpeechRecognition.stopListening(); // 듣기 멈추기
+    setIsListening(false); // 마이크 테두리
+    resetTranscript(); // 내용 초기화
+    handleNextRound(false); // 틀림표시 + 다음라운드로
   };
 
+  // 모달 띄우기
   const showModal = (message, isCorrect) => {
     setIsModalOpen(true);
     setModalMessage(message);
-    pauseTimer();
+    // pauseTimer();
     setTimeout(() => {
       setIsModalOpen(false);
       resumeTimer();
@@ -57,6 +62,7 @@ const Game2Page = () => {
 
   const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(10, onTimeUp);
 
+  // 라운드 데이터 받아오기
   const updateRoundData = (currentRoundData) => {
     setWord(currentRoundData.word);
     setImage(currentRoundData.imageUrl);
@@ -65,6 +71,7 @@ const Game2Page = () => {
     setRoundStartTime(Date.now());
   };
 
+  // 게임데이터 GET
   const fetchGameData = useCallback(async () => {
     if (!accessToken) return;
     setIsDataLoading(true);
@@ -92,6 +99,7 @@ const Game2Page = () => {
     }
   }, [round, data]);
 
+  // 다음 라운드
   const handleNextRound = (isCorrect) => {
     const roundEndTime = Date.now();
     const timeTaken = (roundEndTime - roundStartTime) / 1000;
@@ -111,9 +119,12 @@ const Game2Page = () => {
     setRoundFinished(true);
   };
 
+  // 결과창 띄우기
   useEffect(() => {
     if (roundFinished) {
       if (round === totalRounds - 1) {
+        SpeechRecognition.stopListening();
+        setIsListening(false);
         setTimeout(() => {
           setIsResultModalOpen(true);
           pauseTimer();
@@ -125,28 +136,34 @@ const Game2Page = () => {
     }
   }, [roundFinished, round, totalRounds]);
 
+  // 듣기
   useEffect(() => {
     if (listening) {
       if (transcript === word) {
         showModal('맞았습니다! 😊', true);
+        SpeechRecognition.stopListening();
+        setIsListening(false);
         handleNextRound(true);
       } else if (transcript.length >= word.length && transcript !== word) {
         resetTranscript();
         showModal('틀렸습니다. 😞', false);
-        handleNextRound(false);
+        // handleNextRound(false);
       }
     }
   }, [transcript, listening, word]);
 
+  // 다시하기
   const handleRetry = () => {
     setIsResultModalOpen(false);
     setRound(0);
     setCorrectAnswer(0);
     setTotalPlayTime(0);
     updateRoundData(data[0]);
+    setIsListening(false);
     resumeTimer();
   };
 
+  // 그만하기
   const handleQuit = async () => {
     const correctRate = correctAnswer / totalRounds;
     const resultData = {
@@ -167,6 +184,7 @@ const Game2Page = () => {
     }
   };
 
+  // 마이크 버튼
   const toggleListening = () => {
     if (isListening) {
       SpeechRecognition.stopListening();
@@ -178,11 +196,16 @@ const Game2Page = () => {
     }
   };
 
+  // 스타일
   const getMicState = useCallback(() => {
     return isListening ? 'mic-on' : 'mic-off';
   }, [isListening]);
 
+  // 지원안하는 브라우저는 2초뒤 뒤로가기
   if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
+    setTimeout(() => {
+      nav(-1);
+    }, 2000);
     return <div>이 브라우저는 음성 인식을 지원하지 않습니다.</div>;
   }
 
