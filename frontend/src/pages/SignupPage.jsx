@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './SignUp.sass';
+import './Signup.sass';
 import UserAPI from '../api/UserAPI';
 
 const SignUpPage = () => {
