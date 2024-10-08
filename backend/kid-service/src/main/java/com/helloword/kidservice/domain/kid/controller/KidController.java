@@ -3,7 +3,9 @@ package com.helloword.kidservice.domain.kid.controller;
 import com.helloword.kidservice.domain.kid.dto.request.CraeteKidRequestDto;
 import com.helloword.kidservice.domain.kid.dto.request.UpdateKidRequestDto;
 import com.helloword.kidservice.domain.kid.dto.request.UpdateMainCharactorRequestDto;
+import com.helloword.kidservice.domain.kid.dto.response.GameStatsResponseDto;
 import com.helloword.kidservice.domain.kid.dto.response.KidResponseDto;
+import com.helloword.kidservice.domain.kid.dto.response.LearningStatsResponseDto;
 import com.helloword.kidservice.domain.kid.service.KidService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -77,5 +79,23 @@ public class KidController {
             @PathVariable Long kidId
     ) {
         kidService.deleteKid(userId, kidId);
+    }
+
+    @Operation(summary = "아이의 게임 통계를 조회", description = "아이의 게임 통계를 조회합니다.")
+    @GetMapping("/{kidId}/learning-stats")
+    public LearningStatsResponseDto getLearningStats(
+            @RequestHeader("X-User-Id") Long userId,
+            @PathVariable Long kidId
+    ) {
+        return kidService.getLearningStats(userId, kidId);
+    }
+
+    @Operation(summary = "아이의 게임 학습량 조회", description = "아이의 게임 학습량 조회합니다.")
+    @GetMapping("/{kidId}/game-stats")
+    public GameStatsResponseDto getGameStats(
+            @RequestHeader("X-User-Id") Long userId,
+            @PathVariable Long kidId
+    ) {
+        return kidService.getGameStats(userId, kidId);
     }
 }
