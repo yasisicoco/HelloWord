@@ -27,11 +27,13 @@ const Collection = () => {
         });
 
         if (response.status === 200) {
-          const data = response.data;
-          setCollections(data.collections);
-          setCollectionRate(data.collection_rate);
-          setCompletedCount(data.completed_count);
-          setAllCount(data.all_count);
+          const collectionlist = response.data.data;
+
+          // 데이터를 하나의 배열에 모두 저장
+          setCollections(collectionlist.collections);
+          setCollectionRate(collectionlist.collectionRate);
+          setCompletedCount(collectionlist.completedCount);
+          setAllCount(collectionlist.allCount);
         }
       } catch (error) {
         console.error('데이터 불러오기 실패:', error.message);
@@ -60,12 +62,15 @@ const Collection = () => {
 
       <div className="collection-body">
         <section className="collection-body__items">
+          {/* 모든 데이터를 하나의 리스트로 보여줍니다 */}
           {collections.map((item) => (
-            <div key={item.wordId} className="collection-body__items--item">
+            <div
+              key={item.wordId}
+              className={`collection-body__items--item ${item.isCompleted ? 'completed' : 'not-completed'}`}>
               <img
-                src={item.isComleted ? item.image_url : 'path/to/gray-image.png'}
+                src={item.imageUrl}
                 alt={item.word}
-                className="collection-item-image"
+                className={`collection-item-image ${item.isCompleted ? '' : 'grayscale'}`}
               />
               <div className="collection-item-word">{item.word}</div>
             </div>
