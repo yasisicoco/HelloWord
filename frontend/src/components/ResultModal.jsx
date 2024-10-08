@@ -33,6 +33,7 @@ const ResultModal = ({ isOpen, correctAnswer, totalRounds, onRetry, onQuit }) =>
     <Modal
       isOpen={isOpen}
       onRequestClose={onQuit}
+      shouldCloseOnOverlayClick={false}
       style={{
         content: {
           position: 'absolute',

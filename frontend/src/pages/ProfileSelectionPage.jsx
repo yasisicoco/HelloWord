@@ -20,7 +20,6 @@ const ProfileSelectionPage = () => {
       setIsLoading(true); // 로딩 시작
       const response = await UserAPI().getKids(accessToken);
       setKids(response.data); // 아이 목록 상태 업데이트
-      console.log(response.data);
     } catch (error) {
       console.error('아이 목록을 불러오는 중 오류가 발생했습니다:', error);
     } finally {
@@ -64,11 +63,13 @@ const ProfileSelectionPage = () => {
     <div className="profile-selection-container">
       <div className="header">
         <h1 className="header-title">아이 선택</h1>
-        <button className="add-button" onClick={handleAddProfile}>+</button>
+        <button className="add-button" onClick={handleAddProfile}>
+          +
+        </button>
       </div>
 
       <div className="progress-bar">
-        <div className="progress" style={{ width: "100%" }}></div>
+        <div className="progress" style={{ width: '100%' }}></div>
       </div>
 
       {isLoading ? ( // 로딩 중일 때 로딩 메시지 표시
@@ -78,16 +79,19 @@ const ProfileSelectionPage = () => {
           {kids.length === 0 ? ( // 아이 목록이 없을 때 메시지 표시
             <p className="no-profiles">아이 프로필을 생성해주세요.</p>
           ) : (
-            kids.map((kid) => ( // 아이 목록을 렌더링
-              <div
-                key={kid.kidId}
-                className={`profile-item ${selectedProfile === kid.kidId ? 'selected' : ''}`}
-                onClick={() => handleSelectProfile(kid)}
-              >
-                <img src={kid.profileImageUrl} alt={kid.name} className="profile-image" />
-                <p className="profile-name">{kid.name}</p>
-              </div>
-            ))
+            kids.map(
+              (
+                kid, // 아이 목록을 렌더링
+              ) => (
+                <div
+                  key={kid.kidId}
+                  className={`profile-item ${selectedProfile === kid.kidId ? 'selected' : ''}`}
+                  onClick={() => handleSelectProfile(kid)}>
+                  <img src={kid.profileImageUrl} alt={kid.name} className="profile-image" />
+                  <p className="profile-name">{kid.name}</p>
+                </div>
+              ),
+            )
           )}
         </div>
       )}
