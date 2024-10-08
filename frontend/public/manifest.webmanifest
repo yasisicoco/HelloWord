@@ -27,10 +27,10 @@
       "purpose": "maskable"
     },
     {
-      "src": "/icons/favicon.ico",
-      "type": "image/x-icon",
-      "sizes": "48x48",
-      "purpose": "any"
+      "src": "/icons/android-chrome-192x192-maskable.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
     }
   ]
 }
