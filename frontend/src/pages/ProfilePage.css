@@ -1,0 +1,40 @@
+body {
+    background-color: #141414;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.profile-selection {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    justify-items: center;
+    margin-top: 20px;
+}
+
+.profile-item {
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.profile-item:hover {
+    transform: scale(1.1);
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+.profile-item p {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}

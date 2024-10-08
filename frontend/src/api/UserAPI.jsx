@@ -8,7 +8,7 @@ const UserAPI = () => {
     const data = { email: email, password: password };
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/auth/login`, // 요청을 보낼 경로
+        `${BASE_URL}/api/auth/login`,
         data,
         {
           headers: {
@@ -51,9 +51,10 @@ const UserAPI = () => {
     }
   };
 
-  // 유저 회원가입
   const signUp = async (email, password, username, phone) => {
     const data = { email: email, password: password, username: username, phone: phone };
+    console.log("asdasd");
+    console.log(data);
     try {
       const response = await axios.post(`${BASE_URL}/api/users`, data, {
         headers: {
@@ -63,17 +64,16 @@ const UserAPI = () => {
 
       if (response.status == 200) {
         return true;
-      } else {
-        console.log(`signUp Server Error: ${response.status}`);
-        return false;
       }
+
+      return false;
     } catch (error) {
       console.log('Error UserAPI-signup');
       return true;
     }
   };
 
-  const createKid = async (name, birthDate, profileImageFile, accessToken) => {
+  const createKid = async (name, birthDate, profileImageFile, accessToken, gender) => {
     const formData = new FormData();
 
     // kid 객체를 JSON으로 구성하여 추가
@@ -82,7 +82,7 @@ const UserAPI = () => {
         JSON.stringify({
           name: name,
           birthDate: birthDate,
-          gender: 'M',
+          gender: gender,
         }),
       ],
       { type: 'application/json' },
@@ -116,6 +116,50 @@ const UserAPI = () => {
   const getKids = async (accessToken) => {
     try {
       const response = await axios.get(`${BASE_URL}/api/kids`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.status == 200) {
+        return response.data;
+      } else {
+        console.log(`createKid Server Error: ${response.status}`);
+        return response.data;
+      }
+    } catch (error) {
+      console.log('Error UserAPI-getKids');
+    }
+  };
+
+  // 인증번호 보내기
+  const sendEmailCode = async (accessToken, email) => {
+    
+    try {
+      const response = await axios.post(`${BASE_URL}/api/users/send-code`, { email }, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.status == 200) {
+        return response.data;
+      } else {
+        console.log(`createKid Server Error: ${response.status}`);
+        return response.data;
+      }
+    } catch (error) {
+      console.log('Error UserAPI-getKids');
+    }
+  };
+
+  // 인증번호 확인
+  const verifyEmailCode = async (accessToken, email, code) => {
+    
+    try {
+      const response = await axios.post(`${BASE_URL}/api/users/send-code`, { email, code }, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,

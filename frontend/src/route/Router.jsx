@@ -17,6 +17,9 @@ import Game3Page from '../pages/games/Game3Page';
 import Game4Page from '../pages/games/Game4Page';
 import SelectKidsPage from '../pages/SelectKidsPage';
 import StoryPage from '../pages/StoryPage';
+import PasswordResetPage from '../pages/PasswordResetPage'
+import ProfileSelectionPage from '../pages/ProfileSelectionPage'
+import AddProfilePage from '../pages/AddProfilePage'
 
 function Router() {
   const [hasToken, setHasToken] = useState(true);
@@ -36,7 +39,7 @@ function Router() {
   const protectedRoutes = [
     // 아래로 쭈욱 추가
     { path: '/home', element: <HomePage /> },
-    { path: '/selectkids', element: <SelectKidsPage /> },
+    { path: '/select-kid', element: <ProfileSelectionPage /> },
     { path: '/storypage', element: <StoryPage /> },
 
     // 인증 안되어있어서 주석처리
@@ -56,7 +59,8 @@ function Router() {
       <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
-      <Route path="/password" element={<PasswordPage />} />
+      <Route path="/find/password" element={<PasswordResetPage />} />
+      <Route path="/find/id" element={<PasswordResetPage />} />
 
       {/* 개발용 코드 */}
       <Route path="/game1" element={<Game1Page />} />
@@ -67,6 +71,7 @@ function Router() {
       <Route path="/home/userpage" element={<UserPage />} />
       <Route path="/home/collection" element={<Collection />} />
       <Route path="/home/settings" element={<Settings />} />
+      <Route path="/add-profile" element={<AddProfilePage />} />
 
       {/* 보호된 경로는 한 번에 처리 */}
       {protectedRoutes.map(({ path, element }) => (

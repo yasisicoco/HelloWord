@@ -36,7 +36,7 @@ const LoginPage = () => {
         const accessToken = response.data.accessToken;
 
         dispatch(setTokens({ accessToken, refreshToken }));
-        navigate('/selectkids');
+        navigate('/select-kid');
       } else {
         setErrorMessage('입력하신 정보가 틀렸습니다.');
         setIsModalOpen(true);
@@ -70,10 +70,13 @@ const LoginPage = () => {
   };
 
   const handleOverlayClick = (e) => {
-    // 모달 외부를 클릭했을 때만 닫기
     if (e.target === e.currentTarget) {
       closeModal();
     }
+  };
+
+  const handleClearInput = (setter) => {
+    setter('');
   };
 
   return (
@@ -84,23 +87,30 @@ const LoginPage = () => {
 
       <form className="login-form" onSubmit={handleLogin}>
         <div className="login-input">
-          <input
-            type="text"
-            placeholder="이메일 입력"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onKeyPress={handleEmailKeyPress}
-          />
+          <div className="input-wrapper">
+            <input
+              type="text"
+              placeholder="이메일 입력"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyPress={handleEmailKeyPress}
+            />
+            {email && <img className="clear-icon" src="../assets/homeIcon/x-icon.png" onClick={() => handleClearInput(setEmail)} />}
+
+          </div>
         </div>
         <div className="login-input">
-          <input
-            type="password"
-            placeholder="비밀번호 입력"
-            value={password}
-            ref={passwordInputRef}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyPress={handlePasswordKeyPress}
-          />
+          <div className="input-wrapper">
+            <input
+              type="password"
+              placeholder="비밀번호 입력"
+              value={password}
+              ref={passwordInputRef}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={handlePasswordKeyPress}
+            />
+            {password && <span className="clear-icon" onClick={() => handleClearInput(setPassword)}>✕</span>}
+          </div>
         </div>
         <button type="submit" className="login-button" disabled={!isFormValid}>
           <img src='/character/guiyomi.png' alt="로그인 이미지" />
@@ -109,7 +119,10 @@ const LoginPage = () => {
       </form>
 
       <div className="link-box">
-        <Link to="/find" className="link-item">아이디 / 비밀번호 찾기</Link>
+        <Link to="/find/id" className="link-item">아이디 찾기</Link>
+        <span className="divider">|</span>
+        <Link to="/find/password" className="link-item">비밀번호 찾기</Link>
+        <span className="divider">|</span>
         <Link to="/signup" className="link-item">회원가입</Link>
       </div>
 
@@ -118,7 +131,7 @@ const LoginPage = () => {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h1>Hello Word</h1>
             <p>{errorMessage}</p>
-            <hr /> {/* 가로줄 추가 */}
+            <hr />
             <div onClick={closeModal}>확인</div>
           </div>
         </div>

@@ -1,8 +1,5 @@
-// hook, lib
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
-// img, component
 import EmblaCarousel from '../components/EmblaCarousel';
 import Button from '../components/Button';
 import './HomePage.sass';
@@ -27,9 +24,25 @@ const HomePage = () => {
   ];
 
   useEffect(() => {
-    const mockData = { user: { exp: 70 } };
-    setExp(mockData.user.exp);
+    const lockOrientation = () => {
+      if (window.screen && window.screen.orientation && window.screen.orientation.lock) {
+        window.screen.orientation.lock('landscape').catch((err) => {
+          console.error('화면 방향 고정 실패:', err);
+        });
+      } else {
+        console.warn('화면 방향 고정 API가 이 브라우저에서 지원되지 않습니다.');
+      }
+    };
+
+    lockOrientation(); // 컴포넌트가 마운트될 때 가로 모드로 고정
+
+    return () => {
+      if (window.screen && window.screen.orientation && window.screen.orientation.unlock) {
+        window.screen.orientation.unlock(); // 필요시 화면 방향 잠금을 해제할 수 있음
+      }
+    };
   }, []);
+
 
   return (
     <div className="home-page">
