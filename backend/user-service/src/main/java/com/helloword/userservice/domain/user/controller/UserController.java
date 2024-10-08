@@ -1,7 +1,6 @@
 package com.helloword.userservice.domain.user.controller;
 
-import com.helloword.userservice.domain.user.dto.request.NewPasswordRequest;
-import com.helloword.userservice.domain.user.dto.request.SignupRequest;
+import com.helloword.userservice.domain.user.dto.request.*;
 import com.helloword.userservice.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,5 +45,23 @@ public class UserController {
     @PatchMapping("/{userId}")
     public void changePassword(@RequestHeader("X-User-Id") Long xUserId, @PathVariable Long userId, @RequestBody NewPasswordRequest newPasswordRequest) {
         userService.updatePassword(xUserId, userId, newPasswordRequest);
+    }
+
+    @Operation(summary = "이메일 인증 코드 요청", description = "인증코드를 생성하여 이메일로 전송합니다.")
+    @PostMapping("/send-code")
+    public void sendEmailCode(@RequestBody SendCodeRequestDto sendCodeRequestDto) {
+        userService.sendEmailCode(sendCodeRequestDto);
+    }
+
+    @Operation(summary = "이메일 인증 코드 확인", description = "인증코드를 확인합니다.")
+    @PostMapping("/verify-code")
+    public void verifyCode(@RequestBody VerifyCodeRequestDto verifyCodeRequestDto) {
+        userService.verifyEmailCode(verifyCodeRequestDto);
+    }
+
+    @Operation(summary = "임시 비밀번호 발급", description = "임시비밀번호를 발급하여 이메일로 전송합니다.")
+    @PostMapping("/send-password")
+    public void sendTempPassword(@RequestBody SendTempPasswordRequestDto sendTempPasswordRequestDto) {
+        userService.sendTempPassword(sendTempPasswordRequestDto);
     }
 }
