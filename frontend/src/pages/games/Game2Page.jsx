@@ -1,4 +1,3 @@
-// hook
 import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
@@ -11,7 +10,7 @@ import { fetchGame2, fetchGameResult } from '../../api/GameAPI';
 // compo
 import TimeBar from '../../components/TimeBar';
 import GameModal from '../../components/GameModal';
-import GameResult from '../../components/GameResult';
+import ResultModal from '../../components/ResultModal';
 import useTimer from '../../hooks/useTimer';
 
 // style
@@ -19,35 +18,32 @@ import './Game2Page.sass';
 
 const Game2Page = () => {
   const nav = useNavigate();
-  const [isListening, setIsListening] = useState(false);
   const [data, setData] = useState(null);
   const [round, setRound] = useState(0);
   const [word, setWord] = useState('');
   const [imageUrl, setImage] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-  const [gameStartTime, setGameStartTime] = useState(null);
-  const [correctWords, setCorrectWords] = useState([]);
-  const [isResultOpen, setIsResultOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isDataLoading, setIsDataLoading] = useState(true);
-  const [isCorrect, setIsCorrect] = useState(null);
   const [totalRounds, setTotalRounds] = useState(0);
   const [totalPlayTime, setTotalPlayTime] = useState(0);
   const [roundStartTime, setRoundStartTime] = useState(null);
+  const [correctWordsList, setCorrectWordsList] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isDataLoading, setIsDataLoading] = useState(true);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [roundFinished, setRoundFinished] = useState(false);
+  const [isListening, setIsListening] = useState(false);
 
-  const accessToken = useSelector((state) => state.auth.accessToken);
   const kidId = useSelector((state) => state.kid.selectedKidId);
+  const accessToken = useSelector((state) => state.auth.accessToken);
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
-  // 시간 초과 시 라운드 넘기기
   const onTimeUp = () => {
-    showModal('시간이 초과되었습니다. 😞', false);
+    showModal('시간이 초과되었습니다. 틀렸습니다 😞', false);
     handleNextRound(false);
   };
 
-  // 모달 표시 함수
   const showModal = (message, isCorrect) => {
     setIsModalOpen(true);
     setModalMessage(message);
@@ -61,7 +57,41 @@ const Game2Page = () => {
 
   const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(10, onTimeUp);
 
-  // 다음 라운드로 이동하는 함수
+  const updateRoundData = (currentRoundData) => {
+    setWord(currentRoundData.word);
+    setImage(currentRoundData.imageUrl);
+    resetTimer();
+    resetTranscript();
+    setRoundStartTime(Date.now());
+  };
+
+  const fetchGameData = useCallback(async () => {
+    if (!accessToken) return;
+    setIsDataLoading(true);
+    try {
+      const rounds = await fetchGame2(accessToken, kidId);
+      setData(rounds);
+      setTotalRounds(rounds.length);
+      if (rounds && rounds.length > 0) {
+        updateRoundData(rounds[0]);
+      }
+    } catch (err) {
+      showModal('데이터를 불러오는 데 실패했습니다.');
+    } finally {
+      setIsDataLoading(false);
+    }
+  }, [accessToken, kidId]);
+
+  useEffect(() => {
+    fetchGameData();
+  }, [fetchGameData]);
+
+  useEffect(() => {
+    if (data && data[round]) {
+      updateRoundData(data[round]);
+    }
+  }, [round, data]);
+
   const handleNextRound = (isCorrect) => {
     const roundEndTime = Date.now();
     const timeTaken = (roundEndTime - roundStartTime) / 1000;
@@ -69,7 +99,7 @@ const Game2Page = () => {
 
     if (isCorrect) {
       setCorrectAnswer((prevCount) => prevCount + 1);
-      setCorrectWords((prevList) => [
+      setCorrectWordsList((prevList) => [
         ...prevList,
         {
           id: data[round].wordId,
@@ -78,88 +108,65 @@ const Game2Page = () => {
       ]);
     }
 
-    if (round < totalRounds - 1) {
-      const nextRoundIndex = round + 1;
-      setRound(nextRoundIndex);
-      setWord(data[nextRoundIndex].word);
-      setImage(data[nextRoundIndex].imageUrl);
-      resetTimer();
-      resetTranscript();
-      setRoundStartTime(Date.now());
-    } else {
-      sendGameResult();
-    }
+    setRoundFinished(true);
   };
 
-  // 게임 데이터 가져오기
-  const fetchGameData = useCallback(async () => {
-    if (!accessToken) return;
-
-    setIsDataLoading(true);
-    try {
-      const rounds = await fetchGame2(accessToken, kidId);
-      if (rounds && rounds.length > 0) {
-        setData(rounds);
-        setWord(rounds[0].word);
-        setImage(rounds[0].imageUrl);
-        setGameStartTime(new Date());
-        setTotalRounds(rounds.length);
-        setRoundStartTime(Date.now());
+  useEffect(() => {
+    if (roundFinished) {
+      if (round === totalRounds - 1) {
+        setTimeout(() => {
+          setIsResultModalOpen(true);
+          pauseTimer();
+        }, 1000);
       } else {
-        showModal('게임 데이터가 비어있습니다.', false);
+        setRound((prevRound) => prevRound + 1);
       }
-    } catch (err) {
-      console.error('데이터 불러오기 실패:', err);
-      showModal('데이터를 불러오는 데 실패했습니다. 다시 시도해 주세요.', false);
-    } finally {
-      setIsDataLoading(false);
+      setRoundFinished(false);
     }
-  }, [accessToken, kidId]);
+  }, [roundFinished, round, totalRounds]);
 
-  // 게임 결과 전송 함수
-  const sendGameResult = async () => {
-    if (!data) return;
-    setIsLoading(true);
+  useEffect(() => {
+    if (listening) {
+      if (transcript === word) {
+        showModal('맞았습니다! 😊', true);
+        handleNextRound(true);
+      } else if (transcript.length >= word.length && transcript !== word) {
+        resetTranscript();
+        showModal('틀렸습니다. 😞', false);
+        handleNextRound(false);
+      }
+    }
+  }, [transcript, listening, word]);
+
+  const handleRetry = () => {
+    setIsResultModalOpen(false);
+    setRound(0);
+    setCorrectAnswer(0);
+    setTotalPlayTime(0);
+    updateRoundData(data[0]);
+    resumeTimer();
+  };
+
+  const handleQuit = async () => {
     const correctRate = correctAnswer / totalRounds;
-
-    const gameResult = {
+    const resultData = {
       kidId: kidId,
-      answerWords: correctWords,
+      answerWords: correctWordsList,
       gameType: 'SPEECH_GAME',
-      playTime: Math.round(totalPlayTime),
+      playTime: totalPlayTime,
       correctRate: correctRate,
       correctCount: correctAnswer,
     };
 
     try {
-      await fetchGameResult(accessToken, gameResult);
-      nav('/home');
+      await fetchGameResult(accessToken, resultData);
+      // nav('/home');
+      window.location.href = '/home'; // 새로고침하면서 홈으로
     } catch (err) {
-      showModal('결과 전송에 실패했습니다.', false);
-    } finally {
-      setIsLoading(false);
+      showModal('결과 전송에 실패했습니다.');
     }
   };
 
-  // 초기 데이터 로드
-  useEffect(() => {
-    fetchGameData();
-  }, [fetchGameData]);
-
-  // 음성 인식 결과 처리
-  useEffect(() => {
-    if (listening) {
-      if (transcript === word) {
-        showModal('정답입니다! 🎉', true);
-        handleNextRound(true);
-      } else if (transcript.length >= word.length && transcript !== word) {
-        resetTranscript();
-        showModal('틀렸습니다 😞', false);
-      }
-    }
-  }, [transcript, listening, word, round, data]);
-
-  // 마이크 토글 함수
   const toggleListening = () => {
     if (isListening) {
       SpeechRecognition.stopListening();
@@ -171,7 +178,6 @@ const Game2Page = () => {
     }
   };
 
-  // 마이크 상태 가져오기
   const getMicState = useCallback(() => {
     return isListening ? 'mic-on' : 'mic-off';
   }, [isListening]);
@@ -202,7 +208,6 @@ const Game2Page = () => {
 
   return (
     <div className="game2-page">
-      {isLoading && <div className="loading-overlay">로딩 중...</div>}
       <section className="top-nav">
         <button onClick={() => nav(-1)} className="top-nav__back-space">
           뒤로가기
@@ -236,13 +241,13 @@ const Game2Page = () => {
         isCorrect={isCorrect}
         onRequestClose={() => setIsModalOpen(false)}
       />
-      <GameResult
-        isOpen={isResultOpen}
-        onClose={() => {
-          setIsResultOpen(false);
-        }}
-        correctCount={correctAnswer}
-        totalQuestions={totalRounds}
+
+      <ResultModal
+        isOpen={isResultModalOpen}
+        correctAnswer={correctAnswer}
+        totalRounds={totalRounds}
+        onRetry={handleRetry}
+        onQuit={handleQuit}
       />
     </div>
   );
