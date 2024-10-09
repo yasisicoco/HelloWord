@@ -82,6 +82,7 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
+      <PortraitModeWarning />
       <div className="setting-box" onClick={toggleDrawer}>
         <img src={User} alt="User Icon" />
       </div>
@@ -91,7 +92,9 @@ const HomePage = () => {
       <div className={`drawer-menu ${drawerOpen ? 'open' : ''}`} ref={drawerRef}>
         <div className="drawer-header">
           <h2>메뉴</h2>
-          <button className="drawer-close" onClick={() => setDrawerOpen(false)}>x</button>
+          <button className="drawer-close" onClick={() => setDrawerOpen(false)}>
+            x
+          </button>
         </div>
         <div className="drawer-links">
           <Link to="/profile">내 아이</Link>
@@ -99,7 +102,6 @@ const HomePage = () => {
           <Link to="/select-kid">아이 변경</Link>
           <Link to="/setings">내 정보 수정</Link>
           <Link to="/logout">로그아웃</Link>
-
         </div>
       </div>
 
@@ -123,4 +125,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
