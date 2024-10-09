@@ -3,6 +3,7 @@ import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { FaQuestionCircle } from 'react-icons/fa';
 
 // API import
 import { fetchGame1, fetchGameResult } from '../../api/GameAPI';
@@ -12,6 +13,7 @@ import TimeBar from '../../components/TimeBar';
 import GameModal from '../../components/GameModal';
 import useTimer from '../../hooks/useTimer';
 import ResultModal from '../../components/ResultModal';
+import GameGuide from '../../components/Game1Guide';
 
 // style
 import './Game1Page.sass';
@@ -32,7 +34,8 @@ const Game1Page = () => {
   const [totalPlayTime, setTotalPlayTime] = useState(0); // 전체 플레이 시간 저장
   const [roundStartTime, setRoundStartTime] = useState(null); // 각 라운드 시작 시간
   const [correctWordsList, setCorrectWordsList] = useState([]); // 맞춘 단어 저장 리스트
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달
+  const [isModalOpen, setIsModalOpen] = useState(false); // 결과 및 정답 모달
+  const [isGuideOpen, setIsGuideOpen] = useState(true); // 가이드 모달
   const [isResultModalOpen, setIsResultModalOpen] = useState(false); // 결과 모달
   const [modalMessage, setModalMessage] = useState('');
   const [roundFinished, setRoundFinished] = useState(false); // 라운드 완료 여부 상태 추가
@@ -92,15 +95,17 @@ const Game1Page = () => {
   // 첫 렌더링 시 데이터 가져오기
   useEffect(() => {
     const fetchGameData = async () => {
-      if (!accessToken) return; // hey im babo jinwoo.!!!
+      if (!accessToken) return;
       setIsDataLoading(true);
       try {
-        const rounds = await fetchGame1(accessToken, kidId);
-        setData(rounds); // 전체 데이터를 저장
-        setTotalRounds(rounds.length); // 총 라운드 수 설정
-        setVoice(rounds[0].correctWord.voiceUrl); // 첫 번째 라운드의 목소리 URL 저장
-        if (rounds && rounds.length > 0) {
-          updateRoundData(rounds[0]); // 첫 번째 라운드 데이터 설정
+        const data = await fetchGame1(accessToken, kidId);
+        setData(data.rounds); // 전체 데이터를 저장
+        setTotalRounds(data.rounds.length); // 총 라운드 수 설정
+        setVoice(data.rounds[0].correctWord.voiceUrl); // 첫 번째 라운드의 목소리 URL 저장
+        setIsGuideOpen(data.needsTutorial);
+
+        if (data.rounds && data.rounds.length > 0) {
+          updateRoundData(data.rounds[0]); // 첫 번째 라운드 데이터 설정
         }
       } catch (err) {
         showModal('데이터를 불러오는 데 실패했습니다.');
@@ -110,6 +115,15 @@ const Game1Page = () => {
     };
     fetchGameData();
   }, [accessToken, kidId]);
+
+  // 가이드 모달이 열릴 때 타이머 일시정지, 닫힐 때 타이머 재개
+  useEffect(() => {
+    if (isGuideOpen) {
+      pauseTimer(); // 모달이 열리면 타이머 멈춤
+    } else {
+      resumeTimer(); // 모달이 닫히면 타이머 재개
+    }
+  }, [isGuideOpen]); // isGuideOpen 상태 변경 시마다 실행
 
   // 라운드가 변경될 때마다 데이터를 업데이트하는 useEffect
   useEffect(() => {
@@ -128,7 +142,7 @@ const Game1Page = () => {
     if (isCorrect) {
       setCorrectAnswer((prevCount) => prevCount + 1); // 정답 갯수 증가
       setCorrectWordsList((prevList) => [
-        ...prevList, // hey im babo jinwoo.!!!
+        ...prevList,
         {
           id: data[round].correctWord.wordId, // 정답 단어의 ID
           word: data[round].correctWord.word, // 정답 단어
@@ -240,13 +254,28 @@ const Game1Page = () => {
         </div>
       </section>
 
+      <button
+        className="top-nav__guide-button"
+        onClick={() => setIsGuideOpen(true)}
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          position: 'absolute',
+          top: '10px',
+          right: '5px',
+          fontSize: '20px',
+        }}>
+        <FaQuestionCircle />
+      </button>
+
       <section className="main-content">
         <div className="main-content__img-wrap">
           <img src={imageUrl} alt="캐릭터 이미지" className="main-content__img-wrap--img" />
         </div>
         <div className="main-content__card-container">
           {options.map((option, index) => (
-            <div // 싫어.
+            <div
               key={index}
               className="main-content__card-container--card-wrap"
               onClick={() => handleOptionClick(option)}>
@@ -278,6 +307,8 @@ const Game1Page = () => {
         onRetry={handleRetry}
         onQuit={handleQuit}
       />
+
+      <GameGuide isOpen={isGuideOpen} onRequestClose={() => setIsGuideOpen(false)} />
     </div>
   );
 };

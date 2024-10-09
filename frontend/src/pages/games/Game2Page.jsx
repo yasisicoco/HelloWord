@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { useSelector } from 'react-redux';
+import { FaQuestionCircle } from 'react-icons/fa';
 
 // API import
 import { fetchGame2, fetchGameResult } from '../../api/GameAPI';
@@ -12,6 +13,7 @@ import TimeBar from '../../components/TimeBar';
 import GameModal from '../../components/GameModal';
 import ResultModal from '../../components/ResultModal';
 import useTimer from '../../hooks/useTimer';
+import Game2Guide from '../../components/Game2Guide';
 
 // style
 import './Game2Page.sass';
@@ -28,6 +30,7 @@ const Game2Page = () => {
   const [roundStartTime, setRoundStartTime] = useState(null);
   const [correctWordsList, setCorrectWordsList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGuideOpen, setIsGuideOpen] = useState(true); // 가이드 모달
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isDataLoading, setIsDataLoading] = useState(true);
@@ -52,7 +55,7 @@ const Game2Page = () => {
   const showModal = (message, isCorrect) => {
     setIsModalOpen(true);
     setModalMessage(message);
-    // pauseTimer();
+    pauseTimer();
     setTimeout(() => {
       setIsModalOpen(false);
       resumeTimer();
@@ -76,11 +79,12 @@ const Game2Page = () => {
     if (!accessToken) return;
     setIsDataLoading(true);
     try {
-      const rounds = await fetchGame2(accessToken, kidId);
-      setData(rounds);
-      setTotalRounds(rounds.length);
-      if (rounds && rounds.length > 0) {
-        updateRoundData(rounds[0]);
+      const data = await fetchGame2(accessToken, kidId);
+      setData(data.rounds);
+      setIsGuideOpen(data.needsTutorial);
+      setTotalRounds(data.rounds.length);
+      if (data.rounds && data.rounds.length > 0) {
+        updateRoundData(data.rounds[0]);
       }
     } catch (err) {
       showModal('데이터를 불러오는 데 실패했습니다.');
@@ -92,6 +96,15 @@ const Game2Page = () => {
   useEffect(() => {
     fetchGameData();
   }, [fetchGameData]);
+
+  // 가이드 모달이 열릴 때 타이머 일시정지, 닫힐 때 타이머 재개
+  useEffect(() => {
+    if (isGuideOpen) {
+      pauseTimer(); // 모달이 열리면 타이머 멈춤
+    } else {
+      resumeTimer(); // 모달이 닫히면 타이머 재개
+    }
+  }, [isGuideOpen]); // isGuideOpen 상태 변경 시마다 실행
 
   useEffect(() => {
     if (data && data[round]) {
@@ -248,6 +261,21 @@ const Game2Page = () => {
         </div>
       </section>
 
+      <button
+        className="top-nav__guide-button"
+        onClick={() => setIsGuideOpen(true)}
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          position: 'absolute',
+          top: '10px',
+          right: '5px',
+          fontSize: '20px',
+        }}>
+        <FaQuestionCircle />
+      </button>
+
       <section className="main-content">
         <div className="main-content__img-wrap">
           <img src={imageUrl} alt="캐릭터 이미지" className="main-content__img-wrap--img" />
@@ -277,6 +305,8 @@ const Game2Page = () => {
         onRetry={handleRetry}
         onQuit={handleQuit}
       />
+
+      <Game2Guide isOpen={isGuideOpen} onRequestClose={() => setIsGuideOpen(false)} />
     </div>
   );
 };

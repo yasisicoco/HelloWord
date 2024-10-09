@@ -3,6 +3,7 @@ import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { FaQuestionCircle } from 'react-icons/fa';
 
 // API import
 import { fetchGame4, fetchGameResult } from '../../api/GameAPI';
@@ -12,6 +13,7 @@ import TimeBar from '../../components/TimeBar';
 import GameModal from '../../components/GameModal';
 import useTimer from '../../hooks/useTimer';
 import ResultModal from '../../components/ResultModal';
+import GameGuide from '../../components/Game4Guide';
 
 // style
 import './Game4Page.sass';
@@ -33,6 +35,7 @@ const Game4Page = () => {
   const [roundStartTime, setRoundStartTime] = useState(null); // 각 라운드 시작 시간
   const [correctWordsList, setCorrectWordsList] = useState([]); // 맞춘 단어 저장 리스트
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달
+  const [isGuideOpen, setIsGuideOpen] = useState(true); // 가이드 모달
   const [isResultModalOpen, setIsResultModalOpen] = useState(false); // 결과 모달
   const [modalMessage, setModalMessage] = useState('');
   const [roundFinished, setRoundFinished] = useState(false); // 라운드 완료 여부 상태 추가
@@ -105,11 +108,12 @@ const Game4Page = () => {
 
       setIsDataLoading(true);
       try {
-        const rounds = await fetchGame4(accessToken, kidId);
-        setData(rounds); // 전체 데이터를 저장
-        setTotalRounds(rounds.length); // 총 라운드 수 설정
-        if (rounds && rounds.length > 0) {
-          updateRoundData(rounds[0]); // 첫 번째 라운드 데이터 설정
+        const data = await fetchGame4(accessToken, kidId);
+        setData(data.rounds); // 전체 데이터를 저장
+        setTotalRounds(data.rounds.length); // 총 라운드 수 설정
+        if (data.rounds && data.rounds.length > 0) {
+          updateRoundData(data.rounds[0]); // 첫 번째 라운드 데이터 설정
+          setIsGuideOpen(data.needsTutorial);
         }
       } catch (err) {
         showModal('데이터를 불러오는 데 실패했습니다.');
@@ -119,6 +123,15 @@ const Game4Page = () => {
     };
     fetchGameData();
   }, [accessToken, kidId]);
+
+  // 가이드 모달이 열릴 때 타이머 일시정지, 닫힐 때 타이머 재개
+  useEffect(() => {
+    if (isGuideOpen) {
+      pauseTimer(); // 모달이 열리면 타이머 멈춤
+    } else {
+      resumeTimer(); // 모달이 닫히면 타이머 재개
+    }
+  }, [isGuideOpen]); // isGuideOpen 상태 변경 시마다 실행
 
   // 라운드가 변경될 때마다 데이터를 업데이트하는 useEffect
   useEffect(() => {
@@ -240,6 +253,21 @@ const Game4Page = () => {
         </div>
       </section>
 
+      <button
+        className="top-nav__guide-button"
+        onClick={() => setIsGuideOpen(true)}
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          position: 'absolute',
+          top: '10px',
+          right: '5px',
+          fontSize: '20px',
+        }}>
+        <FaQuestionCircle />
+      </button>
+
       <section className="main-content">
         <div className="book-container">
           <div className="book-container__img-wrap">
@@ -283,6 +311,8 @@ const Game4Page = () => {
         onRetry={handleRetry}
         onQuit={handleQuit}
       />
+
+      <GameGuide isOpen={isGuideOpen} onRequestClose={() => setIsGuideOpen(false)} />
     </div>
   );
 };
