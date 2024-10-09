@@ -151,10 +151,12 @@ const Game4Page = () => {
   // roundFinished가 true가 되면 다음 라운드로 이동
   useEffect(() => {
     if (roundFinished) {
-      // 마지막 라운드이면 결과 전송
       if (round === totalRounds - 1) {
-        setIsResultModalOpen(true); // 마지막 라운드에서 결과 모달 열기
-        pauseTimer(); // 타이머 정지
+        // 결과 모달 열기 전에 타이머 정지
+        setTimeout(() => {
+          setIsResultModalOpen(true); // 마지막 라운드에서 결과 모달 열기
+          pauseTimer(); // 타이머 정지
+        }, 1000); // 결과 모달 띄우기 전에 잠시 대기
       } else {
         setRound((prevRound) => prevRound + 1); // 다음 라운드로 이동
       }
