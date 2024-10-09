@@ -184,6 +184,11 @@ const Game2Page = () => {
     }
   };
 
+  const backButton = () => {
+    SpeechRecognition.stopListening();
+    nav(-1);
+  };
+
   // 마이크 버튼
   const toggleListening = () => {
     if (isListening) {
@@ -232,7 +237,7 @@ const Game2Page = () => {
   return (
     <div className="game2-page">
       <section className="top-nav">
-        <button onClick={() => nav(-1)} className="top-nav__back-space">
+        <button onClick={backButton} className="top-nav__back-space">
           뒤로가기
         </button>
         <div className="top-nav__time-stamp">
