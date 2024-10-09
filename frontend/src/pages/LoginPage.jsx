@@ -1,19 +1,19 @@
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import './Login.sass';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import UserAPI from '../api/UserAPI';
 import { setTokens } from '../features/Auth/authSlice';
 import xIcon from '../assets/homeIcon/x-icon.png';
+import { useToast } from '../context/ToastProvider';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const passwordInputRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { triggerToast } = useToast();  // useToast 훅 사용
 
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -24,8 +24,7 @@ const LoginPage = () => {
     event.preventDefault();
 
     if (!isValidEmail(email)) {
-      setErrorMessage('올바른 이메일 주소를 입력해 주세요.');
-      setIsModalOpen(true);
+      triggerToast('올바른 이메일 주소를 입력해 주세요.');  // 전역 토스트 호출
       return;
     }
 
@@ -39,13 +38,11 @@ const LoginPage = () => {
         dispatch(setTokens({ accessToken, refreshToken }));
         navigate('/select-kid');
       } else {
-        setErrorMessage('입력하신 정보가 틀렸습니다.');
-        setIsModalOpen(true);
+        triggerToast('입력하신 정보가 틀렸습니다.');  // 전역 토스트 호출
       }
     } catch (error) {
       console.error('로그인 중 에러 발생:', error);
-      setErrorMessage('입력하신 정보가 틀렸습니다.');
-      setIsModalOpen(true);
+      triggerToast('입력하신 정보가 틀렸습니다.');  // 전역 토스트 호출
     }
   };
 
@@ -66,16 +63,6 @@ const LoginPage = () => {
 
   const isFormValid = email && password;
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      closeModal();
-    }
-  };
-
   const handleClearInput = (setter) => {
     setter('');
   };
@@ -94,10 +81,9 @@ const LoginPage = () => {
               placeholder="이메일 입력"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              onKeyPress={handleEmailKeyPress}
+              onKeyDown={handleEmailKeyPress}
             />
             {email && <img className="clear-icon" src={xIcon} onClick={() => handleClearInput(setEmail)} />}
-
           </div>
         </div>
         <div className="login-input">
@@ -108,9 +94,8 @@ const LoginPage = () => {
               value={password}
               ref={passwordInputRef}
               onChange={(e) => setPassword(e.target.value)}
-              onKeyPress={handlePasswordKeyPress}
+              onKeyDown={handlePasswordKeyPress}
             />
-            {/* {password && <span className="clear-icon" onClick={() => handleClearInput(setPassword)}>✕</span>} */}
           </div>
         </div>
         <button type="submit" className="login-button" disabled={!isFormValid}>
@@ -126,17 +111,6 @@ const LoginPage = () => {
         <span className="divider">|</span>
         <Link to="/signup" className="link-item">회원가입</Link>
       </div>
-
-      {isModalOpen && (
-        <div className="modal-overlay" onClick={handleOverlayClick}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h1>Hello Word</h1>
-            <p>{errorMessage}</p>
-            <hr />
-            <div onClick={closeModal}>확인</div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

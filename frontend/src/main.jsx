@@ -7,15 +7,18 @@ import store, { persistor } from './redux/store.jsx';
 
 import App from './App.jsx';
 import './index.css';
+import { ToastProvider } from './context/ToastProvider.jsx';
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <BrowserRouter>
-        <App />
+        <ToastProvider>
+          <App />
+        </ToastProvider>
       </BrowserRouter>
     </PersistGate>
-  </Provider>,
+  </Provider>
 );
 
 // Service Worker 등록

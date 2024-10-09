@@ -1,4 +1,4 @@
-// 로그인 페이지
+// 전체 페이지 스타일
 .login-Page
   position: fixed
   top: 0
@@ -16,6 +16,7 @@
   font-family: 'CookieRun-Regular', serif
   writing-mode: horizontal-tb
 
+// 로고 섹션
 .login-Logo
   display: flex
   justify-content: center
@@ -41,23 +42,33 @@
       width: 90%
       margin: 0.8rem 0
       height: 50px
-      background: rgb(255, 255, 255, 0.8)
+      background: rgba(255, 255, 255, 0.8)
       border-radius: 10px
       border: none
       padding: 10px 11px
       box-sizing: border-box
       outline: none
 
-    input::placeholder
-      font-size: 1rem
+      &::placeholder
+        font-size: 1rem
 
-  // 이메일 입력 필드
-  input[type="text"]
-    font-size: 1rem
+    // input 안에 clear 버튼 추가를 위한 스타일
+    .input-wrapper
+      position: relative
+      width: 100%
 
-  // 비밀번호 입력 필드
-  input[type="password"]
-    font-size: 0.6rem
+      .clear-icon
+        position: absolute
+        right: 2rem
+        top: 50%
+        transform: translateY(-50%)
+        cursor: pointer
+        font-size: 1rem
+        color: #999
+        width: 20px
+
+        &:hover
+          color: #000
 
 // 로그인 버튼
 .login-button
@@ -106,65 +117,7 @@
       font-size: 0.65rem
       margin-left: 5px
 
-// 모달
-.modal-overlay
-  position: fixed
-  top: 0
-  left: 0
-  width: 100vw
-  height: 100vh
-  background-color: rgba(0, 0, 0, 0.5)
-  display: flex
-  justify-content: center
-  align-items: center
-  z-index: 9999
-
-.modal-content
-  background-color: white
-  padding: 20px
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)
-  width: 80%
-  max-width: 400px
-  height: 25%
-  display: flex
-  flex-direction: column
-  justify-content: center
-  position: relative
-
-  hr
-    width: 100%
-    margin: 1rem 0
-    border: none
-    border-top: 1px solid #e0e0e0
-
-.modal-content h1
-  font-size: 1.8rem
-  margin: 0
-
-.modal-content p
-  margin: 1rem 0
-  flex-grow: 1
-  font-size: 1rem
-
-.modal-content div
-  font-size: 1.2rem
-  color: red
-  display: block
-  margin: 0 auto
-  padding: 10px 20px
-  background-color: white
-  user-select: none
-
-  &:hover
-    background-color: white
-
-  &:active
-    background-color: white
-
-  &:focus
-    background-color: white
-    outline: none
-
+// 구분선 스타일
 .divider
   color: rgba(0, 0, 0, 0.2)
   margin: 0 10px

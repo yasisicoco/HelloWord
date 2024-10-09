@@ -14,11 +14,21 @@ const SignUpPage = () => {
   const [isTransition, setIsTransition] = useState(false);
   const [emailChecked, setEmailChecked] = useState(false);
   const [emailValid, setEmailValid] = useState(true);
+  const [authCode, setAuthCode] = useState('');
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [emailVerificationError, setEmailVerificationError] = useState('');
+  const [codeVerificationError, setCodeVerificationError] = useState('');
+  const [isAuthCodeRequested, setIsAuthCodeRequested] = useState(false);
+  const [isVerificationInProgress, setIsVerificationInProgress] = useState(false);
+  const [timer, setTimer] = useState(180);
+  const [isResendAllowed, setIsResendAllowed] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
 
   const emailRef = useRef(null);
   const usernameRef = useRef(null);
   const phoneRef = useRef(null);
   const passwordRef = useRef(null);
+  const authCodeRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -54,6 +64,20 @@ const SignUpPage = () => {
     };
   }, []);
 
+  // 타이머 시작을 위한 useEffect 추가
+  useEffect(() => {
+    let countdown;
+    if (isAuthCodeRequested && timer > 0) {
+      countdown = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (timer === 0) {
+      setIsResendAllowed(true); // 타이머가 끝나면 재발급 허용
+      clearInterval(countdown);
+    }
+    return () => clearInterval(countdown);
+  }, [isAuthCodeRequested, timer]);
+
   const handleNext = async () => {
     if (step < 4) {
       setStep(step + 1);
@@ -70,9 +94,63 @@ const SignUpPage = () => {
     }
   };
 
-  const handleEmailCheck = () => {
-    if (emailValid) {
+  // 중복확인 버튼 클릭 시 이메일 중복 체크 및 인증번호 요청
+  const handleEmailCheckAndRequest = async () => {
+    if (!emailValid) return;
+
+    if (!email) {
+      setEmailVerificationError('이메일을 입력해 주세요.');
+      return;
+    }
+
+    const isAvailable = await UserAPI().checkEmailAvailability(email);
+    if (isAvailable) {
       setEmailChecked(true);
+      setEmailVerificationError('');
+      await handleEmailVerification();
+    } else {
+      setEmailChecked(false);
+      setEmailVerificationError('이미 사용 중인 이메일입니다.');
+    }
+  };
+
+  // 이메일 인증번호 요청 함수
+  const handleEmailVerification = async () => {
+    setIsVerificationInProgress(true);
+
+    try {
+      setIsAuthCodeRequested(true);
+      setTimer(180);
+      const generatedCode = await UserAPI().requestEmailVerification(email);
+      if (generatedCode) {
+        setEmailVerificationError('');
+        setIsResendAllowed(false);
+      }
+    } catch (error) {
+      setEmailVerificationError('인증 요청에 실패했습니다.');
+    } finally {
+      setIsVerificationInProgress(false);
+    }
+  };
+
+  // 인증번호 확인 함수
+  const handleAuthCodeCheck = async () => {
+    if (!authCode) {
+      setCodeVerificationError('인증번호를 입력하세요.');
+      setIsVerificationInProgress(false);
+      return;
+    }
+
+    try {
+      await UserAPI().checkEmailVerification(email, authCode);
+      setIsEmailVerified(true);
+      setCodeVerificationError('');
+      setIsAuthCodeRequested(false);
+    } catch (error) {
+      setCodeVerificationError(error.response.data.reason);
+      setIsVerificationInProgress(true);
+    } finally {
+      setIsVerificationInProgress(false);
     }
   };
 
@@ -80,8 +158,14 @@ const SignUpPage = () => {
     const emailValue = e.target.value;
     setEmail(emailValue);
 
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    setEmailValid(emailPattern.test(emailValue));
+    const emailPattern = /^(?=.*[a-zA-Z])(?=.*[~!@#$%^*+=-])(?=.*[0-9]).{8,30}$/;
+    setEmailVerificationError(emailPattern.test(emailValue) ? '' : '올바른 이메일을 입력하세요.');
+    setEmailChecked(false);
+    setIsEmailVerified(false);
+    setIsAuthCodeRequested(false);
+    setCodeVerificationError('');
+    setIsResendAllowed(false)
+    setIsVerificationInProgress(false);
   };
 
   const handlePhoneChange = (e) => {
@@ -94,31 +178,33 @@ const SignUpPage = () => {
     setPhone(value);
   };
 
+  const handlePasswordChange = (e) => {
+    const passwordValue = e.target.value;
+    setPassword(passwordValue);
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~@$!%*?&^+-=])[A-Za-z\d@$!%*?&]{8,}$/;
+    setIsPasswordValid(passwordRegex.test(passwordValue));
+  };
+
   const isPasswordMismatch = password && confirmPassword && password !== confirmPassword;
 
   const isNextButtonDisabled = () => {
-    if (step === 1 && (!email || !emailChecked)) return true;
+    if (step === 1 && (!email || !emailChecked || !isEmailVerified)) return true;
     if (step === 2 && !username) return true;
-    if (step === 3 && !phone) return true;
-    if (step === 4 && (!password || password !== confirmPassword)) return true;
+    if (step === 3 && phone.length !== 13) return true;
+    if (step === 4 && (!password || password !== confirmPassword || !isPasswordValid)) return true;
     return false;
   };
 
   const handleSignUp = async () => {
-    console.log('회원가입 함수 호출');
-
     const sanitizedPhone = phone.replace(/-/g, '');
 
     const success = await UserAPI().signUp(email, password, username, sanitizedPhone);
 
     if (success) {
-      console.log('회원가입 성공');
       navigate('/login');
-    } else {
-      console.log('회원가입 실패');
     }
   };
-
 
   return (
     <div className="signup-container">
@@ -145,18 +231,47 @@ const SignUpPage = () => {
                 ref={emailRef}
                 onChange={handleEmailChange}
                 placeholder="이메일 입력"
-                className={!emailValid ? 'error' : ''}
+                className={emailVerificationError ? 'error' : ''}
               />
               <button
                 className="check-button"
-                onClick={handleEmailCheck}
-                disabled={!emailValid}
+                onClick={handleEmailCheckAndRequest}
+                disabled={emailChecked || isVerificationInProgress}
               >
-                {emailChecked ? '✔' : '확인'}
+                인증번호 요청
               </button>
             </div>
-            {!emailValid && (
-              <small className="error-message">올바른 이메일을 입력하세요.</small>
+            {emailVerificationError && (
+              <small className="error-message">{emailVerificationError}</small>
+            )}
+            {emailChecked && (
+              <div className="auth-code-section">
+                <div className="input-wrapper">
+                  <input
+                    type="text"
+                    value={authCode}
+                    ref={authCodeRef}
+                    onChange={(e) => setAuthCode(e.target.value)}
+                    placeholder="인증번호 입력"
+                    disabled={!isAuthCodeRequested}
+                    className={codeVerificationError ? 'error' : ''}
+                  />
+                  {isAuthCodeRequested && !isEmailVerified && (
+                    <span className="input-timer">{`${Math.floor(timer / 60)}:${timer % 60 < 10 ? `0${timer % 60}` : timer % 60}`}</span>
+                  )}
+                </div>
+                <button
+                  className="verify-button"
+                  onClick={isResendAllowed ? handleEmailVerification : handleAuthCodeCheck}
+                  disabled={isVerificationInProgress || (!isResendAllowed && isEmailVerified)}
+                >
+                  {isResendAllowed ? '재발급 요청' : '인증확인'}
+                </button>
+              </div>
+              
+            )}
+            {codeVerificationError && (
+              <small className="error-message">{codeVerificationError}</small>
             )}
           </div>
         )}
@@ -170,6 +285,7 @@ const SignUpPage = () => {
               ref={usernameRef}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="이름 입력"
+              maxLength="10"
             />
           </div>
         )}
@@ -183,6 +299,7 @@ const SignUpPage = () => {
               ref={phoneRef}
               onChange={handlePhoneChange}
               placeholder="전화번호 입력"
+              maxLength="13"
             />
           </div>
         )}
@@ -194,9 +311,12 @@ const SignUpPage = () => {
               type="password"
               value={password}
               ref={passwordRef}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               placeholder="비밀번호 입력"
             />
+            {!isPasswordValid && (
+              <small className="error-message">비밀번호는 8자 이상, 대문자, 소문자, 숫자, 특수문자를 포함해야 합니다.</small>
+            )}
             <label htmlFor="confirm-password">비밀번호 확인</label>
             <input
               id="confirm-password"
