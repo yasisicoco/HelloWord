@@ -28,7 +28,7 @@ public class KidController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public KidResponseDto createKid(
             @RequestHeader("X-User-Id") Long userId,
-            @RequestPart(value = "profileImage") MultipartFile profileImage,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
             @Valid @RequestPart("kid") CraeteKidRequestDto craeteKidRequestDto
     ) {
         return kidService.createKid(userId, profileImage, craeteKidRequestDto);
