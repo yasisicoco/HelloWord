@@ -21,7 +21,7 @@ const HomePage = () => {
   const [exp, setExp] = useState(0);
   const [level, setLevel] = useState(1);
   const [characterImage, setCharacterImage] = useState(charImage1);
-  const [characterName, setCharacterName] = useState('먼지쿤');
+  const [characterName, setCharacterName] = useState('');
   const kidId = useSelector((state) => state.kid.selectedKidId);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
