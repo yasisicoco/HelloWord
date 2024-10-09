@@ -9,6 +9,7 @@ import com.helloword.kidservice.domain.kid.repository.KidRepository;
 import com.helloword.kidservice.global.client.CollectionServiceClient;
 import com.helloword.kidservice.global.client.LogServiceClient;
 import com.helloword.kidservice.global.client.ProbabilityServiceClient;
+import com.helloword.kidservice.global.exception.CustomException;
 import com.helloword.kidservice.global.exception.MainException;
 import com.helloword.kidservice.global.utils.FileService;
 import lombok.RequiredArgsConstructor;
@@ -164,5 +165,41 @@ public class KidServiceImpl implements KidService {
         if (!ownerId.equals(requestUserId)) {
             throw new MainException(KID_FORBIDDEN);
         }
+    }
+
+    @Transactional
+    @Override
+    public boolean changeIsSpeedGameTutorialCompleted(Long kidId) {
+        Kid kid = kidRepository.findById(kidId)
+            .orElseThrow(() -> new MainException(KID_NOT_FOUND));
+
+        return kid.changeIsSpeedGameTutorialCompleted();
+    }
+
+    @Transactional
+    @Override
+    public boolean changeIsSpeechGameTutorialCompleted(Long kidId) {
+        Kid kid = kidRepository.findById(kidId)
+            .orElseThrow(() -> new MainException(KID_NOT_FOUND));
+
+        return kid.changeIsSpeechGameTutorialCompleted();
+    }
+
+    @Transactional
+    @Override
+    public boolean changeIsPairGameTutorialCompleted(Long kidId) {
+        Kid kid = kidRepository.findById(kidId)
+            .orElseThrow(() -> new MainException(KID_NOT_FOUND));
+
+        return kid.changeIsPairGameTutorialCompleted();
+    }
+
+    @Transactional
+    @Override
+    public boolean changeIsFairytaleGameTutorialCompleted(Long kidId) {
+        Kid kid = kidRepository.findById(kidId)
+            .orElseThrow(() -> new MainException(KID_NOT_FOUND));
+
+        return kid.changeIsFairytaleGameTutorialCompleted();
     }
 }

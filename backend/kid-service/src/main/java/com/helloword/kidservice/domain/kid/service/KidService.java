@@ -31,4 +31,12 @@ public interface KidService {
     LearningStatsResponseDto getLearningStats(Long userId, Long kidId);
 
     GameStatsResponseDto getGameStats(Long userId, Long kidId);
+
+    boolean changeIsSpeedGameTutorialCompleted(Long kidId);
+
+    boolean changeIsSpeechGameTutorialCompleted(Long kidId);
+
+    boolean changeIsPairGameTutorialCompleted(Long kidId);
+
+    boolean changeIsFairytaleGameTutorialCompleted(Long kidId);
 }

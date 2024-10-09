@@ -46,6 +46,18 @@ public class Kid {
     @Column(nullable = false)
     private Character mainCharacter;
 
+    @Column(nullable = false)
+    private Boolean isSpeedGameTutorialCompleted;
+
+    @Column(nullable = false)
+    private Boolean isSpeechGameTutorialCompleted;
+
+    @Column(nullable = false)
+    private Boolean isPairGameTutorialCompleted;
+
+    @Column(nullable = false)
+    private Boolean isFairytaleGameTutorialCompleted;
+
     @Builder
     private Kid(Long userId, String name, LocalDate birthDate, Gender gender, String profileImageUrl) {
         this.userId = userId;
@@ -56,6 +68,10 @@ public class Kid {
         this.mainCharacter = Character.DUSTY;
         this.level = 0;
         this.experience = 0;
+        this.isSpeedGameTutorialCompleted = Boolean.FALSE;
+        this.isSpeechGameTutorialCompleted = Boolean.FALSE;
+        this.isPairGameTutorialCompleted = Boolean.FALSE;
+        this.isFairytaleGameTutorialCompleted = Boolean.FALSE;
     }
 
     public static Kid createKid(Long userId, String name, LocalDate birthDate, Gender gender, String profileImageUrl) {
@@ -87,6 +103,38 @@ public class Kid {
 
     public void changeMainCharacter(Character newCharacter) {
         this.mainCharacter = newCharacter;
+    }
+
+    public boolean changeIsSpeedGameTutorialCompleted() {
+        if (!isSpeedGameTutorialCompleted) {
+            isSpeedGameTutorialCompleted = true;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean changeIsSpeechGameTutorialCompleted() {
+        if (!isSpeechGameTutorialCompleted) {
+            isSpeechGameTutorialCompleted = true;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean changeIsPairGameTutorialCompleted() {
+        if (!isPairGameTutorialCompleted) {
+            isPairGameTutorialCompleted = true;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean changeIsFairytaleGameTutorialCompleted() {
+        if (!isFairytaleGameTutorialCompleted) {
+            isFairytaleGameTutorialCompleted = true;
+            return true;
+        }
+        return false;
     }
 
 }

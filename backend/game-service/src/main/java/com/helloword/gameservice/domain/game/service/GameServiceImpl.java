@@ -17,6 +17,7 @@ import com.helloword.gameservice.domain.game.dto.response.PairGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeechGameResponseDto;
 import com.helloword.gameservice.domain.game.dto.response.SpeedGameResponseDto;
 import com.helloword.gameservice.global.client.CollectionServiceClient;
+import com.helloword.gameservice.global.client.KidServiceClient;
 import com.helloword.gameservice.global.client.LogServiceClient;
 import com.helloword.gameservice.global.client.WordServiceClient;
 
@@ -31,6 +32,7 @@ public class GameServiceImpl implements GameService {
 	private final WordServiceClient wordServiceClient;
 	private final CollectionServiceClient collectionServiceClient;
 	private final LogServiceClient logServiceClient;
+	private final KidServiceClient kidServiceClient;
 
 	public SpeedGameResponseDto getSpeedGameCards(Long kidId) {
 		GameWordResponseDto gameWordResponse = wordServiceClient.getGameWords(kidId, 20);
@@ -60,7 +62,9 @@ public class GameServiceImpl implements GameService {
 			rounds.add(roundDto);
 		}
 
-		return new SpeedGameResponseDto(rounds);
+		boolean needsTutorial = kidServiceClient.changeIsSpeedGameTutorialCompleted(kidId);
+
+		return new SpeedGameResponseDto(rounds, needsTutorial);
 	}
 
 	public SpeechGameResponseDto getSpeechGameCards(Long kidId) {
@@ -74,7 +78,9 @@ public class GameServiceImpl implements GameService {
 			))
 			.collect(Collectors.toList());
 
-		return new SpeechGameResponseDto(rounds);
+		boolean needsTutorial = kidServiceClient.changeIsSpeechGameTutorialCompleted(kidId);
+
+		return new SpeechGameResponseDto(rounds, needsTutorial);
 	}
 
 	public PairGameResponseDto getPairGameCards(Long kidId) {
@@ -95,7 +101,9 @@ public class GameServiceImpl implements GameService {
 			rounds.add(new PairGameResponseDto.RoundDto(wordDtos));
 		}
 
-		return new PairGameResponseDto(rounds);
+		boolean needsTutorial = kidServiceClient.changeIsPairGameTutorialCompleted(kidId);
+
+		return new PairGameResponseDto(rounds, needsTutorial);
 	}
 
 	public FairytaleGameResponseDto getFairytaleGameCards(Long kidId) {
@@ -130,8 +138,10 @@ public class GameServiceImpl implements GameService {
 			incorrectWordIndex += 3;
 		}
 
+		boolean needsTutorial = kidServiceClient.changeIsFairytaleGameTutorialCompleted(kidId);
+
 		return new FairytaleGameResponseDto(fairytaleWordResponse.getStoryTitle(),
-			fairytaleWordResponse.getSentenceCount(), rounds);
+			fairytaleWordResponse.getSentenceCount(), rounds, needsTutorial);
 	}
 
 	@Override
