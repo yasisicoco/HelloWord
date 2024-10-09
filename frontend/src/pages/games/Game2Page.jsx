@@ -258,7 +258,7 @@ const Game2Page = () => {
             onClick={toggleListening}
             className={`main-content__card-container--mic-card card-container--${getMicState()}`}
             aria-label={listening ? '마이크 끄기' : '마이크 켜기'}>
-            {listening ? '마이크 끄기' : '마이크 켜기'}
+            {listening ? <img src="/icons/mic_on.svg" /> : <img src="/icons/mic_off.svg" />}
           </div>
         </div>
       </section>

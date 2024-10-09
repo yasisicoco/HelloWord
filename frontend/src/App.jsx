@@ -35,21 +35,21 @@ function App() {
       '/settings',
     ];
 
-    const preventRotation = () => {
-      requestFullscreen(); // 전체 화면 활성화 시도
-      if (portraitPages.includes(location.pathname)) {
-        lockOrientation('portrait');
-      } else if (landscapePages.includes(location.pathname)) {
-        lockOrientation('landscape');
-      }
-    };
+    // const preventRotation = () => {
+    //   requestFullscreen(); // 전체 화면 활성화 시도
+    //   if (portraitPages.includes(location.pathname)) {
+    //     lockOrientation('portrait');
+    //   } else if (landscapePages.includes(location.pathname)) {
+    //     lockOrientation('landscape');
+    //   }
+    // };
 
-    preventRotation();
+    // preventRotation();
 
-    window.screen.orientation?.addEventListener('change', preventRotation);
+    // window.screen.orientation?.addEventListener('change', preventRotation);
 
     return () => {
-      window.screen.orientation?.removeEventListener('change', preventRotation);
+      // window.screen.orientation?.removeEventListener('change', preventRotation);
     };
   }, [location]);
 
