@@ -14,39 +14,32 @@ function App() {
         });
       }
     };
+    // 세로 방향 고정
+    const portraitPages = ['/', '/login', '/select-kid', '/signup', '/find/password', '/find/id', '/add-profile'];
+    // 가로 방향 고정
+    const landscapePages = [
+      '/home',
+      '/storypage',
+      '/game1',
+      '/game2',
+      '/game3',
+      '/game4',
+      '/userpage',
+      '/collection',
+      '/settings',
+    ];
 
     const preventRotation = () => {
-      // 화면이 회전하지 않도록 고정
-      if (
-      
-        location.pathname === '/select-kid' ||
-        location.pathname === '/signup' ||
-        location.pathname === '/find/password' ||
-        location.pathname === '/find/id' ||
-        location.pathname === '/add-profile'
-      ) {
-        lockOrientation('portrait'); // 세로 고정
-      } else if (
-        location.pathname === '/' ||
-        location.pathname === '/login' ||
-        location.pathname === '/home' ||
-        location.pathname === '/storypage' ||
-        location.pathname === '/game1' ||
-        location.pathname === '/game2' ||
-        location.pathname === '/game3' ||
-        location.pathname === '/game4' ||
-        location.pathname === '/userpage' ||
-        location.pathname === '/collection' ||
-        location.pathname === '/settings'
-      ) {
-        lockOrientation('landscape'); // 가로 고정
+      // 페이지별로 화면 방향 고정
+      if (portraitPages.includes(location.pathname)) {
+        lockOrientation('portrait');
+      } else if (landscapePages.includes(location.pathname)) {
+        lockOrientation('landscape');
       }
     };
 
-    // 페이지 로드 시 방향 고정
     preventRotation();
 
-    // 화면 회전 방지 (onchange 리스너 등록)
     const handleOrientationChange = () => {
       preventRotation();
     };
@@ -54,7 +47,6 @@ function App() {
     window.screen.orientation?.addEventListener('change', handleOrientationChange);
 
     return () => {
-      // 컴포넌트 언마운트 시 이벤트 리스너 제거
       window.screen.orientation?.removeEventListener('change', handleOrientationChange);
     };
   }, [location]);

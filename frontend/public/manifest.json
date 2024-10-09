@@ -3,7 +3,7 @@
   "name": "HelloWord!",
   "short_name": "HelloWord",
   "description": "My awesome Progressive Web App!",
-  "start_url": "/",
+  "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#f5f5f5",
