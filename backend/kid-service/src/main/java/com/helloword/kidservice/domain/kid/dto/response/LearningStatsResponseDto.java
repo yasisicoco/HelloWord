@@ -10,7 +10,6 @@ import lombok.Getter;
 public class LearningStatsResponseDto {
     private Integer todayPlayTime;
     private Integer todayCompletedGames;
-    private Map<Integer, Integer> weeklyCorrectWordCounts;
-    private Map<Integer, Integer> monthlyCorrectWordCounts;
+    private Map<String, Integer> dailyCorrectWordCounts;
 }
 
