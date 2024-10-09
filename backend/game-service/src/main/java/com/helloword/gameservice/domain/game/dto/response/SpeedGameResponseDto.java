@@ -10,6 +10,7 @@ import lombok.Getter;
 public class SpeedGameResponseDto {
 
 	private List<RoundDto> rounds;
+	private Boolean needsTutorial;
 
 	@Getter
 	@AllArgsConstructor

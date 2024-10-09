@@ -11,6 +11,7 @@ public class FairytaleGameResponseDto {
 	private String storyTitle;
 	private int sentenceCount;
 	private List<RoundDto> rounds;
+	private Boolean needsTutorial;
 
 	@Getter
 	@AllArgsConstructor
