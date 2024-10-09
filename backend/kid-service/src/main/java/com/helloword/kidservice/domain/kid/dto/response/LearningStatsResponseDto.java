@@ -11,6 +11,6 @@ public class LearningStatsResponseDto {
     private Integer todayPlayTime;
     private Integer todayCompletedGames;
     private Map<String, Integer> dailyCorrectWordCounts;
-    private Map<String, Double> globalDailyAverageCorrectWordCounts;
+    private Map<String, Integer> globalDailyAverageCorrectWordCounts;
 }
 
