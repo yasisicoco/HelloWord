@@ -14,9 +14,15 @@ function App() {
         });
       }
     };
-    // 세로 방향 고정
+
+    const requestFullscreen = () => {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      }
+    };
+
     const portraitPages = ['/', '/login', '/select-kid', '/signup', '/find/password', '/find/id', '/add-profile'];
-    // 가로 방향 고정
     const landscapePages = [
       '/home',
       '/storypage',
@@ -30,7 +36,7 @@ function App() {
     ];
 
     const preventRotation = () => {
-      // 페이지별로 화면 방향 고정
+      requestFullscreen(); // 전체 화면 활성화 시도
       if (portraitPages.includes(location.pathname)) {
         lockOrientation('portrait');
       } else if (landscapePages.includes(location.pathname)) {
@@ -40,14 +46,10 @@ function App() {
 
     preventRotation();
 
-    const handleOrientationChange = () => {
-      preventRotation();
-    };
-
-    window.screen.orientation?.addEventListener('change', handleOrientationChange);
+    window.screen.orientation?.addEventListener('change', preventRotation);
 
     return () => {
-      window.screen.orientation?.removeEventListener('change', handleOrientationChange);
+      window.screen.orientation?.removeEventListener('change', preventRotation);
     };
   }, [location]);
 
