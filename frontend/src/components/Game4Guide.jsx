@@ -49,7 +49,7 @@ const Game2Guide = ({ isOpen, onRequestClose }) => {
       <div className="GuideModal-page">
         {/* 게임 타이틀을 동적으로 출력 */}
         <section className="GuideModal-page__section">
-          <p className="GuideModal-page__title">단어 말하기</p>
+          <p className="GuideModal-page__title">동화 완성하기</p>
         </section>
 
         <section className="GuideModal-page__section">
