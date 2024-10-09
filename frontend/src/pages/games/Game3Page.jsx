@@ -2,6 +2,7 @@ import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { FaQuestionCircle } from 'react-icons/fa';
 
 // API import
 import { fetchGame3, fetchGameResult } from '../../api/GameAPI';
@@ -11,7 +12,7 @@ import TimeBar from '../../components/TimeBar';
 import GameModal from '../../components/GameModal';
 import useTimer from '../../hooks/useTimer';
 import ResultModal from '../../components/ResultModal';
-import PortraitModeWarning from '../../features/Games/portraitModeWarning';
+import GameGuide from '../../components/Game3Guide';
 
 // style
 import './Game3Page.sass';
@@ -27,6 +28,7 @@ const Game3Page = () => {
   const [totalPlayTime, setTotalPlayTime] = useState(0);
   const [roundStartTime, setRoundStartTime] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGuideOpen, setIsGuideOpen] = useState(true); // 가이드 모달
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [roundFinished, setRoundFinished] = useState(false);
@@ -85,11 +87,12 @@ const Game3Page = () => {
       if (!accessToken) return;
       setIsDataLoading(true);
       try {
-        const rounds = await fetchGame3(accessToken, kidId);
-        setData(rounds);
-        setTotalRounds(rounds.length);
-        if (rounds && rounds.length > 0) {
-          updateRoundData(rounds[0]);
+        const data = await fetchGame3(accessToken, kidId);
+        setData(data.rounds);
+        setTotalRounds(data.rounds.length);
+        setIsGuideOpen(data.needsTutorial);
+        if (data.rounds && data.rounds.length > 0) {
+          updateRoundData(data.rounds[0]);
         }
       } catch (err) {
         showModal('데이터를 불러오는 데 실패했습니다.');
@@ -99,6 +102,15 @@ const Game3Page = () => {
     };
     fetchGameData();
   }, [accessToken, kidId]);
+
+  // 가이드 모달이 열릴 때 타이머 일시정지, 닫힐 때 타이머 재개
+  useEffect(() => {
+    if (isGuideOpen) {
+      pauseTimer(); // 모달이 열리면 타이머 멈춤
+    } else {
+      resumeTimer(); // 모달이 닫히면 타이머 재개
+    }
+  }, [isGuideOpen]); // isGuideOpen 상태 변경 시마다 실행
 
   useEffect(() => {
     if (data && data[round]) {
@@ -238,6 +250,21 @@ const Game3Page = () => {
         </div>
       </section>
 
+      <button
+        className="top-nav__guide-button"
+        onClick={() => setIsGuideOpen(true)}
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          position: 'absolute',
+          top: '10px',
+          right: '5px',
+          fontSize: '20px',
+        }}>
+        <FaQuestionCircle />
+      </button>
+
       <section className="main-content">
         {blocks.map((block) => (
           <div
@@ -267,6 +294,8 @@ const Game3Page = () => {
         onRetry={handleRetry}
         onQuit={handleQuit}
       />
+
+      <GameGuide isOpen={isGuideOpen} onRequestClose={() => setIsGuideOpen(false)} />
     </div>
   );
 };

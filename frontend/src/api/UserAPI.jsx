@@ -27,7 +27,7 @@ const UserAPI = () => {
   };
 
   // 유저 아이디 중복 확인
-  const idDuplicate = async (email) => {
+  const checkEmailAvailability = async (email) => {
     try {
       const response = await axios.get(`${BASE_URL}/api/users/check-duplicate/email?email=${email}`, {
         headers: {
@@ -40,7 +40,71 @@ const UserAPI = () => {
         return true;
       }
 
-      return response.data.data;
+      return !response.data.data;
+    } catch (error) {
+      console.log('Error UserAPI-isDuplicate');
+      throw error;
+    }
+  };
+
+  // 이메일 인증 요청
+  const requestEmailVerification = async (email) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/users/send-code`, { email }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status != 200) {
+        console.error(`RequestEmailVerification Server Error: ${response}`);
+        return true;
+      }
+
+      return !response.data.data;
+    } catch (error) {
+      console.error('Error UserAPI-RequestEmailVerification');
+      throw error;
+    }
+  };
+
+  // 이메일 인증 확인
+  const checkEmailVerification = async (email, code) => {
+    const data = { email: email, code: code };
+    try {
+      const response = await axios.post(`${BASE_URL}/api/users/verify-code`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status != 200) {
+        console.error(`CheckEmailVerification Server Error: ${response}`);
+        return true;
+      }
+
+      return !response.data.data;
+    } catch (error) {
+      console.error('Error UserAPI-CheckEmailVerification');
+      throw error;
+    }
+  };
+
+  // 유저 휴대폰 중복 확인
+  const checkPhoneAvailability = async (phone) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/users/check-duplicate/phone?phone=${phone}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status != 200) {
+        console.log(`isDuplicate Server Error: ${response}`);
+        return true;
+      }
+
+      return !response.data.data;
     } catch (error) {
       console.log('Error UserAPI-isDuplicate');
       throw error;
@@ -199,8 +263,67 @@ const UserAPI = () => {
     }
   };
 
+  const getLearningStats = async (accessToken, kidId) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/kids/${kidId}/learning-stats`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-  return { login, idDuplicate, signUp, createKid, getKids, kidSearch, verifyEmailCode, sendEmailCode };
+      if (response.status == 200) {
+        return response.data;
+      } else {
+        console.log(`createKid Server Error: ${response.status}`);
+        return response.data;
+      }
+    } catch (error) {
+      console.log('Error UserAPI-getKids');
+    }
+  };
+
+  const getGameStats = async (accessToken, kidId) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/kids/${kidId}/game-stats`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.status == 200) {
+        return response.data;
+      } else {
+        console.log(`createKid Server Error: ${response.status}`);
+        return response.data;
+      }
+    } catch (error) {
+      console.log('Error UserAPI-getKids');
+    }
+  };
+
+  const deleteKid = async (accessToken, kidId) => {
+    try {
+      const response = await axios.delete(`${BASE_URL}/api/kids/${kidId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.status == 200) {
+        return response.data;
+      } else {
+        console.log(`createKid Server Error: ${response.status}`);
+        return response.data;
+      }
+    } catch (error) {
+      console.log('Error UserAPI-getKids');
+    }
+  };
+
+  return { login, checkEmailAvailability, checkPhoneAvailability, requestEmailVerification, checkEmailVerification, signUp, createKid, getKids, kidSearch, verifyEmailCode, sendEmailCode, getLearningStats, getGameStats, deleteKid };
 };
 
 export default UserAPI;

@@ -20,7 +20,9 @@ const EmblaCarousel = ({ slides, options, storageKey }) => {
 
     const storedIndex = localStorage.getItem(storageKey);
     if (storedIndex !== null) {
-      emblaApi.scrollTo(parseInt(storedIndex, 10));
+      // Embla 초기화 후 강제로 재렌더링 전 즉시 이동
+      emblaApi.scrollTo(parseInt(storedIndex, 10), false); // 애니메이션을 끔
+      emblaApi.reInit(); // Embla 상태를 재초기화
     }
 
     onSelect();
@@ -28,9 +30,16 @@ const EmblaCarousel = ({ slides, options, storageKey }) => {
     return () => emblaApi.off('select', onSelect);
   }, [emblaApi, onSelect, storageKey]);
 
-  const handleSlideClick = (type) => {
-    nav(`/${type}`);
+
+
+  const handleSlideClick = (index) => {
+    scrollTo(index);
+
+    if (index === currentIndex) {
+      nav(`/${slides[index].type}`);
+    }
   };
+
 
   const scrollTo = useCallback(
     (index) => {
@@ -47,15 +56,15 @@ const EmblaCarousel = ({ slides, options, storageKey }) => {
         <div className="embla__container">
           {slides.map((slide, index) => (
             <div
-              className={`embla__slide ${
-                index === (currentIndex - 1 + slides.length) % slides.length
-                  ? 'embla__slide--prev'
-                  : index === (currentIndex + 1) % slides.length
-                    ? 'embla__slide--next'
-                    : ''
-              }`}
+              className={`embla__slide ${index === (currentIndex - 1 + slides.length) % slides.length
+                ? 'embla__slide--prev'
+                : index === (currentIndex + 1) % slides.length
+                  ? 'embla__slide--next'
+                  : ''
+                }`}
               key={index}
-              onClick={() => handleSlideClick(slide.type)}>
+              onClick={() => handleSlideClick(index)}
+            >
               <img src={slide.image} alt={slide.type} className="embla__slide__img" />
             </div>
           ))}

@@ -46,13 +46,13 @@ body, html
     .profile-grid
         display: grid
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr))
-        gap: 20px
+        gap: 1rem
         padding: 0 20px
         justify-items: center
         margin-top: 20px
         overflow-y: auto
         overflow-x: hidden
-        max-height: calc(100vh - 200px)
+        max-height: calc(100vh - 180px)
 
         &.no-profiles-grid
             display: flex
@@ -63,8 +63,7 @@ body, html
         .profile-item
             text-align: center
             cursor: pointer
-            width: 160px
-            height: 160px
+            width: 100%
             display: flex
             flex-direction: column
             justify-content: center
@@ -72,6 +71,7 @@ body, html
             border: 2px solid #ddd
             transition: border 0.3s ease, background-color 0.3s ease
             border-radius: 10px
+            aspect-ratio: 1/1
 
             &.selected
                 background-color: #f0f0f0
@@ -79,15 +79,14 @@ body, html
                 border-radius: 10px
 
             .profile-image
-                width: 110px
-                height: 110px
+                width: 70%
                 border-radius: 50%
-                border: 2px solid #ddd
                 transition: border 0.3s ease
+                aspect-ratio: 1/1
 
             .profile-name
                 margin-top: 10px
-                font-size: 18px
+                font-size: 1rem
                 font-weight: bold
                 color: #333
 
@@ -100,7 +99,7 @@ body, html
 
     .select-button
         position: fixed
-        bottom: 50px // 버튼을 바닥에서 30px 위로 띄움
+        bottom: 1rem // 버튼을 바닥에서 30px 위로 띄움
         width: calc(100% - 40px) // 좌우 20px씩 여백을 주기 위해 계산
         left: 20px
         padding: 15px

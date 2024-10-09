@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import UserAPI from '../api/UserAPI';
 import EmblaCarousel from '../components/EmblaCarousel';
-import Button from '../components/Button';
 import './HomePage.sass';
 import game1 from '../assets/gameThumbnail/game1.png';
 import game2 from '../assets/gameThumbnail/game2.png';
 import game3 from '../assets/gameThumbnail/game3.png';
 import game4 from '../assets/gameThumbnail/game4.png';
 import User from '../assets/homeIcon/User.png';
-import GoldMedal from '../assets/homeIcon/GoldMedal.png';
-import Settings from '../assets/homeIcon/Settings.png';
 
 import charImage1 from '../assets/character/mini.png';
 import charImage2 from '../assets/character/middle.png';
@@ -22,8 +19,11 @@ const HomePage = () => {
   const [isPortrait, setIsPortrait] = useState(false);
   const [exp, setExp] = useState(0);
   const [level, setLevel] = useState(1);
+  const [name, setName] = useState(1);
   const [characterImage, setCharacterImage] = useState(charImage1);
-  const [characterName, setCharacterName] = useState('먼지쿤');
+  const [drawerOpen, setDrawerOpen] = useState(false); // 드로어 메뉴 열림/닫힘 상태 관리
+  const drawerRef = useRef(); // 드로어 메뉴 영역을 참조하기 위한 ref
+  const [characterName, setCharacterName] = useState('');
   const kidId = useSelector((state) => state.kid.selectedKidId);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -34,13 +34,14 @@ const HomePage = () => {
         const response = await UserAPI().kidSearch(accessToken, kidId);
         setLevel(response.data.level);
         setExp(response.data.experience);
+        setName(response.data.name);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     };
 
     fetchUserData();
-  }, []);
+  }, [accessToken, kidId]);
 
   // 레벨에 따라 캐릭터 이미지 변경
   useEffect(() => {
@@ -53,6 +54,25 @@ const HomePage = () => {
     }
   }, [level]);
 
+  // 드로어 메뉴 열기/닫기 토글 함수
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
+  // 메뉴 바깥을 클릭하면 드로어 닫기
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (drawerRef.current && !drawerRef.current.contains(event.target)) {
+        setDrawerOpen(false); // 메뉴 바깥 클릭 시 닫기
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const gameItems = [
     { type: 'game1', image: game1 },
     { type: 'game2', image: game2 },
@@ -62,33 +82,36 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
-      <PortraitModeWarning />
+      <div className="setting-box" onClick={toggleDrawer}>
+        <img src={User} alt="User Icon" />
+      </div>
+
+      {drawerOpen && <div className="overlay" onClick={() => setDrawerOpen(false)}></div>}
+
+      <div className={`drawer-menu ${drawerOpen ? 'open' : ''}`} ref={drawerRef}>
+        <div className="drawer-header">
+          <h2>메뉴</h2>
+          <button className="drawer-close" onClick={() => setDrawerOpen(false)}>x</button>
+        </div>
+        <div className="drawer-links">
+          <Link to="/profile">내 아이</Link>
+          <Link to="/collection">학습 단어</Link>
+          <Link to="/select-kid">아이 변경</Link>
+          <Link to="/setings">내 정보 수정</Link>
+          <Link to="/logout">로그아웃</Link>
+
+        </div>
+      </div>
 
       <section className="home-user">
-        <div className="home-user__exp">
-          {/* 경험치와 레벨 텍스트 */}
-          <div className="home-user__exp--text">
-            {characterName} 레벨 {level}, 경험치 {exp}%
-          </div>
-
-          {/* 경험치 바 */}
-          <div className="home-user__exp--exp-wrap" style={{ width: `${exp}%` }} />
-        </div>
-
         <div className="home-user__character">
-          {/* 캐릭터 이미지 */}
           <img src={characterImage} alt="Character" className="home-user__character--image" />
         </div>
-        <div className="home-user__sub-menu">
-          <Link to={'/userpage'} className="home-user__sub-menu--button">
-            <Button img={User} />
-          </Link>
-          <Link to={'/collection'} className="home-user__sub-menu--button">
-            <Button img={GoldMedal} />
-          </Link>
-          <Link to={'/settings'} className="home-user__sub-menu--button">
-            <Button img={Settings} />
-          </Link>
+        <div className="home-user__exp">
+          <div className="home-user__exp--text">
+            LV{level} 먼지쿤, 경험치 {exp}%
+          </div>
+          <div className="home-user__exp--exp-wrap" style={{ width: `${exp}%` }} />
         </div>
       </section>
 
@@ -100,3 +123,4 @@ const HomePage = () => {
 };
 
 export default HomePage;
+

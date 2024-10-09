@@ -87,17 +87,72 @@ body, html
 
                 input
                     flex-grow: 1
+                    width: 75%
 
                 .check-button
                     background-color: #7572B4
                     color: white
                     border: none
-                    padding: 10px 15px
+                    padding: 0
                     margin-left: 10px
                     cursor: pointer
                     border-radius: 4px
                     white-space: nowrap
+                    width: 25%
 
+                    &:disabled
+                        background-color: #ccc
+                        cursor: not-allowed
+
+            .auth-code-section
+                display: flex
+                margin-top: 1rem
+
+                .input-wrapper
+                    position: relative
+                    width: 75%
+                    display: flex
+
+                    .auth-box
+                        position: relative
+                        width: 75%
+
+                    input
+                        width: 100%
+                        padding-right: 60px
+                        padding-left: 10px
+                        border: 1px solid #ddd
+                        border-radius: 4px
+                        font-size: 16px
+                        height: 50px
+
+                        &:focus
+                            outline: none
+                            border-color: #7572B4
+
+                        &.error
+                            border: 1px solid red
+
+                    .input-timer  // 타이머를 위한 스타일
+                        position: absolute
+                        right: 10px
+                        top: 50%
+                        transform: translateY(-50%)
+                        color: #7572B4
+                        font-size: 14px
+
+                .verify-button
+                    background-color: #7572B4
+                    color: white
+                    border: none
+                    padding: 0.3rem
+                    margin-left: 10px
+                    cursor: pointer
+                    border-radius: 4px
+                    white-space: nowrap
+                    width: 25%
+                    text-align: center
+                    box-sizing: border-box
                     &:disabled
                         background-color: #ccc
                         cursor: not-allowed

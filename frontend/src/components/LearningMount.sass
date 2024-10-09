@@ -1,64 +1,75 @@
 .learning-compo
   display: flex
-  padding: 12px 40px
+  padding: 0.5rem 2rem 1rem 2rem
   gap: 24px
+  height: 100%
+  width: 100%
+  margin: 0 auto
+  justify-content: center
+  box-sizing: border-box
 
   .child-info
     display: flex
-    flex: 1
     padding: 12px
     flex-direction: column
     border-radius: 24px
-    background-color: #fce6bc 
+    background-color: #fce6bc
     box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
     filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+    width: 40%
     &__name
-      font-size: large
-      font-weight: bold
       text-align: center
-      flex: 1
-    &__picture
+      font-size: 1.5rem
+      height: 10%
       display: flex
-      flex: 6
       justify-content: center
       align-items: center
+      margin: 0.5rem 0
+    &__picture
+      height: 60%
+      text-align: center
+      img
+        max-width: 50%
+        height: 100%
+        border-radius: 30px
     &__data
       display: flex
-      justify-content: center
-      flex: 2
-      gap: 40px
       text-align: center
+      height: 30%
+      align-items: center
+      gap: 20px
+      margin: 0 auto
       .data-item
         display: flex
         gap: 8px
         flex-direction: column
         &__label
-          font-size: 16px
-          font-weight: 600
+          font-size: 0.8rem
         &__value
-          font-size: 24px
-          font-weight: bold
+          font-size: 1.5rem
           color: #333
 
   .progress
     display: flex
-    flex: 1
-    flex-direction: column
-    justify-content: center
-    text-align: center
-    gap: 8px
     padding: 12px
+    flex-direction: column
     border-radius: 24px
-    background-color: #fce6bc 
+    background-color: #fce6bc
     box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
     filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+    width: 60%
     &__label
-      font-size: large
-      font-weight: bold
+      text-align: center
+      font-size: 1.5rem
+      height: 10%
+      display: flex
+      justify-content: center
+      align-items: center
+      margin: 0.5rem 0
     &__calendar
       display: flex
       justify-content: center
-      gap: 12px
+      height: 90%
       .calendar__button
         width: 70%
         border: none
@@ -66,4 +77,6 @@
         font-size: large
         font-weight: bold
         border-radius: 24px
-        background-color: #ffffff 
+        background-color: #ffffff
+    .progress__chart
+      height: 90%
