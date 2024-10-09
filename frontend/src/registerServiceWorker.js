@@ -11,6 +11,9 @@ export function register() {
           .then((registration) => {
             console.log('Service Worker 등록 성공:', registration);
 
+            // Background Sync 등록
+            registerBackgroundSync(registration);
+
             // 서비스 워커가 업데이트를 찾은 경우 처리
             registration.onupdatefound = () => {
               const installingWorker = registration.installing;
@@ -34,6 +37,21 @@ export function register() {
           });
       });
     }
+  }
+}
+
+// Background Sync 등록 함수
+function registerBackgroundSync(registration) {
+  if ('sync' in registration) {
+    registration.sync.register('sync-tag-name') // 태그명을 'sync-tag-name'으로 설정
+      .then(() => {
+        console.log('Background Sync 등록 완료');
+      })
+      .catch((error) => {
+        console.error('Background Sync 등록 실패:', error);
+      });
+  } else {
+    console.warn('Background Sync가 지원되지 않는 브라우저입니다.');
   }
 }
 
