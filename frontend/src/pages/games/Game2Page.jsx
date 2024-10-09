@@ -238,7 +238,7 @@ const Game2Page = () => {
     <div className="game2-page">
       <section className="top-nav">
         <button onClick={backButton} className="top-nav__back-space">
-          뒤로가기
+          <img src="/icons/arrow_back.svg" alt="뒤로가기" />
         </button>
         <div className="top-nav__time-stamp">
           <TimeBar time={timeLeft} />

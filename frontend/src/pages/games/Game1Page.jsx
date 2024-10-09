@@ -230,12 +230,14 @@ const Game1Page = () => {
     <div className="game1-page">
       <section className="top-nav">
         <button onClick={() => nav(-1)} className="top-nav__back-space">
-          뒤로가기
+          <img src="/icons/arrow_back.svg" alt="뒤로가기" />
         </button>
         <div className="top-nav__time-stamp">
           <TimeBar time={timeLeft} />
         </div>
-        <div className="top-nav__bookmarker">페이지</div>
+        <div className="top-nav__bookmarker">
+          {round + 1} / {totalRounds}
+        </div>
       </section>
 
       <section className="main-content">

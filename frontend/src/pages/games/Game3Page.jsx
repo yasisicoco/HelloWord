@@ -183,6 +183,7 @@ const Game3Page = () => {
   const handleQuit = async () => {
     const totalAttempts = correctAnswer + incorrectAnswer; // 총 시도 횟수
     const correctRate = totalAttempts > 0 ? correctAnswer / (totalAttempts + (20 - correctAnswer)) : 0; // 정답률 계산
+
     const resultData = {
       kidId: kidId,
       answerWords: correctWords,
@@ -224,7 +225,7 @@ const Game3Page = () => {
     <div className="game3-page">
       <section className="top-nav">
         <button onClick={() => nav(-1)} className="top-nav__back-space">
-          뒤로가기
+          <img src="/icons/arrow_back.svg" alt="뒤로가기" />
         </button>
         <div className="top-nav__time-stamp">
           <TimeBar time={timeLeft} />
