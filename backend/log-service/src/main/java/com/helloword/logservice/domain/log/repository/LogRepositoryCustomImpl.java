@@ -1,6 +1,7 @@
 package com.helloword.logservice.domain.log.repository;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,6 +48,8 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 	public Map<String, Integer> findDailyCorrectWordCount(Long kidId) {
 		QLog log = QLog.log;
 
+		Map<String, Integer> dailyCounts = createDefaultDayOfWeekMap();
+
 		List<Tuple> results = queryFactory.select(log.createdAt.dayOfWeek(), log.correctCount.sum())
 			.from(log)
 			.where(log.kidId.eq(kidId)
@@ -54,15 +57,19 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 			.groupBy(log.createdAt.dayOfWeek())
 			.fetch();
 
-		return results.stream().collect(Collectors.toMap(
-			tuple -> convertDayOfWeek(tuple.get(log.createdAt.dayOfWeek())),
-			tuple -> tuple.get(log.correctCount.sum())
-		));
+		results.forEach(tuple -> {
+			String day = convertDayOfWeek(tuple.get(log.createdAt.dayOfWeek()));
+			dailyCounts.put(day, tuple.get(log.correctCount.sum()));
+		});
+
+		return dailyCounts;
 	}
 
 	@Override
-	public Map<String, Double> findGlobalDailyAverageCorrectWordCount() {
+	public Map<String, Integer> findGlobalDailyAverageCorrectWordCount() {
 		QLog log = QLog.log;
+
+		Map<String, Integer> dailyAverages = createDefaultDayOfWeekMap();
 
 		List<Tuple> results = queryFactory.select(log.createdAt.dayOfWeek(), log.correctCount.avg())
 			.from(log)
@@ -70,10 +77,12 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 			.groupBy(log.createdAt.dayOfWeek())
 			.fetch();
 
-		return results.stream().collect(Collectors.toMap(
-			tuple -> convertDayOfWeek(tuple.get(log.createdAt.dayOfWeek())),
-			tuple -> tuple.get(log.correctCount.avg())
-		));
+		results.forEach(tuple -> {
+			String day = convertDayOfWeek(tuple.get(log.createdAt.dayOfWeek()));
+			dailyAverages.put(day, tuple.get(log.correctCount.avg()).intValue());
+		});
+
+		return dailyAverages;
 	}
 
 	private String convertDayOfWeek(Integer dayOfWeek) {
@@ -89,11 +98,23 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 		}
 	}
 
+	private Map<String, Integer> createDefaultDayOfWeekMap() {
+		Map<String, Integer> defaultMap = new HashMap<>();
+		defaultMap.put("일", 0);
+		defaultMap.put("월", 0);
+		defaultMap.put("화", 0);
+		defaultMap.put("수", 0);
+		defaultMap.put("목", 0);
+		defaultMap.put("금", 0);
+		defaultMap.put("토", 0);
+		return defaultMap;
+	}
+
 	@Override
-	public Double findKidAverageCorrectRateByGameType(Long kidId, GameType gameType) {
+	public Integer findKidAverageCorrectRateByGameType(Long kidId, GameType gameType) {
 		QLog log = QLog.log;
 
-		return queryFactory.select(log.correctRate.avg())
+		return queryFactory.select(log.correctRate.avg().intValue())
 			.from(log)
 			.where(log.kidId.eq(kidId)
 				.and(log.gameType.eq(gameType)))
@@ -101,20 +122,20 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 	}
 
 	@Override
-	public Double findGlobalAverageCorrectRateByGameType(GameType gameType) {
+	public Integer findGlobalAverageCorrectRateByGameType(GameType gameType) {
 		QLog log = QLog.log;
 
-		return queryFactory.select(log.correctRate.avg())
+		return queryFactory.select(log.correctRate.avg().intValue())
 			.from(log)
 			.where(log.gameType.eq(gameType))
 			.fetchOne();
 	}
 
 	@Override
-	public Double findKidAveragePlayTimeByGameType(Long kidId, GameType gameType) {
+	public Integer findKidAveragePlayTimeByGameType(Long kidId, GameType gameType) {
 		QLog log = QLog.log;
 
-		return queryFactory.select(log.playTime.avg())
+		return queryFactory.select(log.playTime.avg().intValue())
 			.from(log)
 			.where(log.kidId.eq(kidId)
 				.and(log.gameType.eq(gameType)))
@@ -122,10 +143,10 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 	}
 
 	@Override
-	public Double findGlobalAveragePlayTimeByGameType(GameType gameType) {
+	public Integer findGlobalAveragePlayTimeByGameType(GameType gameType) {
 		QLog log = QLog.log;
 
-		return queryFactory.select(log.playTime.avg())
+		return queryFactory.select(log.playTime.avg().intValue())
 			.from(log)
 			.where(log.gameType.eq(gameType))
 			.fetchOne();
