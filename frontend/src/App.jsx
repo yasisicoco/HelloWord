@@ -18,8 +18,7 @@ function App() {
     const preventRotation = () => {
       // 화면이 회전하지 않도록 고정
       if (
-        location.pathname === '/' ||
-        location.pathname === '/login' ||
+      
         location.pathname === '/select-kid' ||
         location.pathname === '/signup' ||
         location.pathname === '/find/password' ||
@@ -28,6 +27,8 @@ function App() {
       ) {
         lockOrientation('portrait'); // 세로 고정
       } else if (
+        location.pathname === '/' ||
+        location.pathname === '/login' ||
         location.pathname === '/home' ||
         location.pathname === '/storypage' ||
         location.pathname === '/game1' ||
