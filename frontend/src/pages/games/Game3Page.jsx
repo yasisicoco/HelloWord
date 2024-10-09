@@ -2,6 +2,7 @@ import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { FaQuestionCircle } from 'react-icons/fa';
 
 // API import
 import { fetchGame3, fetchGameResult } from '../../api/GameAPI';
@@ -11,6 +12,7 @@ import TimeBar from '../../components/TimeBar';
 import GameModal from '../../components/GameModal';
 import useTimer from '../../hooks/useTimer';
 import ResultModal from '../../components/ResultModal';
+import GameGuide from '../../components/Game3Guide';
 
 // style
 import './Game3Page.sass';
@@ -26,6 +28,7 @@ const Game3Page = () => {
   const [totalPlayTime, setTotalPlayTime] = useState(0);
   const [roundStartTime, setRoundStartTime] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGuideOpen, setIsGuideOpen] = useState(true); // 가이드 모달
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [roundFinished, setRoundFinished] = useState(false);
@@ -57,7 +60,7 @@ const Game3Page = () => {
     setIsCorrect(isCorrect);
   };
 
-  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(2000900, onTimeUp);
+  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(20, onTimeUp);
 
   const updateRoundData = (currentRoundData) => {
     const wordCards = currentRoundData.words.map((word) => ({
@@ -84,11 +87,12 @@ const Game3Page = () => {
       if (!accessToken) return;
       setIsDataLoading(true);
       try {
-        const rounds = await fetchGame3(accessToken, kidId);
-        setData(rounds);
-        setTotalRounds(rounds.length);
-        if (rounds && rounds.length > 0) {
-          updateRoundData(rounds[0]);
+        const data = await fetchGame3(accessToken, kidId);
+        setData(data.rounds);
+        setTotalRounds(data.rounds.length);
+        setIsGuideOpen(data.needsTutorial);
+        if (data.rounds && data.rounds.length > 0) {
+          updateRoundData(data.rounds[0]);
         }
       } catch (err) {
         showModal('데이터를 불러오는 데 실패했습니다.');
@@ -98,6 +102,15 @@ const Game3Page = () => {
     };
     fetchGameData();
   }, [accessToken, kidId]);
+
+  // 가이드 모달이 열릴 때 타이머 일시정지, 닫힐 때 타이머 재개
+  useEffect(() => {
+    if (isGuideOpen) {
+      pauseTimer(); // 모달이 열리면 타이머 멈춤
+    } else {
+      resumeTimer(); // 모달이 닫히면 타이머 재개
+    }
+  }, [isGuideOpen]); // isGuideOpen 상태 변경 시마다 실행
 
   useEffect(() => {
     if (data && data[round]) {
@@ -182,15 +195,15 @@ const Game3Page = () => {
 
   const handleQuit = async () => {
     const totalAttempts = correctAnswer + incorrectAnswer; // 총 시도 횟수
-    const correctRate = totalAttempts > 0 ? correctAnswer / totalAttempts : 0; // 정답률 계산
-    const correctRatePercent = Math.round(correctRate * 100); // 정수 비율로 환산 (소수점 반올림)
+    const correctRate = totalAttempts > 0 ? correctAnswer / (totalAttempts + (totalRounds * 4 - correctAnswer)) : 0; // 정답률 계산
+
     const resultData = {
       kidId: kidId,
       answerWords: correctWords,
       gameType: 'PAIR_GAME',
       playTime: totalPlayTime,
       correctRate: correctRate,
-      correctCount: correctRatePercent,
+      correctCount: correctAnswer,
     };
 
     try {
@@ -225,7 +238,7 @@ const Game3Page = () => {
     <div className="game3-page">
       <section className="top-nav">
         <button onClick={() => nav(-1)} className="top-nav__back-space">
-          뒤로가기
+          <img src="/icons/arrow_back.svg" alt="뒤로가기" />
         </button>
         <div className="top-nav__time-stamp">
           <TimeBar time={timeLeft} />
@@ -235,23 +248,36 @@ const Game3Page = () => {
         </div>
       </section>
 
-      <div className="test">
-        <section className="main-content">
-          {blocks.map((block) => (
-            <div
-              key={`${block.id}-${block.type}`}
-              className={`main-content__card ${selectedCards.includes(block) ? 'main-content__card--selected' : ''}`}
-              style={{ visibility: block.isMatched ? 'hidden' : 'visible' }}
-              onClick={() => handleCardClick(block)}>
-              {block.type === 'image' ? (
-                <img src={block.content} alt="Game Image" className="main-content__card--img" />
-              ) : (
-                <div className="main-content__card--word">{block.content}</div>
-              )}
-            </div>
-          ))}
-        </section>
-      </div>
+      <button
+        className="top-nav__guide-button"
+        onClick={() => setIsGuideOpen(true)}
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          position: 'absolute',
+          top: '10px',
+          right: '5px',
+          fontSize: '20px',
+        }}>
+        <FaQuestionCircle />
+      </button>
+
+      <section className="main-content">
+        {blocks.map((block) => (
+          <div
+            key={`${block.id}-${block.type}`}
+            className={`main-content__card ${selectedCards.includes(block) ? 'main-content__card--selected' : ''}`}
+            style={{ visibility: block.isMatched ? 'hidden' : 'visible' }}
+            onClick={() => handleCardClick(block)}>
+            {block.type === 'image' ? (
+              <img src={block.content} alt="Game Image" className="main-content__card--img" />
+            ) : (
+              <div className="main-content__card--word">{block.content}</div>
+            )}
+          </div>
+        ))}
+      </section>
 
       <GameModal
         isOpen={isModalOpen}
@@ -261,11 +287,13 @@ const Game3Page = () => {
       />
       <ResultModal
         isOpen={isResultModalOpen}
-        correctAnswer={correctAnswer}
-        totalRounds={totalRounds}
+        correctAnswer={(correctAnswer * 5) / 12}
+        totalRounds={5}
         onRetry={handleRetry}
         onQuit={handleQuit}
       />
+
+      <GameGuide isOpen={isGuideOpen} onRequestClose={() => setIsGuideOpen(false)} />
     </div>
   );
 };

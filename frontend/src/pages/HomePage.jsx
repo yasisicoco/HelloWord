@@ -21,6 +21,7 @@ const HomePage = () => {
   const [characterImage, setCharacterImage] = useState(charImage1);
   const [drawerOpen, setDrawerOpen] = useState(false); // 드로어 메뉴 열림/닫힘 상태 관리
   const drawerRef = useRef(); // 드로어 메뉴 영역을 참조하기 위한 ref
+  const [characterName, setCharacterName] = useState('');
   const kidId = useSelector((state) => state.kid.selectedKidId);
   const accessToken = useSelector((state) => state.auth.accessToken);
 

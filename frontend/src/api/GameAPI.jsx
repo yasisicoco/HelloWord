@@ -16,7 +16,7 @@ export const fetchGame1 = async (accessToken, kidId) => {
       throw new Error('서버 응답이 올바르지 않습니다.');
     }
 
-    return response.data.data.rounds; // 성공적으로 데이터를 가져온 경우 rounds 반환
+    return response.data.data; // 성공적으로 데이터를 가져온 경우 rounds 반환
   } catch (error) {
     console.error('데이터 불러오기 실패:', error.message);
     throw error; // 호출한 쪽에서 에러를 처리하도록 재던짐
@@ -37,7 +37,7 @@ export const fetchGame2 = async (accessToken, kidId) => {
       throw new Error('서버 응답이 올바르지 않습니다.');
     }
 
-    return response.data.data.rounds; // 성공적으로 데이터를 가져온 경우 rounds 반환
+    return response.data.data; // 성공적으로 데이터를 가져온 경우 rounds 반환
   } catch (error) {
     console.error('데이터 불러오기 실패:', error.message);
     throw error; // 호출한 쪽에서 에러를 처리하도록 재던짐
@@ -53,7 +53,7 @@ export const fetchGame3 = async (accessToken, kidId) => {
       },
     });
     if (response.data.success && response.data.status === 200) {
-      return response.data.data.rounds; // 성공적으로 데이터를 가져온 경우 rounds 반환
+      return response.data.data; // 성공적으로 데이터를 가져온 경우 rounds 반환
     } else {
       throw new Error('서버 응답이 올바르지 않습니다.');
     }
@@ -99,7 +99,7 @@ export const fetchGame4 = async (accessToken, kidId) => {
       throw new Error('서버 응답이 올바르지 않습니다.');
     }
 
-    return response.data.data.rounds; // 성공적으로 데이터를 가져온 경우 rounds 반환
+    return response.data.data; // 성공적으로 데이터를 가져온 경우 rounds 반환
   } catch (error) {
     console.error('데이터 불러오기 실패:', error.message);
     throw error; // 호출한 쪽에서 에러를 처리하도록 재던짐

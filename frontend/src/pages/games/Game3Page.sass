@@ -2,8 +2,6 @@
   width: 100vw
   height: 100vh
   background-color: #FFBC7D
-  display: flex
-  flex-direction: column
 
   .top-nav
     display: flex
@@ -30,8 +28,8 @@
       flex: 8
 
       &--timebar
-        width: 100%
-        height: 100%
+        width: 100%   
+        height: 100%  
         border-radius: 80px
         background-color: #fff
 
@@ -46,43 +44,37 @@
       background-color: #ffffff
       border: none
       box-sizing: border-box
-      box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
-      filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+      color: #333333
 
   .main-content
     display: flex
     flex-wrap: wrap
-    height: 60%
-    padding: 0 4rem
-    gap: 1rem
+    align-items: center
+    height: calc(100% - 15%) // .top-nav를 제외한 높이 설정
+    padding: 0 100px
+    padding-bottom: 12px
+    gap: 8px 12px
     justify-content: center
     align-items: center
 
     &__card
-      width: 20%
-      aspect-ratio: 1 / 1 // 정사각형 유지
+      width: calc(25% - 12px) // 4개의 카드가 한 줄에 들어가게 설정
+      aspect-ratio: 1 // 가로 세로 비율을 1:1로 설정
       border-radius: 24px
-      border: 12px solid #c3c3c3
-      box-sizing: border-box
+      border: 0.3em solid #c3c3c3 // 기본 테두리 설정
+      box-sizing: border-box // 테두리 포함해도 크기를 동일하게 유지
+      font-size: 1.5rem
       display: flex
       justify-content: center
       align-items: center
       cursor: pointer
+      transition: border 0.5s ease-in-out
       background-color: #ffffff
       box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
       filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
-
       &--img
         object-fit: contain
-        width: 50%
-        height: 50%
-
+        width: 80%
+        height: 80%
     &__card--selected
-      border: 12px solid #00d400
-
-// .test
-//   display: flex
-//   flex-direction: column
-//   justify-content: center
-//   height: 70%
-//   margin-top: 0.5rem
+      border: 0.4em solid #00d400 

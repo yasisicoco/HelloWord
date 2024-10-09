@@ -1,12 +1,18 @@
 {
+  "id": "com.example.helloword",
   "name": "HelloWord!",
   "short_name": "HelloWord",
   "description": "My awesome Progressive Web App!",
-  "start_url": "/",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#f5f5f5",
   "theme_color": "#ffffff",
-  "orientation": "landscape",
+  "categories": ["education", "productivity"],
+  "dir": "auto",
+  "lang": "ko",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/android-chrome-192x192.png",
@@ -40,8 +46,23 @@
     },
     {
       "src": "/icons/favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "sizes": "32x32",
       "type": "image/x-icon"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    },
+    {
+      "src": "/screenshots/screenshot2.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }
