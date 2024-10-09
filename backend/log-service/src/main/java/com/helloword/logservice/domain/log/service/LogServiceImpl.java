@@ -32,8 +32,9 @@ public class LogServiceImpl implements LogService {
 		Integer todayPlayTime = getNonNullAverageByInteger(logRepository.findTodayTotalPlayTime(kidId));
 		Integer todayCompletedGames = logRepository.findTodayCompletedGameCount(kidId);
 		Map<String, Integer> dailyCorrectWordCounts = logRepository.findDailyCorrectWordCount(kidId);
+		Map<String, Double> globalDailyAverageCorrectWordCounts = logRepository.findGlobalDailyAverageCorrectWordCount();
 
-		return new LearningStatsResponseDto(todayPlayTime, todayCompletedGames, dailyCorrectWordCounts);
+		return new LearningStatsResponseDto(todayPlayTime, todayCompletedGames, dailyCorrectWordCounts, globalDailyAverageCorrectWordCounts);
 	}
 
 	@Override
