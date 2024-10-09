@@ -78,7 +78,7 @@ public class GameServiceImpl implements GameService {
 	}
 
 	public PairGameResponseDto getPairGameCards(Long kidId) {
-		GameWordResponseDto gameWordResponse = wordServiceClient.getGameWords(kidId, 20);
+		GameWordResponseDto gameWordResponse = wordServiceClient.getGameWords(kidId, 12);
 
 		List<PairGameResponseDto.RoundDto> rounds = new ArrayList<>();
 		List<GameWordResponseDto.WordDto> words = gameWordResponse.getWords();
