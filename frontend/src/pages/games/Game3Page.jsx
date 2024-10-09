@@ -57,7 +57,7 @@ const Game3Page = () => {
     setIsCorrect(isCorrect);
   };
 
-  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(20, onTimeUp);
+  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(1000000000, onTimeUp);
 
   const updateRoundData = (currentRoundData) => {
     const wordCards = currentRoundData.words.map((word) => ({
@@ -182,15 +182,14 @@ const Game3Page = () => {
 
   const handleQuit = async () => {
     const totalAttempts = correctAnswer + incorrectAnswer; // 총 시도 횟수
-    const correctRate = totalAttempts > 0 ? correctAnswer / totalAttempts : 0; // 정답률 계산
-    const correctRatePercent = Math.round(correctRate * 100); // 정수 비율로 환산 (소수점 반올림)
+    const correctRate = totalAttempts > 0 ? correctAnswer / (totalAttempts + (20 - correctAnswer)) : 0; // 정답률 계산
     const resultData = {
       kidId: kidId,
       answerWords: correctWords,
       gameType: 'PAIR_GAME',
       playTime: totalPlayTime,
       correctRate: correctRate,
-      correctCount: correctRatePercent,
+      correctCount: correctAnswer,
     };
 
     try {

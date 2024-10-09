@@ -5,7 +5,7 @@
 
   .top-nav
     display: flex
-    height: 10%
+    height: 15%
     padding: 12px 40px
     gap: 40px
     justify-content: space-between
@@ -49,8 +49,8 @@
 
   .main-content
     display: flex
-    padding: 12px 40px
-    height: 75%
+    padding: 12px 40px 24px
+    height: calc( 100% - 15% )
 
     &__img-wrap
       display: flex
@@ -74,11 +74,12 @@
       flex-direction: column
       flex: 1
       padding-left: 12px
+      font-size: 1.5rem
       gap: 12px
       .card-container--mic-on
-        border: 12px solid #00d400
+        border: 0.5em solid #00d400
       .card-container--mic-off
-        border: 12px solid #c3c3c3
+        border: 0.5em solid #c3c3c3
 
       &--word-card
         display: flex
