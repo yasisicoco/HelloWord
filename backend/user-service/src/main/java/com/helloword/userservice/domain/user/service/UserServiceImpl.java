@@ -116,11 +116,6 @@ public class UserServiceImpl implements UserService {
                 .findByEmail(sendCodeRequestDto.email())
                 .orElseGet(() -> EmailVerification.createEmailVerification(sendCodeRequestDto.email()));
 
-        // 이미 인증된 이메일이면 처리
-        if (emailVerification.isEmailVerified()) {
-            throw new MainException(CustomException.EMAIL_ALREADY_VERIFIED);
-        }
-
         // 인증 코드를 갱신하거나 새로운 인증 정보를 저장
         if (emailVerification.getId() != null) {
             emailVerification.refreshVerificationCode();
