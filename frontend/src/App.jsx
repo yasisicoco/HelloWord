@@ -15,13 +15,6 @@ function App() {
       }
     };
 
-    const requestFullscreen = () => {
-      const elem = document.documentElement;
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-      }
-    };
-
     const portraitPages = ['/', '/login', '/select-kid', '/signup', '/find/password', '/find/id', '/add-profile'];
     const landscapePages = [
       '/home',
@@ -35,21 +28,19 @@ function App() {
       '/settings',
     ];
 
-    // const preventRotation = () => {
-    //   requestFullscreen(); // 전체 화면 활성화 시도
-    //   if (portraitPages.includes(location.pathname)) {
-    //     lockOrientation('portrait');
-    //   } else if (landscapePages.includes(location.pathname)) {
-    //     lockOrientation('landscape');
-    //   }
-    // };
+    const currentPath = location.pathname;
 
-    // preventRotation();
+    if (portraitPages.includes(currentPath)) {
+      lockOrientation('portrait');
+    } else if (landscapePages.includes(currentPath)) {
+      lockOrientation('landscape');
+    }
 
-    // window.screen.orientation?.addEventListener('change', preventRotation);
-
+    // 컴포넌트가 언마운트될 때 방향 잠금 해제
     return () => {
-      // window.screen.orientation?.removeEventListener('change', preventRotation);
+      if (screen.orientation && screen.orientation.unlock) {
+        screen.orientation.unlock();
+      }
     };
   }, [location]);
 
