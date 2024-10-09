@@ -57,7 +57,7 @@ const Game3Page = () => {
     setIsCorrect(isCorrect);
   };
 
-  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(20, onTimeUp);
+  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(2000900, onTimeUp);
 
   const updateRoundData = (currentRoundData) => {
     const wordCards = currentRoundData.words.map((word) => ({
@@ -235,21 +235,23 @@ const Game3Page = () => {
         </div>
       </section>
 
-      <section className="main-content">
-        {blocks.map((block) => (
-          <div
-            key={`${block.id}-${block.type}`}
-            className={`main-content__card ${selectedCards.includes(block) ? 'main-content__card--selected' : ''}`}
-            style={{ visibility: block.isMatched ? 'hidden' : 'visible' }}
-            onClick={() => handleCardClick(block)}>
-            {block.type === 'image' ? (
-              <img src={block.content} alt="Game Image" className="main-content__card--img" />
-            ) : (
-              <div className="main-content__card--word">{block.content}</div>
-            )}
-          </div>
-        ))}
-      </section>
+      <div className="test">
+        <section className="main-content">
+          {blocks.map((block) => (
+            <div
+              key={`${block.id}-${block.type}`}
+              className={`main-content__card ${selectedCards.includes(block) ? 'main-content__card--selected' : ''}`}
+              style={{ visibility: block.isMatched ? 'hidden' : 'visible' }}
+              onClick={() => handleCardClick(block)}>
+              {block.type === 'image' ? (
+                <img src={block.content} alt="Game Image" className="main-content__card--img" />
+              ) : (
+                <div className="main-content__card--word">{block.content}</div>
+              )}
+            </div>
+          ))}
+        </section>
+      </div>
 
       <GameModal
         isOpen={isModalOpen}

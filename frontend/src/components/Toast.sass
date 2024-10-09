@@ -1,0 +1,31 @@
+/* 토스트 팝업 스타일 */
+.toast
+  position: fixed
+  top: -50px // 애니메이션 시작 위치 (화면 밖)
+  left: 50%
+  transform: translateX(-50%)
+  background-color: #333
+  color: #fff
+  padding: 15px 20px
+  border-radius: 8px
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1)
+  font-size: 1rem
+  width: 90%
+  max-width: 400px
+  text-align: center
+  z-index: 1000
+  animation: slideDown 0.4s ease forwards, slideUp 0.4s ease 2.6s forwards // 내려왔다가 올라가는 애니메이션
+
+/* 애니메이션: 화면 상단에서 내려오는 동작 */
+@keyframes slideDown
+  from
+    top: -50px
+  to
+    top: 20px
+
+/* 애니메이션: 화면 상단으로 다시 올라가는 동작 */
+@keyframes slideUp
+  from
+    top: 20px
+  to
+    top: -50px

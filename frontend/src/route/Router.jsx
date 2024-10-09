@@ -28,7 +28,7 @@ function Router() {
     { path: '/game2', element: <Game2Page /> },
     { path: '/game3', element: <Game3Page /> },
     { path: '/game4', element: <Game4Page /> },
-    { path: '/userpage', element: <UserPage /> },
+    { path: '/profile', element: <UserPage /> },
     { path: '/collection', element: <Collection /> },
     { path: '/settings', element: <Settings /> },
     { path: "/add-profile", element: <AddProfilePage /> }
