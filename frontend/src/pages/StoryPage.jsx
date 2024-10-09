@@ -2,6 +2,7 @@ import './Story.sass';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TbPlayerTrackNext } from 'react-icons/tb';
+import PortraitModeWarning from '../features/Games/portraitModeWarning';
 
 const storyData = [
   {
@@ -71,6 +72,8 @@ const StoryPage = () => {
 
   return (
     <div className="Story-Page">
+      <PortraitModeWarning />
+
       <div className="story-form">
         {/* 그림 들어가는 화면 */}
         <section className="story-form__background" onClick={imageChange}>

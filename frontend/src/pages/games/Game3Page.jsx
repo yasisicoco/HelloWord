@@ -236,6 +236,8 @@ const Game3Page = () => {
 
   return (
     <div className="game3-page">
+      <PortraitModeWarning />
+
       <section className="top-nav">
         <button onClick={() => nav(-1)} className="top-nav__back-space">
           <img src="/icons/arrow_back.svg" alt="뒤로가기" />

@@ -66,6 +66,8 @@ const UserPage = () => {
 
   return (
     <div className="user-page">
+      <PortraitModeWarning />
+
       <section className="top-nav">
         <div className="top-nav__back-space">
           <TiArrowBack onClick={() => nav(-1)} />

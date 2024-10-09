@@ -13,8 +13,10 @@ import User from '../assets/homeIcon/User.png';
 import charImage1 from '../assets/character/mini.png';
 import charImage2 from '../assets/character/middle.png';
 import charImage3 from '../assets/character/adult.png';
+import PortraitModeWarning from '../features/Games/portraitModeWarning';
 
 const HomePage = () => {
+  const [isPortrait, setIsPortrait] = useState(false);
   const [exp, setExp] = useState(0);
   const [level, setLevel] = useState(1);
   const [name, setName] = useState(1);
