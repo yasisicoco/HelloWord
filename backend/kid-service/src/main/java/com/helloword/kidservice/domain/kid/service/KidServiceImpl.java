@@ -41,9 +41,9 @@ public class KidServiceImpl implements KidService {
     @Override
     public KidResponseDto createKid(Long userId, MultipartFile profileImage, CraeteKidRequestDto craeteKidRequestDto) {
 
-        String profileImageUrl = !profileImage.isEmpty()
-                ? fileService.uploadImage(profileImage)
-                : null;
+        String profileImageUrl = profileImage == null || profileImage.isEmpty()
+                ? "https://hellowordbucketb206.s3.ap-northeast-2.amazonaws.com/default_images/default_profile_image.png"
+                : fileService.uploadImage(profileImage);
 
         Kid kid = Kid.createKid(
                 userId,
