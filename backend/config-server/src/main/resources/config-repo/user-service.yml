@@ -14,8 +14,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: pyb.ssafy@gmail.com
-    password: "{cipher}cee5baa7a61e300a13701e83ee4a04b0cea64d07d2b6286cca6216f2d8e5a590a75c9495cb89da49411d471627395bed"
+    username: pyb0718@gmail.com
+    password: "{cipher}3a3af03a508ac8e8d3429f9910c363a1e3c87d6d34052050a870efb3d4c5d87d51ded48b307f62cfa549c35e50bd47ad"
     properties:
       mail:
         smtp:
