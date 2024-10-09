@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import LearningMount from '../components/LearningMount';
 import GameMount from '../components/GameMount';
+import PortraitModeWarning from '../features/Games/portraitModeWarning';
 
 import { IoAddCircleOutline } from 'react-icons/io5';
 import './UserPage.sass';
@@ -13,6 +14,8 @@ const UserPage = () => {
 
   return (
     <div className="user-page">
+      <PortraitModeWarning />
+
       <section className="top-nav">
         <button className="top-nav__back-space" onClick={() => nav(-1)}>
           뒤로

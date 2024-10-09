@@ -12,6 +12,7 @@ import TimeBar from '../../components/TimeBar';
 import GameModal from '../../components/GameModal';
 import useTimer from '../../hooks/useTimer';
 import ResultModal from '../../components/ResultModal';
+import PortraitModeWarning from '../../features/Games/portraitModeWarning';
 
 // style
 import './Game4Page.sass';
@@ -228,6 +229,8 @@ const Game4Page = () => {
 
   return (
     <div className="game4-page">
+      <PortraitModeWarning />
+
       <section className="top-nav">
         <button onClick={() => nav(-1)} className="top-nav__back-space">
           <img src="/icons/arrow_back.svg" alt="뒤로가기" />

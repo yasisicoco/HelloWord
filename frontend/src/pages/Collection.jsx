@@ -4,6 +4,8 @@ import './Collection.sass';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 
+import PortraitModeWarning from '../features/Games/portraitModeWarning';
+
 const BASE_URL = 'https://j11b206.p.ssafy.io';
 
 const Collection = () => {
@@ -45,6 +47,8 @@ const Collection = () => {
 
   return (
     <div className="collection-Page">
+      <PortraitModeWarning />
+
       <section className="collection-header">
         <button className="collection-header__backhome" onClick={() => navigator(-1)}>
           뒤로
