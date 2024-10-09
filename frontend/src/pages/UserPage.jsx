@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import UserAPI from '../api/UserAPI';
 import LearningMount from '../components/LearningMount';
 import GameMount from '../components/GameMount';
-import { TiArrowBack } from "react-icons/ti";
+import { TiArrowBack } from 'react-icons/ti';
 import './UserPage.sass';
 import { useSelector } from 'react-redux';
+import PortraitModeWarning from '../features/Games/portraitModeWarning';
 
 const UserPage = () => {
   const [active, setActive] = useState('learning');
@@ -18,18 +19,23 @@ const UserPage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const kid = await UserAPI().kidSearch(accessToken, kidId).then(response => response.data);
-        const learningStats = await UserAPI().getLearningStats(accessToken, kidId).then(response => response.data);
-        const gameStats = await UserAPI().getGameStats(accessToken, kidId).then(response => response.data);
+        const kid = await UserAPI()
+          .kidSearch(accessToken, kidId)
+          .then((response) => response.data);
+        const learningStats = await UserAPI()
+          .getLearningStats(accessToken, kidId)
+          .then((response) => response.data);
+        const gameStats = await UserAPI()
+          .getGameStats(accessToken, kidId)
+          .then((response) => response.data);
 
         setKidData({
           ...kid,
           ...learningStats,
-          ...gameStats
+          ...gameStats,
         });
 
-        console.log(gameStats)
-
+        console.log(gameStats);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -42,7 +48,7 @@ const UserPage = () => {
   const deleteKid = async () => {
     try {
       await UserAPI().deleteKid(accessToken, kidId);
-      nav("/select-kid"); // 삭제 후 이전 페이지로 이동
+      nav('/select-kid'); // 삭제 후 이전 페이지로 이동
     } catch (error) {
       console.error('Error deleting kid:', error);
     }
@@ -76,14 +82,12 @@ const UserPage = () => {
         <div className="top-nav__middle-container">
           <button
             onClick={() => setActive('learning')}
-            className={`top-nav__middle-container--study-button ${active === 'learning' ? 'active-tab' : ''}`}
-          >
+            className={`top-nav__middle-container--study-button ${active === 'learning' ? 'active-tab' : ''}`}>
             학습량
           </button>
           <button
             onClick={() => setActive('statics')}
-            className={`top-nav__middle-container--status ${active === 'statics' ? 'active-tab' : ''}`}
-          >
+            className={`top-nav__middle-container--status ${active === 'statics' ? 'active-tab' : ''}`}>
             통계
           </button>
         </div>

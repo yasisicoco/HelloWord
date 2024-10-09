@@ -6,6 +6,7 @@ import { FaQuestionCircle } from 'react-icons/fa';
 
 // API import
 import { fetchGame3, fetchGameResult } from '../../api/GameAPI';
+import PortraitModeWarning from '../../features/Games/portraitModeWarning';
 
 // compo
 import TimeBar from '../../components/TimeBar';
