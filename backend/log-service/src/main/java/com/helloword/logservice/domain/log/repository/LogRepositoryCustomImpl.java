@@ -60,6 +60,22 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 		));
 	}
 
+	@Override
+	public Map<String, Double> findGlobalDailyAverageCorrectWordCount() {
+		QLog log = QLog.log;
+
+		List<Tuple> results = queryFactory.select(log.createdAt.dayOfWeek(), log.correctCount.avg())
+			.from(log)
+			.where(log.createdAt.after(LocalDate.now().minusDays(7)))
+			.groupBy(log.createdAt.dayOfWeek())
+			.fetch();
+
+		return results.stream().collect(Collectors.toMap(
+			tuple -> convertDayOfWeek(tuple.get(log.createdAt.dayOfWeek())),
+			tuple -> tuple.get(log.correctCount.avg())
+		));
+	}
+
 	private String convertDayOfWeek(Integer dayOfWeek) {
 		switch (dayOfWeek) {
 			case 1: return "일";
