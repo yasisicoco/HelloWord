@@ -182,7 +182,7 @@ const Game3Page = () => {
 
   const handleQuit = async () => {
     const totalAttempts = correctAnswer + incorrectAnswer; // 총 시도 횟수
-    const correctRate = totalAttempts > 0 ? correctAnswer / (totalAttempts + (20 - correctAnswer)) : 0; // 정답률 계산
+    const correctRate = totalAttempts > 0 ? correctAnswer / (totalAttempts + (totalRounds * 4 - correctAnswer)) : 0; // 정답률 계산
 
     const resultData = {
       kidId: kidId,
@@ -259,8 +259,8 @@ const Game3Page = () => {
       />
       <ResultModal
         isOpen={isResultModalOpen}
-        correctAnswer={correctAnswer}
-        totalRounds={totalRounds}
+        correctAnswer={(correctAnswer * 5) / 12}
+        totalRounds={5}
         onRetry={handleRetry}
         onQuit={handleQuit}
       />
