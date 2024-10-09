@@ -57,7 +57,7 @@ const Game3Page = () => {
     setIsCorrect(isCorrect);
   };
 
-  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(1000000000, onTimeUp);
+  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(20, onTimeUp);
 
   const updateRoundData = (currentRoundData) => {
     const wordCards = currentRoundData.words.map((word) => ({
