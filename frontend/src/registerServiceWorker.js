@@ -43,7 +43,8 @@ export function register() {
 // Background Sync 등록 함수
 function registerBackgroundSync(registration) {
   if ('sync' in registration) {
-    registration.sync.register('sync-tag-name') // 태그명을 'sync-tag-name'으로 설정
+    registration.sync
+      .register('sync-tag-name') // 태그명을 'sync-tag-name'으로 설정
       .then(() => {
         console.log('Background Sync 등록 완료');
       })
