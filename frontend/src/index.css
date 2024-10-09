@@ -1,3 +1,4 @@
+/* 기본적인 세로 화면 레이아웃 */
 html,
 body {
   margin: 0;
@@ -7,9 +8,21 @@ body {
   overscroll-behavior: none;
 }
 
-@media all and (display-mode: standalone) {
-  html,
-  body {
-    height: 100vh;
+/* 가로 화면(landscape)에서 적용될 CSS */
+@media screen and (orientation: landscape) {
+  .App {
+    /* 가로 모드에서 적용될 레이아웃 스타일을 여기에 넣습니다 */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+/* 세로 화면(portrait)에서 적용될 CSS */
+@media screen and (orientation: portrait) {
+  .App {
+    /* 세로 모드에서 적용될 스타일을 여기에 넣습니다 */
+    display: block;
   }
 }
