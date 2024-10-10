@@ -1,39 +1,44 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './portraitModeWarning.sass';
 import rotatephone from '../../assets/character/rotatephone.png';
 
 const PortraitModeWarning = () => {
   const [isPortrait, setIsPortrait] = useState(false);
 
-  const handleResize = useCallback(() => {
-    if (window.screen && window.screen.orientation) {
-      // Use Screen Orientation API if available
-      setIsPortrait(window.screen.orientation.type.includes('portrait'));
-    } else {
-      // Fallback to comparing window dimensions
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      setIsPortrait(height > width);
-    }
-  }, []);
-
   useEffect(() => {
-    handleResize(); // Initial check
-
-    let resizeTimer;
-    const debouncedResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(handleResize, 250);
+    const checkOrientation = () => {
+      if (window.screen && window.screen.orientation) {
+        setIsPortrait(window.screen.orientation.type.includes('portrait'));
+      } else {
+        // 폴백: 윈도우 크기로 확인
+        setIsPortrait(window.innerHeight > window.innerWidth);
+      }
     };
 
-    window.addEventListener('resize', debouncedResize);
-    window.addEventListener('orientationchange', handleResize);
+    // 초기 방향 확인
+    checkOrientation();
 
+    // Screen Orientation API 이벤트 리스너
+    const handleOrientationChange = () => {
+      checkOrientation();
+    };
+
+    if (window.screen && window.screen.orientation) {
+      window.screen.orientation.addEventListener('change', handleOrientationChange);
+    } else {
+      // 폴백: resize 이벤트 사용
+      window.addEventListener('resize', checkOrientation);
+    }
+
+    // 클린업 함수
     return () => {
-      window.removeEventListener('resize', debouncedResize);
-      window.removeEventListener('orientationchange', handleResize);
+      if (window.screen && window.screen.orientation) {
+        window.screen.orientation.removeEventListener('change', handleOrientationChange);
+      } else {
+        window.removeEventListener('resize', checkOrientation);
+      }
     };
-  }, [handleResize]);
+  }, []);
 
   if (!isPortrait) return null;
 

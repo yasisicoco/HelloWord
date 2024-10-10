@@ -9,6 +9,8 @@ import { useToast } from '../context/ToastProvider';
 
 import defaultProfile from '../assets/character/defaultProfile.png';
 
+import LandscapeModeWarning from '../features/Games/landscapeModeWarning';
+
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -79,6 +81,8 @@ const LoginPage = () => {
 
   return (
     <div className="login-Page">
+      <LandscapeModeWarning />
+
       <section className="login-Logo">
         <img className="login-Logo__img" src="/gamethumbnail/favicon.png" alt="Logo" />
       </section>
