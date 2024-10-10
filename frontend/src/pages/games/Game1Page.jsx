@@ -15,7 +15,7 @@ import useTimer from '../../hooks/useTimer';
 import ResultModal from '../../components/ResultModal';
 import GameGuide from '../../components/Game1Guide';
 
-import { IoPlayCircleOutline } from "react-icons/io5";
+import { IoPlayCircleOutline } from 'react-icons/io5';
 
 // style
 import './Game1Page.sass';
@@ -274,14 +274,15 @@ const Game1Page = () => {
 
   // 오디오 재생 함수 (재생 중에는 다시 눌러도 동작하지 않도록 설정)
   const playVoice = () => {
-    if (!isPlaying && voice) {  // 재생 중이 아닐 때만 동작
+    if (!isPlaying && voice) {
+      // 재생 중이 아닐 때만 동작
       setIsPlaying(true); // 재생 시작 상태로 변경
       const audio = new Audio(voice); // voice URL을 사용하여 오디오 객체 생성
       audio.play(); // 오디오 재생
 
       // 오디오가 끝났을 때 재생 상태를 false로 변경
       audio.onended = () => {
-        setIsPlaying(false); 
+        setIsPlaying(false);
       };
     } else if (!voice) {
       showModal('재생할 음성이 없습니다.');
@@ -300,34 +301,9 @@ const Game1Page = () => {
     resumeTimer(); // 가이드 모달이 닫히면 타이머 재개
   };
 
-
   // 게임이 시작되지 않았을 때 카운트다운 화면을 렌더링
   if (!gameStarted) {
-    return (
-      <div className="countdown-screen">
-        {countdown > 0 ? countdown : '시작!'}
-      </div>
-    );
-  }
-
-  if (isDataLoading) {
-    return (
-      <div
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          color: 'white',
-          padding: '20px',
-          borderRadius: '8px',
-          fontSize: '18px',
-          zIndex: 1000,
-        }}>
-        게임 정보를 불러오는 중이에요!
-      </div>
-    );
+    return <div className="countdown-screen">{countdown > 0 ? countdown : '시작!'}</div>;
   }
 
   return (
@@ -345,18 +321,18 @@ const Game1Page = () => {
         <div className="top-nav__bookmarker">
           <div
             className="top-nav__guide-button"
-            onClick={openGuide}  // 가이드 열 때 타이머 멈추기
+            onClick={openGuide} // 가이드 열 때 타이머 멈추기
             style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              position: "absolute",
-              fontSize: "20px",
-              width: "20px",
-              height: "20px",
-              right: "10px",
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              position: 'absolute',
+              fontSize: '20px',
+              width: '20px',
+              height: '20px',
+              right: '10px',
             }}>
-            <FaQuestionCircle style={{ width: "100%", height: "100%", zIndex: "9999" }} />
+            <FaQuestionCircle style={{ width: '100%', height: '100%', zIndex: '9999' }} />
           </div>
           {round + 1} / {totalRounds}
         </div>
@@ -372,7 +348,7 @@ const Game1Page = () => {
       <section className="main-content">
         <div className="main-content__img-wrap">
           <img src={imageUrl} alt="캐릭터 이미지" className="main-content__img-wrap--img" />
-          <IoPlayCircleOutline className='play-icon' onClick={playVoice} />
+          <IoPlayCircleOutline className="play-icon" onClick={playVoice} />
         </div>
         <div className="main-content__card-container">
           {options.map((option, index) => (

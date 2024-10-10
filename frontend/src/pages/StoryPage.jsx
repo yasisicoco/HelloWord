@@ -9,6 +9,7 @@ import story2 from '../assets/guide/story2.jpg';
 import story3 from '../assets/guide/story3.jpg';
 import story4 from '../assets/guide/story4.jpg';
 import story5 from '../assets/guide/story5.jpg';
+import story6 from '../assets/guide/story6.jpg';
 
 const storyData = [
   {
@@ -32,45 +33,29 @@ const storyData = [
     text: '     어디선가, 숲을 지키는 아기 부엉이가 나타나 도움을 요청합니다.',
   },
   {
-    image: '../storyline/story5.JPG',
+    image: story6,
     text: '      "나무들을 다시 살리려면 이야기를 모아야 해! 숲을 도와줘!"',
   },
 ];
 
 const StoryPage = () => {
   const [number, setNumber] = useState(0);
-  const [displayedText, setDisplayedText] = useState(''); // 애니메이션된 텍스트
   const [fade, setFade] = useState(false); // 이미지 교차를 위한 상태
-  const [isAnimating, setIsAnimating] = useState(false); // 애니메이션 상태
   const [isClickDisabled, setIsClickDisabled] = useState(false); // 클릭 차단 상태
   const navigate = useNavigate();
 
   useEffect(() => {
-    const text = storyData[number].text;
-    let index = 0;
-
     // 클릭 차단 활성화
     setIsClickDisabled(true);
-    setDisplayedText('');
-    setIsAnimating(true); // 애니메이션 시작
 
-    const interval = setInterval(() => {
-      setDisplayedText((prev) => prev + text[index]); // 이전 텍스트에 현재 글자 추가
-      index++;
-
-      if (index >= text.length - 1) {
-        clearInterval(interval); // 모든 글자가 출력되면 종료
-        setIsAnimating(false); // 애니메이션 종료
-        setIsClickDisabled(false); // 클릭 차단 해제
-      }
-    }, 60); // 글자가 하나씩 나오는 속도 (ms 단위)
-
-    return () => clearInterval(interval); // 컴포넌트가 언마운트되면 정리
+    setTimeout(() => {
+      setIsClickDisabled(false); // 애니메이션이 없어졌으므로 바로 클릭 가능하게 설정
+    }, 1000); // 애니메이션 대신 텍스트 표시 후 1초 기다림
   }, [number]);
 
   const imageChange = () => {
-    // 클릭이 비활성화된 상태거나 애니메이션이 진행 중일 때는 클릭 방지
-    if (isAnimating || isClickDisabled) return;
+    // 클릭이 비활성화된 상태일 때는 클릭 방지
+    if (isClickDisabled) return;
 
     setFade(true);
     setIsClickDisabled(true); // 페이지 전환 중 클릭 차단
@@ -107,7 +92,7 @@ const StoryPage = () => {
 
         {/* 말하기 언어 넣는 위치 */}
         <section className="story-form__script" onClick={imageChange}>
-          <p className="story-form__script--font">{displayedText}</p>
+          <p className="story-form__script--font">{storyData[number].text}</p>
           <TbPlayerTrackNext className="story-form__script--next" />
         </section>
       </div>
