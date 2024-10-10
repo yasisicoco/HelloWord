@@ -111,10 +111,10 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 	}
 
 	@Override
-	public Integer findKidAverageCorrectRateByGameType(Long kidId, GameType gameType) {
+	public Double findKidAverageCorrectRateByGameType(Long kidId, GameType gameType) {
 		QLog log = QLog.log;
 
-		return queryFactory.select(log.correctRate.avg().intValue())
+		return queryFactory.select(log.correctRate.avg())
 			.from(log)
 			.where(log.kidId.eq(kidId)
 				.and(log.gameType.eq(gameType)))
@@ -122,10 +122,10 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 	}
 
 	@Override
-	public Integer findGlobalAverageCorrectRateByGameType(GameType gameType) {
+	public Double findGlobalAverageCorrectRateByGameType(GameType gameType) {
 		QLog log = QLog.log;
 
-		return queryFactory.select(log.correctRate.avg().intValue())
+		return queryFactory.select(log.correctRate.avg())
 			.from(log)
 			.where(log.gameType.eq(gameType))
 			.fetchOne();
