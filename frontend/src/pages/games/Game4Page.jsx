@@ -190,16 +190,12 @@ const Game4Page = () => {
     if (roundFinished) {
       if (round === totalRounds - 1) {
         // 마지막 라운드라면 결과 모달을 띄움
-        setTimeout(() => {
-          setIsResultModalOpen(true); // 마지막 라운드에서 결과 모달 열기
-          pauseTimer(); // 타이머 정지
-        }, 1000); // 결과 모달 띄우기 전에 잠시 대기
+        setIsResultModalOpen(true); // 마지막 라운드에서 결과 모달 열기
+        pauseTimer(); // 타이머 정지
       } else {
-        setTimeout(() => {
-          setRound((prevRound) => prevRound + 1); // 다음 라운드로 이동
-          setRoundFinished(false); // 라운드 완료 상태 초기화
-          resumeTimer(); // 다음 라운드로 이동하면 타이머 재개
-        }, 1000); // 모달 닫힌 후에 1초 후에 라운드 이동
+        setRound((prevRound) => prevRound + 1); // 다음 라운드로 이동
+        setRoundFinished(false); // 라운드 완료 상태 초기화
+        resumeTimer(); // 다음 라운드로 이동하면 타이머 재개
       }
     }
   }, [roundFinished, round, totalRounds, resumeTimer]);
@@ -217,13 +213,22 @@ const Game4Page = () => {
   // 다시하기 버튼 클릭 시
   const handleRetry = () => {
     setIsResultModalOpen(false);
-    setRound(0); // 게임을 다시 시작
     setCorrectAnswer(0); // 맞은 갯수 초기화
     setTotalPlayTime(0); // 전체 플레이 시간 초기화
     setCountdown(3); // 다시하기 시 카운트다운 재시작
-    updateRoundData(data[0]); // 첫 라운드로 다시 시작
+    setCorrectWordsList([]); // 맞춘 단어 목록 초기화
     setGameStarted(false); // 게임 상태 초기화
+    setRoundFinished(false); // 라운드 완료 상태 초기화
+    setRound(0); // 게임을 다시 1라운드로 시작
   };
+
+  // 새로운 useEffect 추가: round 값이 0이 되었을 때 데이터를 설정
+  useEffect(() => {
+    if (round === 0 && data && data.length > 0) {
+      updateRoundData(data[0]); // 첫 번째 라운드 데이터를 다시 설정
+      setRoundFinished(false); // 라운드 완료 상태도 명확히 초기화
+    }
+  }, [round, data]);
 
   // 그만하기 버튼 클릭 시
   const handleQuit = async () => {
@@ -277,31 +282,7 @@ const Game4Page = () => {
 
   // 게임이 시작되지 않았을 때 카운트다운 화면을 렌더링
   if (!gameStarted) {
-    return (
-      <div className="countdown-screen">
-        {countdown > 0 ? countdown : '시작!'}
-      </div>
-    );
-  }
-
-  if (isDataLoading) {
-    return (
-      <div
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          color: 'white',
-          padding: '20px',
-          borderRadius: '8px',
-          fontSize: '18px',
-          zIndex: 1000,
-        }}>
-        게임 정보를 불러오는 중이에요!
-      </div>
-    );
+    return <div className="countdown-screen">{countdown > 0 ? countdown : '시작!'}</div>;
   }
 
   return (
@@ -318,18 +299,18 @@ const Game4Page = () => {
         <div className="top-nav__bookmarker">
           <div
             className="top-nav__guide-button"
-            onClick={openGuide}  // 가이드 열 때 타이머 멈추기
+            onClick={openGuide} // 가이드 열 때 타이머 멈추기
             style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              position: "absolute",
-              fontSize: "20px",
-              width: "20px",
-              height: "20px",
-              right: "10px",
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              position: 'absolute',
+              fontSize: '20px',
+              width: '20px',
+              height: '20px',
+              right: '10px',
             }}>
-            <FaQuestionCircle style={{ width: "100%", height: "100%", zIndex: "9999" }} />
+            <FaQuestionCircle style={{ width: '100%', height: '100%', zIndex: '9999' }} />
           </div>
           {round + 1} / {totalRounds}
         </div>

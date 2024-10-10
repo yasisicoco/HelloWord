@@ -111,19 +111,19 @@ const Game2Page = () => {
   }, [isGuideOpen, gameStarted, countdown, pauseTimer, resumeTimer]);
 
   useEffect(() => {
-    if (isGuideOpen) return;
-
     if (countdown > 0) {
-      pauseTimer();
+      // 카운트다운이 0보다 클 때
+      pauseTimer(); // 타이머 일시정지
       const timer = setTimeout(() => {
-        setCountdown((prev) => prev - 1);
+        setCountdown((prev) => prev - 1); // 1초 후 카운트다운 감소
       }, 1000);
 
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer); // 타이머 클리어
     } else if (countdown === 0 && !gameStarted) {
-      setGameStarted(true);
-      resetTimer();
-      resumeTimer();
+      // 카운트다운이 0이 되면
+      setGameStarted(true); // 게임 시작
+      resetTimer(); // 타이머 리셋
+      resumeTimer(); // 타이머 재개
     }
   }, [countdown, gameStarted, pauseTimer, resetTimer, resumeTimer, isGuideOpen]);
 
@@ -287,7 +287,7 @@ const Game2Page = () => {
           <div className="main-content__card-container--word-card">{word}</div>
           <div
             onClick={toggleListening}
-            className={`main-content__card-container--mic-card card-container--${isListening ? 'mic-on' : 'mic-off'}`}
+            className={`main-content__card-container--mic-card ${isListening ? 'mic-on' : 'mic-off'}`}
             aria-label={listening ? '마이크 끄기' : '마이크 켜기'}>
             {listening ? (
               <img src="/icons/mic_on.svg" alt="마이크 켜기" />
