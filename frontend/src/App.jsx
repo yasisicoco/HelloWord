@@ -6,10 +6,11 @@ import useIsPWA from './hooks/useIsPWA';
 import BrowserRouter from './route/BrowserRouter';
 
 function App() {
-  // const isPWA = useIsPWA();
+  const isPWA = useIsPWA();
 
   return (
     <div className="App">
+      {/* {isPWA ? <PWARouter /> : <BrowserRouter />} */}
       <PWARouter />
     </div>
   );
