@@ -66,9 +66,9 @@ const GameMount = ({ kidData }) => {
 
   const chartData = [
     {
-      name: currentGame.type,
-      내아이정답률: currentGame.chartData.내아이정답률,
-      평균정답률: currentGame.chartData.평균정답률,
+      name: currentGame.type,  // 이 부분은 그대로 두되, XAxis에서 formatter로 처리
+      내아이: currentGame.chartData.내아이정답률,
+      평균: currentGame.chartData.평균정답률,
       내아이플레이타임: currentGame.chartData.내아이플레이타임,
       평균플레이타임: currentGame.chartData.평균플레이타임
     }
@@ -102,28 +102,34 @@ const GameMount = ({ kidData }) => {
         <div className="progress__label">{currentGame.type} 통계</div>
         <div className="progress__chart">
           {/* 첫 번째 차트: 정답률 */}
-          <ResponsiveContainer width="100%" height={200}>
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis
+                dataKey="name"
+                tickFormatter={() => '정답률'}  // X축의 항목을 "정답률"로 변경
+              />
               <YAxis width={40} />
               <Tooltip contentStyle={{ fontSize: '0.75rem' }} />  {/* Tooltip 폰트 크기 줄이기 */}
               <Legend wrapperStyle={{ fontSize: '0.75rem' }} />  {/* Legend 폰트 크기 줄이기 */}
-              <Bar dataKey="내아이정답률" fill="#8884d8" name="내 아이 정답률" />
-              <Bar dataKey="평균정답률" fill="#82ca9d" name="평균 정답률" />
+              <Bar dataKey="내아이" fill="#8884d8" name="내 아이" />
+              <Bar dataKey="평균" fill="#82ca9d" name="평균" />
             </BarChart>
           </ResponsiveContainer>
 
-          {/* 두 번째 차트: 플레이타임 */}
-          <ResponsiveContainer width="100%" height={200}>
+          {/* 두 번째 차트: 학습 시간 */}
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis
+                dataKey="name"
+                tickFormatter={() => '학습 시간'}  // X축의 항목을 "학습 시간"으로 변경
+              />
               <YAxis width={40} />
               <Tooltip contentStyle={{ fontSize: '0.75rem' }} />  {/* Tooltip 폰트 크기 줄이기 */}
               <Legend wrapperStyle={{ fontSize: '0.75rem' }} />  {/* Legend 폰트 크기 줄이기 */}
-              <Bar dataKey="내아이플레이타임" fill="#ffc658" name="내 아이 플레이타임" />
-              <Bar dataKey="평균플레이타임" fill="#ff8042" name="평균 플레이타임" />
+              <Bar dataKey="내아이플레이타임" fill="#ffc658" name="내 아이" />
+              <Bar dataKey="평균플레이타임" fill="#ff8042" name="평균" />
             </BarChart>
           </ResponsiveContainer>
         </div>

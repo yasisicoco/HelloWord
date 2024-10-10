@@ -1,7 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './Login.sass';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import UserAPI from '../api/UserAPI';
 import { setTokens } from '../features/Auth/authSlice';
 import xIcon from '../assets/homeIcon/x-icon.png';
@@ -14,6 +14,15 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { triggerToast } = useToast();  // useToast 훅 사용
+  const accessToken = useSelector((state) => state.auth.accessToken); // accessToken 가져오기
+
+
+  useEffect(() => {
+    // accessToken이 있으면 바로 /select-kid 페이지로 이동
+    if (accessToken) {
+      navigate('/select-kid');
+    }
+  }, [accessToken, navigate]);
 
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -105,10 +114,10 @@ const LoginPage = () => {
       </form>
 
       <div className="link-box">
-        <Link to="/find/id" className="link-item">아이디 찾기</Link>
-        <span className="divider">|</span>
-        <Link to="/find/password" className="link-item">비밀번호 찾기</Link>
-        <span className="divider">|</span>
+        {/* <Link to="/find/id" className="link-item">아이디 찾기</Link> */}
+        {/* <span className="divider">|</span> */}
+        {/* <Link to="/find/password" className="link-item">비밀번호 찾기</Link>
+        <span className="divider">|</span> */}
         <Link to="/signup" className="link-item">회원가입</Link>
       </div>
     </div>

@@ -15,8 +15,11 @@ import useTimer from '../../hooks/useTimer';
 import ResultModal from '../../components/ResultModal';
 import GameGuide from '../../components/Game1Guide';
 
+import { IoPlayCircleOutline } from "react-icons/io5";
+
 // style
 import './Game1Page.sass';
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 const Game1Page = () => {
   const nav = useNavigate();
@@ -24,7 +27,7 @@ const Game1Page = () => {
   const [round, setRound] = useState(0);
   const [correct, setCorrect] = useState('');
   const [imageUrl, setImage] = useState('');
-  const [voice, setVoice] = useState(''); // 목소리 URL 저장
+  const [voice, setVoice] = useState(''); // 목소리 URL 저1장
   const [wrong0, setWrong0] = useState('');
   const [wrong1, setWrong1] = useState('');
   const [wrong2, setWrong2] = useState('');
@@ -43,6 +46,27 @@ const Game1Page = () => {
   const kidId = useSelector((state) => state.kid.selectedKidId); // 선택된 아이 ID 확인
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [isCorrect, setIsCorrect] = useState(null); // 정답 여부 상태 추가
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false); // 뒤로가기 확인 모달 상태 추가
+
+  // 카운트다운 상태 관리
+  const [countdown, setCountdown] = useState(3);
+  const [gameStarted, setGameStarted] = useState(false);
+
+  // 뒤로가기 버튼 클릭 시 모달을 열도록 처리
+  const handleBackButtonClick = () => {
+    setIsConfirmationOpen(true); // 모달 열기
+  };
+
+  // 모달에서 "예"를 눌렀을 때 실행할 핸들러
+  const handleConfirmBack = () => {
+    setIsConfirmationOpen(false); // 모달 닫기
+    nav(-1); // 뒤로 이동
+  };
+
+  // 모달에서 "아니오"를 눌렀을 때 실행할 핸들러
+  const handleCancelBack = () => {
+    setIsConfirmationOpen(false); // 모달 닫기
+  };
 
   // 시간 초과 시 라운드 넘기기
   const onTimeUp = () => {
@@ -50,18 +74,23 @@ const Game1Page = () => {
     handleNextRound(false); // 타임아웃 시 틀린 것으로 처리
   };
 
+  // 타이머 관련 hook 사용
+  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(10, onTimeUp); // pauseTimer, resumeTimer 추가
+
+  // 모달을 띄운 후 일정 시간 대기 후 다음 문제로 넘어가도록 수정된 showModal 함수
   const showModal = (message, isCorrect) => {
     setIsModalOpen(true);
     setModalMessage(message);
     pauseTimer(); // 모달이 열리면 타이머 일시정지
+    setIsCorrect(isCorrect); // 정답 여부 상태 저장
+
+    // 1초 후 모달을 닫고 다음 라운드로 이동
     setTimeout(() => {
       setIsModalOpen(false);
       resumeTimer(); // 모달이 닫히면 타이머 재개
-    }, 1000);
-    setIsCorrect(isCorrect); // 정답 여부 상태 저장
+      handleNextRound(isCorrect); // 모달이 닫힌 후에만 다음 라운드로 이동
+    }, 1000); // 1초 후 모달 닫기
   };
-
-  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(10, onTimeUp); // pauseTimer, resumeTimer 추가
 
   // 단어 배열을 무작위로 섞는 함수
   const shuffleArray = (array) => {
@@ -116,14 +145,26 @@ const Game1Page = () => {
     fetchGameData();
   }, [accessToken, kidId]);
 
-  // 가이드 모달이 열릴 때 타이머 일시정지, 닫힐 때 타이머 재개
+  // 가이드 모달이 닫힌 후 카운트다운을 시작하는 useEffect 추가
   useEffect(() => {
-    if (isGuideOpen) {
-      pauseTimer(); // 모달이 열리면 타이머 멈춤
-    } else {
-      resumeTimer(); // 모달이 닫히면 타이머 재개
+    if (!isGuideOpen && !gameStarted && countdown === 3) {
+      const countdownInterval = setInterval(() => {
+        setCountdown((prevCount) => {
+          if (prevCount > 0) {
+            return prevCount - 1;
+          } else {
+            clearInterval(countdownInterval);
+            setGameStarted(true); // 카운트다운이 끝나면 게임 시작
+            resumeTimer(); // 타이머 시작
+            return 0;
+          }
+        });
+      }, 1000);
+
+      return () => clearInterval(countdownInterval);
     }
-  }, [isGuideOpen]); // isGuideOpen 상태 변경 시마다 실행
+  }, [isGuideOpen, gameStarted, countdown, resumeTimer]);
+
 
   // 라운드가 변경될 때마다 데이터를 업데이트하는 useEffect
   useEffect(() => {
@@ -131,6 +172,30 @@ const Game1Page = () => {
       updateRoundData(data[round]); // 현재 라운드에 맞는 데이터 갱신
     }
   }, [round, data]);
+
+  // 모달 상태에 따라 타이머 일시정지/재개 처리
+  useEffect(() => {
+    if (isConfirmationOpen) {
+      pauseTimer(); // 모달이 열리면 타이머 멈춤
+    } else {
+      resumeTimer(); // 모달이 닫히면 타이머 재개
+    }
+  }, [isConfirmationOpen]);
+
+  // 카운트다운 시작 (타이머는 카운트다운 동안 멈추고, 끝난 후 시작)
+  useEffect(() => {
+    if (countdown > -1) {
+      pauseTimer(); // 카운트다운 동안 타이머 멈추기
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000); // 1초마다 카운트다운 감소
+
+      return () => clearTimeout(timer);
+    } else {
+      setGameStarted(true);
+      resumeTimer(); // 카운트다운이 끝나면 타이머 시작
+    }
+  }, [countdown]);
 
   // 정답 맞춤 여부에 따라 다음 라운드로 이동
   const handleNextRound = (isCorrect) => {
@@ -150,34 +215,19 @@ const Game1Page = () => {
       ]);
     }
 
-    setRoundFinished(true); // 라운드가 완료되었음을 표시
-  };
-
-  // roundFinished가 true가 되면 다음 라운드로 이동
-  useEffect(() => {
-    if (roundFinished) {
-      if (round === totalRounds - 1) {
-        setTimeout(() => {
-          setIsResultModalOpen(true); // 마지막 라운드에서 결과 모달 열기
-          pauseTimer(); // 타이머 정지
-        }, 1000); // GameModal이 닫힌 후 결과 모달 띄우기
-      } else {
-        setRound((prevRound) => prevRound + 1);
-      }
-      setRoundFinished(false); // 라운드 완료 상태 초기화
+    // 다음 라운드로 이동하거나 결과 모달 표시
+    if (round === totalRounds - 1) {
+      setIsResultModalOpen(true); // 마지막 라운드에서 결과 모달 열기
+      pauseTimer(); // 타이머 정지
+    } else {
+      setRound((prevRound) => prevRound + 1); // 다음 라운드로 이동
     }
-  }, [roundFinished, round, totalRounds]);
+  };
 
   // 단어 클릭 시 정답 확인 함수
   const handleOptionClick = (selectedOption) => {
     const isCorrect = selectedOption === correct; // 정답 여부를 확인
-    if (isCorrect) {
-      showModal('맞았습니다! 😊', true); // 정답일 때 true
-      handleNextRound(true); // 정답 처리 후 다음 라운드로 이동
-    } else {
-      showModal('틀렸습니다. 😞', false); // 오답일 때 false
-      handleNextRound(false); // 틀림 처리 후 다음 라운드로 이동
-    }
+    showModal(isCorrect ? '맞았습니다! 😊' : '틀렸습니다. 😞', isCorrect); // 정답 여부에 따라 모달 메시지 출력
   };
 
   // 다시하기 버튼 클릭 시
@@ -220,6 +270,16 @@ const Game1Page = () => {
     }
   };
 
+  // 게임이 시작되지 않았을 때 카운트다운 화면을 렌더링
+  if (!gameStarted) {
+    return (
+      <div className="countdown-screen">
+        {countdown > 0 ? countdown : '시작!'}
+      </div>
+    );
+  }
+
+
   if (isDataLoading) {
     return (
       <div
@@ -243,35 +303,44 @@ const Game1Page = () => {
   return (
     <div className="game1-page">
       <section className="top-nav">
-        <button onClick={() => nav(-1)} className="top-nav__back-space">
+        {/* 뒤로가기 버튼 클릭 시 ConfirmationModal 열기 */}
+        <button onClick={handleBackButtonClick} className="top-nav__back-space">
           <img src="/icons/arrow_back.svg" alt="뒤로가기" />
         </button>
         <div className="top-nav__time-stamp">
           <TimeBar time={timeLeft} />
         </div>
         <div className="top-nav__bookmarker">
+          <div
+            className="top-nav__guide-button"
+            onClick={() => setIsGuideOpen(true)}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              position: "absolute",
+              fontSize: "20px",
+              width: "20px",
+              height: "20px",
+              right: "10px",
+            }}>
+            <FaQuestionCircle style={{ width: "100%", height: "100%", zIndex: "9999" }} />
+          </div>
           {round + 1} / {totalRounds}
         </div>
       </section>
 
-      <button
-        className="top-nav__guide-button"
-        onClick={() => setIsGuideOpen(true)}
-        style={{
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          position: 'absolute',
-          top: '10px',
-          right: '5px',
-          fontSize: '20px',
-        }}>
-        <FaQuestionCircle />
-      </button>
+      <ConfirmationModal
+        isOpen={isConfirmationOpen}
+        message="게임을 그만두시겠습니까?"
+        onConfirm={handleConfirmBack}
+        onCancel={handleCancelBack}
+      />
 
       <section className="main-content">
         <div className="main-content__img-wrap">
           <img src={imageUrl} alt="캐릭터 이미지" className="main-content__img-wrap--img" />
+          <IoPlayCircleOutline className='play-icon' onClick={playVoice} />
         </div>
         <div className="main-content__card-container">
           {options.map((option, index) => (
@@ -283,12 +352,6 @@ const Game1Page = () => {
             </div>
           ))}
         </div>
-      </section>
-
-      <section className="footer">
-        <button className="footer__play-button" onClick={playVoice}>
-          재생하기
-        </button>
       </section>
 
       {/* 게임 모달 */}

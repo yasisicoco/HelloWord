@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import UserAPI from '../api/UserAPI';
 import EmblaCarousel from '../components/EmblaCarousel';
 import './HomePage.sass';
@@ -9,21 +9,25 @@ import game2 from '../assets/gameThumbnail/game2.png';
 import game3 from '../assets/gameThumbnail/game3.png';
 import game4 from '../assets/gameThumbnail/game4.png';
 import User from '../assets/homeIcon/User.png';
+import { clearTokens } from '../features/Auth/authSlice';
 
 import charImage1 from '../assets/character/mini.png';
 import charImage2 from '../assets/character/middle.png';
 import charImage3 from '../assets/character/adult.png';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 const HomePage = () => {
   const [exp, setExp] = useState(0);
   const [level, setLevel] = useState(1);
-  const [name, setName] = useState(1);
+  const [name, setName] = useState('');
   const [characterImage, setCharacterImage] = useState(charImage1);
-  const [drawerOpen, setDrawerOpen] = useState(false); // 드로어 메뉴 열림/닫힘 상태 관리
-  const drawerRef = useRef(); // 드로어 메뉴 영역을 참조하기 위한 ref
-  const [characterName, setCharacterName] = useState('');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); // 로그아웃 모달 상태 추가
+  const drawerRef = useRef();
   const kidId = useSelector((state) => state.kid.selectedKidId);
   const accessToken = useSelector((state) => state.auth.accessToken);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // UserAPI로부터 레벨과 경험치 정보 가져오기
   useEffect(() => {
@@ -57,11 +61,11 @@ const HomePage = () => {
     setDrawerOpen(!drawerOpen);
   };
 
-  // 메뉴 바깥을 클릭하면 드로어 닫기
+  // 메뉴 바깥을 클릭하면 드로어 닫기 (단, 모달이 열려있지 않을 때만)
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (drawerRef.current && !drawerRef.current.contains(event.target)) {
-        setDrawerOpen(false); // 메뉴 바깥 클릭 시 닫기
+      if (!isLogoutModalOpen && drawerRef.current && !drawerRef.current.contains(event.target)) {
+        setDrawerOpen(false); // 메뉴 바깥 클릭 시 닫기 (모달이 없을 때만)
       }
     };
 
@@ -69,7 +73,23 @@ const HomePage = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [isLogoutModalOpen]); // 모달 상태가 바뀔 때마다 감시
+
+  // 로그아웃 클릭 시 확인 모달 열기
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  // 로그아웃 확정 처리
+  const handleLogoutConfirm = () => {
+    dispatch(clearTokens());
+    navigate('/');
+  };
+
+  // 로그아웃 취소 처리
+  const handleLogoutCancel = () => {
+    setIsLogoutModalOpen(false); // 모달만 닫기
+  };
 
   const gameItems = [
     { type: 'game1', image: game1 },
@@ -92,12 +112,11 @@ const HomePage = () => {
           <button className="drawer-close" onClick={() => setDrawerOpen(false)}>x</button>
         </div>
         <div className="drawer-links">
-          <Link to="/profile">내 아이</Link>
+          <Link to="/profile">아이 통계</Link>
           <Link to="/collection">학습 단어</Link>
           <Link to="/select-kid">아이 변경</Link>
-          <Link to="/setings">내 정보 수정</Link>
-          <Link to="/logout">로그아웃</Link>
-
+          <Link to="/settings">정보 수정</Link>
+          <div onClick={handleLogoutClick}>로그아웃</div> {/* 로그아웃 버튼 클릭 시 모달 열기 */}
         </div>
       </div>
 
@@ -107,7 +126,7 @@ const HomePage = () => {
         </div>
         <div className="home-user__exp">
           <div className="home-user__exp--text">
-            LV{level} 먼지쿤, 경험치 {exp}%
+            LV{level} 경험치 {exp}%
           </div>
           <div className="home-user__exp--exp-wrap" style={{ width: `${exp}%` }} />
         </div>
@@ -116,9 +135,16 @@ const HomePage = () => {
       <section className="home-game">
         <EmblaCarousel slides={gameItems} options={{ axis: 'y', loop: true }} storageKey="homeGameIndex" />
       </section>
+
+      {/* 로그아웃 확인 모달 */}
+      <ConfirmationModal
+        isOpen={isLogoutModalOpen}
+        message="로그아웃하시겠습니까?"
+        onConfirm={handleLogoutConfirm}
+        onCancel={handleLogoutCancel}
+      />
     </div>
   );
 };
 
 export default HomePage;
-

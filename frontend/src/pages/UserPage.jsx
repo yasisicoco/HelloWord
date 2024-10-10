@@ -68,8 +68,12 @@ const UserPage = () => {
     <div className="user-page">
       <section className="top-nav">
         <div className="top-nav__back-space">
-          <TiArrowBack onClick={() => nav(-1)} />
-          <div onClick={handleDeleteClick}>아이 삭제</div> {/* 아이 삭제 클릭 시 모달 표시 */}
+          <div className="icon-box">
+            <TiArrowBack onClick={() => nav(-1)} />
+          </div>
+          <div className="icon-box">
+            <div className='delete-text' onClick={handleDeleteClick}>아이 삭제</div> {/* 아이 삭제 클릭 시 모달 표시 */}
+          </div>
         </div>
         <div className="top-nav__middle-container">
           <button
