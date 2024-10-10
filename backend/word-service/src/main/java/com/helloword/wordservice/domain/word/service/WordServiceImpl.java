@@ -49,22 +49,40 @@ public class WordServiceImpl implements WordService {
         for (RecognitionRate recognitionRate : recognitionRates) {
             recognitionRateHashMap.put(recognitionRate.getWord().getId(), recognitionRate.getRate());
         }
-        List<ComputedWord> resultWords = new ArrayList<>();
-        for (AnswerWordLog answerWordLog : answerWordLogs) {
-            Float rate = recognitionRateHashMap.get(answerWordLog.wordId());
-            Double computedScore = rate * answerWordLog.probability();
-            resultWords.add(new ComputedWord(answerWordLog.wordId(), computedScore));
+
+        List<Long> wordIds;
+        // answerWordLogs가 비어있지 않은 경우
+        if (!answerWordLogs.isEmpty()) {
+            List<ComputedWord> resultWords = new ArrayList<>();
+            for (AnswerWordLog answerWordLog : answerWordLogs) {
+                Float rate = recognitionRateHashMap.get(answerWordLog.wordId());
+                Double computedScore = rate * answerWordLog.probability();
+                resultWords.add(new ComputedWord(answerWordLog.wordId(), computedScore));
+            }
+
+            // 점수 내림차순 정렬
+            resultWords.sort((o1, o2) -> Double.compare(o2.value, o1.value));
+
+            // wordCount * 2 만큼 선택 후, 무작위로 절반만 선택
+            int count = Math.min(wordCount * 2, resultWords.size());
+            resultWords = resultWords.subList(0, count);
+            Collections.shuffle(resultWords);
+            wordIds = resultWords.stream()
+                .map(resultWord -> resultWord.id)
+                .limit(wordCount)
+                .toList();
+        } else {
+            // answerWordLogs가 비어있는 경우, 1부터 200 사이의 중복되지 않는 랜덤 숫자를 wordCount만큼 생성
+            Set<Long> randomWordIds = new HashSet<>();
+            Random random = new Random();
+            while (randomWordIds.size() < wordCount) {
+                randomWordIds.add((long) (random.nextInt(200) + 1)); // 1부터 200 사이의 랜덤 숫자
+            }
+            wordIds = new ArrayList<>(randomWordIds);
         }
 
-        resultWords.sort((o1, o2) -> Double.compare(o2.value, o1.value));
-
-        int count = Math.min(wordCount * 2, resultWords.size());
-        resultWords = resultWords.subList(0, count);
-
-        Collections.shuffle(resultWords);
-        resultWords = resultWords.subList(0, count / 2);
-
-        List<Word> words = wordRepository.findAllById(resultWords.stream().map(resultWord -> resultWord.id).toList());
+        // Word ID 리스트로 Word 엔티티 조회
+        List<Word> words = wordRepository.findAllById(wordIds);
 
         List<GameWordResponseDto.WordDto> wordDtos = new ArrayList<>();
         for (Word word : words) {
