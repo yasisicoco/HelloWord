@@ -17,7 +17,7 @@ import PasswordResetPage from '../pages/PasswordResetPage'
 import ProfileSelectionPage from '../pages/ProfileSelectionPage'
 import AddProfilePage from '../pages/AddProfilePage'
 
-function Router() {
+function PWARouter() {
   // 보호된 경로 배열
   const protectedRoutes = [
     // 아래로 쭈욱 추가
@@ -53,4 +53,4 @@ function Router() {
   );
 }
 
-export default Router;
+export default PWARouter;

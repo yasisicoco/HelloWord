@@ -92,19 +92,24 @@ body, html
       display: flex
       flex-direction: column
       position: relative
-      gap: 4px // 입력 필드와 오류 메시지 사이의 간격
+      gap: 4px
+      min-height: 70px
 
       input
         width: 100%
         height: 50px
         padding: 10px
-        border: 1px solid #ddd
+        border: 1px solid #ddd  
         border-radius: 4px
         font-size: 16px
 
       .error-message
-        color: red
+        position: absolute
+        bottom: 0
+        left: 0
+        color: red 
         font-size: 12px
+        margin-top: 4px
 
     .birthdate-inputs
       display: flex
@@ -114,9 +119,12 @@ body, html
       .input-wrapper
         display: flex
         flex-direction: column
-        width: 30%
+        width: 100%
         gap: 4px // 입력 필드와 오류 메시지 사이의 간격
 
+      .input-box
+        display: flex
+        gap: 10px 
         .number-input
           padding: 10px
           border: 1px solid #ddd

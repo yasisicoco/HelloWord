@@ -260,24 +260,26 @@ const Game2Page = () => {
           <TimeBar time={timeLeft} />
         </div>
         <div className="top-nav__bookmarker">
+          <button
+            className="top-nav__guide-button"
+            onClick={() => setIsGuideOpen(true)}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              position: "absolute",
+              fontSize: "20px",
+              width: "30px",
+              height: "30px",
+              right: "5px",
+            }}>
+            <FaQuestionCircle style={{ width: "100%", height: "100%", zIndex: "9999" }} />
+          </button>
           {round + 1} / {totalRounds}
         </div>
       </section>
 
-      <button
-        className="top-nav__guide-button"
-        onClick={() => setIsGuideOpen(true)}
-        style={{
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          position: 'absolute',
-          top: '10px',
-          right: '5px',
-          fontSize: '20px',
-        }}>
-        <FaQuestionCircle />
-      </button>
+
 
       <section className="main-content">
         <div className="main-content__img-wrap">

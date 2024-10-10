@@ -1,10 +1,14 @@
 import './styles/reset.css';
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import Router from './route/Router';
+import PWARouter from './route/PWARouter';
+import useIsPWA from './hooks/useIsPWA';
+import BrowserRouter from './route/BrowserRouter';
 
 function App() {
   const location = useLocation();
+
+  const isPWA = useIsPWA();
 
   useEffect(() => {
     const lockOrientation = (orientation) => {
@@ -55,7 +59,8 @@ function App() {
 
   return (
     <div className="App">
-      <Router />
+      {/* {isPWA ? <PWARouter /> : <BrowserRouter />} */}
+      <PWARouter />
     </div>
   );
 }

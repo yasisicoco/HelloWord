@@ -103,9 +103,9 @@ const PasswordResetPage = () => {
                 비밀번호 재설정
             </button>
 
-            <div className="password-reset-find-id">
+            {/* <div className="password-reset-find-id">
                 <a href="/find-id">아이디 찾기 &gt;</a>
-            </div>
+            </div> */}
         </div>
     );
 };

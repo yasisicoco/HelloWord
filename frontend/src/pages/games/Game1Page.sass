@@ -28,8 +28,8 @@
       flex: 8
 
       &--timebar
-        width: 100%   
-        height: 100%  
+        width: 100%
+        height: 100%
         border-radius: 80px
         background-color: #fff
 
@@ -44,18 +44,27 @@
       background-color: #ffffff
       border: none
       box-sizing: border-box
+      position: relative
 
   .main-content
     display: flex
     padding: 12px 40px
-    height: calc(100% - 30%)
+    height: 85%
 
     &__img-wrap
       display: flex
       flex: 1
-      padding-right: 12px
+      margin-right: 12px
       justify-content: center
       align-items: center
+      position: relative
+
+      .play-icon
+        position: absolute
+        bottom: 0px
+        right: 0px
+        width: 70px
+        height: 70px
 
       &--img
         width: 100%
@@ -111,3 +120,23 @@
       cursor: pointer
       box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
       filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+
+  @keyframes scaleUpAndDown
+    0%
+      transform: scale(1)
+
+    100%
+      transform: scale(1.5)
+
+.countdown-screen
+  font-size: 8rem
+  color: #fff
+  background-color: #7572B4
+  display: flex
+  justify-content: center
+  align-items: center
+  height: 100vh
+  width: 100%
+
+  // 애니메이션 적용
+  animation: scaleUpAndDown 1s ease-in-out infinite

@@ -1,19 +1,38 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './LearningMount.sass';
 
 const LearningMount = ({ kidData }) => {
-  const days = ["월", "화", "수", "목", "금", "토", "일"];
-  const chartData = days.map(day => ({
-    name: day,
-    내아이: kidData.dailyCorrectWordCounts[day],
-    평균: kidData.globalDailyAverageCorrectWordCounts[day],
-  }));
+  // kidData의 요일 데이터를 날짜 형식으로 변환하는 함수
+  const getLast7Days = () => {
+    const result = [];
+    const today = new Date(); // 오늘 날짜 가져오기
 
-  // 초를 분으로 변환하고 소수점을 올림하는 함수
-  const convertSecondsToMinutes = (seconds) => {
-    return Math.ceil(seconds / 60);
+    // 7일간의 날짜를 "MM/DD" 형식으로 구함
+    for (let i = 6; i >= 0; i--) {
+      const pastDate = new Date(today); // 날짜 복제
+      pastDate.setDate(today.getDate() - i); // i일 전 날짜 계산
+      const formattedDate = `${pastDate.getMonth() + 1}/${pastDate.getDate()}`; // "MM/DD" 형식으로 날짜 표시
+      result.push({
+        date: formattedDate,
+        day: pastDate.getDay(), // 요일을 얻음 (0: 일요일, 1: 월요일, ...)
+      });
+    }
+
+    return result;
   };
+
+  const last7Days = getLast7Days();
+
+  // 요일 매핑 (0: 일요일, 1: 월요일, ... 6: 토요일)
+  const dayMap = ["일", "월", "화", "수", "목", "금", "토"];
+
+  // 차트에 사용할 데이터를 생성합니다.
+  const chartData = last7Days.map(({ date, day }) => ({
+    name: date,
+    내아이: kidData.dailyCorrectWordCounts[dayMap[day]] || 0, // 맞춘 개수 (없는 경우 0)
+    평균: kidData.globalDailyAverageCorrectWordCounts[dayMap[day]] || 0, // 글로벌 평균 맞춘 개수
+  }));
 
   return (
     <div className="learning-compo">
@@ -25,9 +44,7 @@ const LearningMount = ({ kidData }) => {
         <div className="child-info__data">
           <div className="data-item">
             <p className="data-item__label">오늘 학습한 시간</p>
-            <p className="data-item__value">
-              {kidData.todayPlayTime ? `${convertSecondsToMinutes(kidData.todayPlayTime)}분` : '0 분'}
-            </p>
+            <p className="data-item__value">{kidData.todayPlayTime} 분</p>
           </div>
           <div className="data-item">
             <p className="data-item__label">오늘 완료한 게임</p>
@@ -37,18 +54,18 @@ const LearningMount = ({ kidData }) => {
       </section>
 
       <section className="progress">
-        <div className="progress__label">7일간 학습량 비교</div>
+        <div className="progress__label">7일간 맞춘 개수 비교</div>
         <div className="progress__chart">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
+            <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis width={40} />
+              <XAxis dataKey="name" tick={{ fontSize: 12 }} /> {/* tick 속성으로 글꼴 크기 조정 */}
+              <YAxis width={30} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="내아이" fill="#8884d8" />
-              <Bar dataKey="평균" fill="#82ca9d" />
-            </BarChart>
+              <Line type="monotone" dataKey="내아이" stroke="#8884d8" strokeWidth={5} dot={false} /> {/* dot을 false로 설정 */}
+              <Line type="monotone" dataKey="평균" stroke="#82ca9d" strokeWidth={5} dot={false} /> {/* dot을 false로 설정 */}
+            </LineChart>
           </ResponsiveContainer>
         </div>
       </section>

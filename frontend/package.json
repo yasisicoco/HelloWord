@@ -12,6 +12,7 @@
   "dependencies": {
     "@capacitor/cli": "^6.1.2",
     "@capacitor/core": "^6.1.2",
+    "@fullpage/react-fullpage": "^0.1.44",
     "@reduxjs/toolkit": "^2.2.7",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",

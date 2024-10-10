@@ -3,13 +3,16 @@
   "name": "HelloWord!",
   "short_name": "HelloWord",
   "description": "My awesome Progressive Web App!",
-  "start_url": "/index.html",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#f5f5f5",
   "theme_color": "#ffffff",
-  "categories": ["education", "productivity"],
+  "categories": [
+    "education",
+    "productivity"
+  ],
   "dir": "auto",
   "lang": "ko",
   "prefer_related_applications": false,
