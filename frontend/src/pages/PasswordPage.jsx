@@ -5,6 +5,8 @@ import UserAPI from '../api/UserAPI';
 
 import './Password.sass';
 
+import LandscapeModeWarning from '../features/Games/landscapeModeWarning';
+
 const PasswordPage = () => {
   const navigate = useNavigate();
 
@@ -84,6 +86,7 @@ const PasswordPage = () => {
 
   return (
     <section className="password-page">
+      <LandscapeModeWarning />
       <form onSubmit={handleSignUp} className="password-form">
         <div className="password-form__close">
           <IoClose className="" onClick={() => navigate('/login')} />

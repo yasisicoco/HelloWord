@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './Signup.sass';
 import UserAPI from '../api/UserAPI';
 
+import LandscapeModeWarning from '../features/Games/landscapeModeWarning';
+
 const SignUpPage = () => {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
@@ -164,7 +166,7 @@ const SignUpPage = () => {
     setIsEmailVerified(false);
     setIsAuthCodeRequested(false);
     setCodeVerificationError('');
-    setIsResendAllowed(false)
+    setIsResendAllowed(false);
     setIsVerificationInProgress(false);
   };
 
@@ -208,6 +210,7 @@ const SignUpPage = () => {
 
   return (
     <div className="signup-container">
+      <LandscapeModeWarning />
       <div className="header">
         <button className="back-button" onClick={handleBack}>
           <span className="back-icon">&lt;</span>
@@ -236,14 +239,11 @@ const SignUpPage = () => {
               <button
                 className="check-button"
                 onClick={handleEmailCheckAndRequest}
-                disabled={emailChecked || isVerificationInProgress}
-              >
+                disabled={emailChecked || isVerificationInProgress}>
                 인증번호 요청
               </button>
             </div>
-            {emailVerificationError && (
-              <small className="error-message">{emailVerificationError}</small>
-            )}
+            {emailVerificationError && <small className="error-message">{emailVerificationError}</small>}
             {emailChecked && (
               <div className="auth-code-section">
                 <div className="input-wrapper">
@@ -263,16 +263,12 @@ const SignUpPage = () => {
                 <button
                   className="verify-button"
                   onClick={isResendAllowed ? handleEmailVerification : handleAuthCodeCheck}
-                  disabled={isVerificationInProgress || (!isResendAllowed && isEmailVerified)}
-                >
+                  disabled={isVerificationInProgress || (!isResendAllowed && isEmailVerified)}>
                   {isResendAllowed ? '재발급 요청' : '인증확인'}
                 </button>
               </div>
-              
             )}
-            {codeVerificationError && (
-              <small className="error-message">{codeVerificationError}</small>
-            )}
+            {codeVerificationError && <small className="error-message">{codeVerificationError}</small>}
           </div>
         )}
         {step === 2 && (
@@ -315,7 +311,9 @@ const SignUpPage = () => {
               placeholder="비밀번호 입력"
             />
             {!isPasswordValid && (
-              <small className="error-message">비밀번호는 8자 이상, 대문자, 소문자, 숫자, 특수문자를 포함해야 합니다.</small>
+              <small className="error-message">
+                비밀번호는 8자 이상, 대문자, 소문자, 숫자, 특수문자를 포함해야 합니다.
+              </small>
             )}
             <label htmlFor="confirm-password">비밀번호 확인</label>
             <input
@@ -326,9 +324,7 @@ const SignUpPage = () => {
               placeholder="비밀번호 확인 입력"
               className={isPasswordMismatch ? 'error' : ''}
             />
-            {isPasswordMismatch && (
-              <small className="error-message">비밀번호가 일치하지 않습니다.</small>
-            )}
+            {isPasswordMismatch && <small className="error-message">비밀번호가 일치하지 않습니다.</small>}
           </div>
         )}
       </div>
@@ -337,8 +333,7 @@ const SignUpPage = () => {
         className={`next-button ${isTransition ? 'with-transition' : ''}`}
         style={{ bottom: `${buttonBottom}px`, backgroundColor: isNextButtonDisabled() ? '#ccc' : '#007bff' }}
         onClick={handleNext}
-        disabled={isNextButtonDisabled()}
-      >
+        disabled={isNextButtonDisabled()}>
         {step === 4 ? '회원가입' : '다음'}
       </button>
     </div>

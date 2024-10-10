@@ -9,10 +9,12 @@ import { format } from 'date-fns';
 import UserAPI from '../api/UserAPI';
 import { useSelector } from 'react-redux';
 
+import defaultProfile from '../assets/character/defaultProfile.png';
+
 function AddChildModal({ isOpen, closeModal }) {
   const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState(null); // Date 객체 유지
-  const [profileimg, setProfileimg] = useState('../character/defaultProfile.png');
+  const [profileimg, setProfileimg] = useState(defaultProfile);
   const fileInputRef = useRef(null);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -51,7 +53,7 @@ function AddChildModal({ isOpen, closeModal }) {
       // 제출 후 상태 초기화
       setName('');
       setBirthDate(null);
-      setProfileimg('../character/defaultProfile.png');
+      setProfileimg(defaultProfile);
     } catch (error) {
       console.error('아이 추가 실패', error);
     }
@@ -72,7 +74,7 @@ function AddChildModal({ isOpen, closeModal }) {
   const resetData = () => {
     setName('');
     setBirthDate(null);
-    setProfileimg('../character/defaultProfile.png');
+    setProfileimg(defaultProfile);
   };
 
   return (
