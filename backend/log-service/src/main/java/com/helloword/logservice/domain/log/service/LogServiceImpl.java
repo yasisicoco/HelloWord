@@ -40,23 +40,23 @@ public class LogServiceImpl implements LogService {
 
 	@Override
 	public GameStatsResponseDto getGameStats(Long kidId) {
-		Double speedGameKidAvg = getNonNullAverageByDouble(logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.SPEED_GAME)) * 100.0;
-		Double speedGameGlobalAvg = getNonNullAverageByDouble(logRepository.findGlobalAverageCorrectRateByGameType(GameType.SPEED_GAME)) * 100.0;
+		Integer speedGameKidAvg = (int)(getNonNullAverageByDouble(logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.SPEED_GAME)) * 100.0);
+		Integer speedGameGlobalAvg = (int)(getNonNullAverageByDouble(logRepository.findGlobalAverageCorrectRateByGameType(GameType.SPEED_GAME)) * 100.0);
 		Integer speedGameKidAvgPlayTime = getNonNullAverage(logRepository.findKidAveragePlayTimeByGameType(kidId, GameType.SPEED_GAME));
 		Integer speedGameGlobalAvgPlayTime = getNonNullAverage(logRepository.findGlobalAveragePlayTimeByGameType(GameType.SPEED_GAME));
 
-		Double speechGameKidAvg = getNonNullAverageByDouble(logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.SPEECH_GAME)) * 100.0;
-		Double speechGameGlobalAvg = getNonNullAverageByDouble(logRepository.findGlobalAverageCorrectRateByGameType(GameType.SPEECH_GAME)) * 100.0;
+		Integer speechGameKidAvg = (int)(getNonNullAverageByDouble(logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.SPEECH_GAME)) * 100.0);
+		Integer speechGameGlobalAvg = (int)(getNonNullAverageByDouble(logRepository.findGlobalAverageCorrectRateByGameType(GameType.SPEECH_GAME)) * 100.0);
 		Integer speechGameKidAvgPlayTime = getNonNullAverage(logRepository.findKidAveragePlayTimeByGameType(kidId, GameType.SPEECH_GAME));
 		Integer speechGameGlobalAvgPlayTime = getNonNullAverage(logRepository.findGlobalAveragePlayTimeByGameType(GameType.SPEECH_GAME));
 
-		Double pairGameKidAvg = getNonNullAverageByDouble(logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.PAIR_GAME)) * 100.0;
-		Double pairGameGlobalAvg = getNonNullAverageByDouble(logRepository.findGlobalAverageCorrectRateByGameType(GameType.PAIR_GAME)) * 100.0;
+		Integer pairGameKidAvg = (int)(getNonNullAverageByDouble(logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.PAIR_GAME)) * 100.0);
+		Integer pairGameGlobalAvg = (int)(getNonNullAverageByDouble(logRepository.findGlobalAverageCorrectRateByGameType(GameType.PAIR_GAME)) * 100.0);
 		Integer pairGameKidAvgPlayTime = getNonNullAverage(logRepository.findKidAveragePlayTimeByGameType(kidId, GameType.PAIR_GAME));
 		Integer pairGameGlobalAvgPlayTime = getNonNullAverage(logRepository.findGlobalAveragePlayTimeByGameType(GameType.PAIR_GAME));
 
-		Double fairytaleGameKidAvg = getNonNullAverageByDouble(logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.FAIRYTALE_GAME)) * 100.0;
-		Double fairytaleGameGlobalAvg = getNonNullAverageByDouble(logRepository.findGlobalAverageCorrectRateByGameType(GameType.FAIRYTALE_GAME)) * 100.0;
+		Integer fairytaleGameKidAvg = (int)(getNonNullAverageByDouble(logRepository.findKidAverageCorrectRateByGameType(kidId, GameType.FAIRYTALE_GAME)) * 100.0);
+		Integer fairytaleGameGlobalAvg = (int)(getNonNullAverageByDouble(logRepository.findGlobalAverageCorrectRateByGameType(GameType.FAIRYTALE_GAME)) * 100.0);
 		Integer fairytaleGameKidAvgPlayTime = getNonNullAverage(logRepository.findKidAveragePlayTimeByGameType(kidId, GameType.FAIRYTALE_GAME));
 		Integer fairytaleGameGlobalAvgPlayTime = getNonNullAverage(logRepository.findGlobalAveragePlayTimeByGameType(GameType.FAIRYTALE_GAME));
 
