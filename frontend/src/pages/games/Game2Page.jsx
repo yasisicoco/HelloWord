@@ -245,11 +245,7 @@ const Game2Page = () => {
   };
 
   if (!gameStarted) {
-    return (
-      <div className="countdown-screen">
-        {countdown > 0 ? countdown : '시작!'}
-      </div>
-    );
+    return <div className="countdown-screen">{countdown > 0 ? countdown : '시작!'}</div>;
   }
 
   return (
@@ -291,9 +287,13 @@ const Game2Page = () => {
           <div className="main-content__card-container--word-card">{word}</div>
           <div
             onClick={toggleListening}
-            className={`main-content__card-container--mic-card ${isListening ? 'mic-on' : 'mic-off'}`}
+            className={`main-content__card-container--mic-card card-container--${isListening ? 'mic-on' : 'mic-off'}`}
             aria-label={listening ? '마이크 끄기' : '마이크 켜기'}>
-            {listening ? <img src="/icons/mic_on.svg" alt="마이크 켜기" /> : <img src="/icons/mic_off.svg" alt="마이크 끄기" />}
+            {listening ? (
+              <img src="/icons/mic_on.svg" alt="마이크 켜기" />
+            ) : (
+              <img src="/icons/mic_off.svg" alt="마이크 끄기" />
+            )}
           </div>
         </div>
       </section>
