@@ -121,8 +121,9 @@ const LoginPage = () => {
       <div className="link-box">
         {/* <Link to="/find/id" className="link-item">아이디 찾기</Link> */}
         {/* <span className="divider">|</span> */}
-        {/* <Link to="/find/password" className="link-item">비밀번호 찾기</Link>
-        <span className="divider">|</span> */}
+        <Link to="/find/password" className="link-item">비밀번호 찾기</Link>
+        <span className="divider">|</span>
+        <Link to="/signup" className="link-item">회원가입</Link>
         <Link to="/signup" className="link-item">
           회원가입
         </Link>

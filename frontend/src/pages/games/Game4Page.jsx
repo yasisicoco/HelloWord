@@ -1,9 +1,9 @@
-// hook
 import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { FaQuestionCircle } from 'react-icons/fa';
+import ConfirmationModal from '../../components/ConfirmationModal'; // 뒤로가기 확인 모달 추가
 
 // API import
 import { fetchGame4, fetchGameResult } from '../../api/GameAPI';
@@ -38,31 +38,38 @@ const Game4Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달
   const [isGuideOpen, setIsGuideOpen] = useState(true); // 가이드 모달
   const [isResultModalOpen, setIsResultModalOpen] = useState(false); // 결과 모달
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false); // 뒤로가기 확인 모달
   const [modalMessage, setModalMessage] = useState('');
   const [roundFinished, setRoundFinished] = useState(false); // 라운드 완료 여부 상태 추가
   const [isDataLoading, setIsDataLoading] = useState(true);
-  const kidId = useSelector((state) => state.kid.selectedKidId); // 선택된 아이 ID 확인
-  const accessToken = useSelector((state) => state.auth.accessToken);
   const [isCorrect, setIsCorrect] = useState(null); // 정답 여부 상태 추가
 
-  // 시간 초과 시 라운드 넘기기
+  const [countdown, setCountdown] = useState(3); // 카운트다운 상태
+  const [gameStarted, setGameStarted] = useState(false); // 게임 시작 상태
+
+  const kidId = useSelector((state) => state.kid.selectedKidId); // 선택된 아이 ID 확인
+  const accessToken = useSelector((state) => state.auth.accessToken);
+
   const onTimeUp = () => {
     showModal('시간이 초과되었습니다. 틀렸습니다 😞');
     handleNextRound(false); // 타임아웃 시 틀린 것으로 처리
   };
 
   const showModal = (message, isCorrect) => {
+    if (roundFinished) return;
     setIsModalOpen(true);
     setModalMessage(message);
-    pauseTimer(); // 모달이 열리면 타이머 일시정지
+    pauseTimer();
+    setIsCorrect(isCorrect);
+    setRoundFinished(true);
+
     setTimeout(() => {
       setIsModalOpen(false);
-      resumeTimer(); // 모달이 닫히면 타이머 재개
+      handleNextRound(isCorrect);
     }, 1000);
-    setIsCorrect(isCorrect); // 정답 여부 상태 저장
   };
 
-  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(20, onTimeUp); // pauseTimer, resumeTimer 추가
+  const { timeLeft, resetTimer, pauseTimer, resumeTimer } = useTimer(20, onTimeUp);
 
   // 단어 배열을 무작위로 섞는 함수
   const shuffleArray = (array) => {
@@ -129,10 +136,26 @@ const Game4Page = () => {
   useEffect(() => {
     if (isGuideOpen) {
       pauseTimer(); // 모달이 열리면 타이머 멈춤
-    } else {
+    } else if (!gameStarted && countdown <= 0) {
       resumeTimer(); // 모달이 닫히면 타이머 재개
     }
-  }, [isGuideOpen]); // isGuideOpen 상태 변경 시마다 실행
+  }, [isGuideOpen, gameStarted, countdown, pauseTimer, resumeTimer]);
+
+  // 카운트다운이 진행되는 동안 시간 멈추기
+  useEffect(() => {
+    if (countdown > 0) {
+      pauseTimer(); // 카운트다운 동안 타이머 멈추기
+      const timer = setTimeout(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000); // 1초마다 카운트다운 감소
+
+      return () => clearTimeout(timer);
+    } else if (countdown === 0 && !gameStarted) {
+      setGameStarted(true);
+      resetTimer(); // 타이머를 리셋하고
+      resumeTimer(); // 카운트다운이 끝나면 타이머 시작
+    }
+  }, [countdown, gameStarted, pauseTimer, resetTimer, resumeTimer]);
 
   // 라운드가 변경될 때마다 데이터를 업데이트하는 useEffect
   useEffect(() => {
@@ -159,34 +182,35 @@ const Game4Page = () => {
       ]);
     }
 
-    setRoundFinished(true); // 라운드가 완료되었음을 표시
+    // roundFinished 상태로 다음 라운드로 이동하는 로직을 useEffect로 넘김
+    setRoundFinished(true);
   };
 
-  // roundFinished가 true가 되면 다음 라운드로 이동
   useEffect(() => {
     if (roundFinished) {
       if (round === totalRounds - 1) {
-        // 결과 모달 열기 전에 타이머 정지
+        // 마지막 라운드라면 결과 모달을 띄움
         setTimeout(() => {
           setIsResultModalOpen(true); // 마지막 라운드에서 결과 모달 열기
           pauseTimer(); // 타이머 정지
         }, 1000); // 결과 모달 띄우기 전에 잠시 대기
       } else {
-        setRound((prevRound) => prevRound + 1); // 다음 라운드로 이동
+        setTimeout(() => {
+          setRound((prevRound) => prevRound + 1); // 다음 라운드로 이동
+          setRoundFinished(false); // 라운드 완료 상태 초기화
+          resumeTimer(); // 다음 라운드로 이동하면 타이머 재개
+        }, 1000); // 모달 닫힌 후에 1초 후에 라운드 이동
       }
-      setRoundFinished(false); // 라운드 완료 상태 초기화
     }
-  }, [roundFinished, round, totalRounds]);
+  }, [roundFinished, round, totalRounds, resumeTimer]);
 
   // 단어 클릭 시 정답 확인 함수
   const handleOptionClick = (selectedOption) => {
     const isCorrect = selectedOption === correct; // 정답 여부를 확인
     if (isCorrect) {
       showModal('맞았습니다! 😊', true); // 정답일 때 true
-      handleNextRound(true); // 정답 처리 후 다음 라운드로 이동
     } else {
       showModal('틀렸습니다. 😞', false); // 오답일 때 false
-      handleNextRound(false); // 틀림 처리 후 다음 라운드로 이동
     }
   };
 
@@ -196,8 +220,9 @@ const Game4Page = () => {
     setRound(0); // 게임을 다시 시작
     setCorrectAnswer(0); // 맞은 갯수 초기화
     setTotalPlayTime(0); // 전체 플레이 시간 초기화
+    setCountdown(3); // 다시하기 시 카운트다운 재시작
     updateRoundData(data[0]); // 첫 라운드로 다시 시작
-    resumeTimer(); // 모달이 닫히면 타이머 재개
+    setGameStarted(false); // 게임 상태 초기화
   };
 
   // 그만하기 버튼 클릭 시
@@ -219,6 +244,45 @@ const Game4Page = () => {
       showModal('결과 전송에 실패했습니다.');
     }
   };
+
+  // 뒤로가기 모달 열기
+  const handleBackButtonClick = () => {
+    setIsConfirmationOpen(true);
+    pauseTimer(); // 모달이 열리면 타이머 멈추기
+  };
+
+  // 모달에서 "예" 클릭 시 뒤로가기
+  const handleConfirmBack = () => {
+    setIsConfirmationOpen(false);
+    nav(-1);
+  };
+
+  // 모달에서 "아니오" 클릭 시 모달 닫기
+  const handleCancelBack = () => {
+    setIsConfirmationOpen(false);
+    resumeTimer(); // 모달이 닫히면 타이머 재개
+  };
+
+  // 가이드 모달 열기
+  const openGuide = () => {
+    setIsGuideOpen(true);
+    pauseTimer(); // 가이드 모달이 열리면 타이머 멈추기
+  };
+
+  // 가이드 모달 닫기
+  const closeGuide = () => {
+    setIsGuideOpen(false);
+    resumeTimer(); // 가이드 모달이 닫히면 타이머 재개
+  };
+
+  // 게임이 시작되지 않았을 때 카운트다운 화면을 렌더링
+  if (!gameStarted) {
+    return (
+      <div className="countdown-screen">
+        {countdown > 0 ? countdown : '시작!'}
+      </div>
+    );
+  }
 
   if (isDataLoading) {
     return (
@@ -245,31 +309,31 @@ const Game4Page = () => {
       <PortraitModeWarning />
 
       <section className="top-nav">
-        <button onClick={() => nav(-1)} className="top-nav__back-space">
+        <button onClick={handleBackButtonClick} className="top-nav__back-space">
           <img src="/icons/arrow_back.svg" alt="뒤로가기" />
         </button>
         <div className="top-nav__time-stamp">
           <TimeBar time={timeLeft} />
         </div>
         <div className="top-nav__bookmarker">
+          <div
+            className="top-nav__guide-button"
+            onClick={openGuide}  // 가이드 열 때 타이머 멈추기
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              position: "absolute",
+              fontSize: "20px",
+              width: "20px",
+              height: "20px",
+              right: "10px",
+            }}>
+            <FaQuestionCircle style={{ width: "100%", height: "100%", zIndex: "9999" }} />
+          </div>
           {round + 1} / {totalRounds}
         </div>
       </section>
-
-      <button
-        className="top-nav__guide-button"
-        onClick={() => setIsGuideOpen(true)}
-        style={{
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          position: 'absolute',
-          top: '10px',
-          right: '5px',
-          fontSize: '20px',
-        }}>
-        <FaQuestionCircle />
-      </button>
 
       <section className="main-content">
         <div className="book-container">
@@ -315,7 +379,14 @@ const Game4Page = () => {
         onQuit={handleQuit}
       />
 
-      <GameGuide isOpen={isGuideOpen} onRequestClose={() => setIsGuideOpen(false)} />
+      <ConfirmationModal
+        isOpen={isConfirmationOpen}
+        message="게임을 그만두시겠습니까?"
+        onConfirm={handleConfirmBack}
+        onCancel={handleCancelBack}
+      />
+
+      <GameGuide isOpen={isGuideOpen} onRequestClose={closeGuide} />
     </div>
   );
 };

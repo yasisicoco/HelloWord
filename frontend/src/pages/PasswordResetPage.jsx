@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import UserAPI from '../api/UserAPI';
 import './PasswordResetPage.sass';
-
-import LandscapeModeWarning from '../features/Games/landscapeModeWarning';
+import Toast from '../components/Toast';
+import { useToast } from '../context/ToastProvider';
 
 const PasswordResetPage = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isEmailSending, setIsEmailSending] = useState(false);
   const [buttonBottom, setButtonBottom] = useState(0); // 버튼 위치를 위한 상태 추가
+  const nameRef = useRef(null);
   const emailRef = useRef(null);
   const navigate = useNavigate();
+  const { triggerToast } = useToast();  // useToast 훅 사용
 
   useEffect(() => {
     emailRef.current?.focus();
@@ -57,17 +62,21 @@ const PasswordResetPage = () => {
     navigate('/login');
   };
 
-  const handlePasswordReset = () => {
-    if (isEmailValid) {
-      console.log('비밀번호 재설정 링크가 전송되었습니다.');
-    } else {
-      console.log('올바른 이메일 주소를 입력하세요.');
+  const handlePasswordReset = async () => {
+    if (isEmailSending) return;
+    setIsEmailSending(true);
+    try {
+      await UserAPI().requestTempPassword(name, email);
+      navigate('/login');
+      triggerToast('이메일로 임시 비밀번호를 보냈습니다.');
+    } catch (error) {
+      triggerToast('회원 정보가 일치하지 않습니다.');
+      setIsEmailSending(false);
     }
   };
 
   return (
     <div className="password-reset-container">
-      <LandscapeModeWarning />
       <div className="password-reset-header">
         <button className="password-reset-back-button" onClick={handleBack}>
           <span className="password-reset-back-icon">&lt;</span>
@@ -81,22 +90,35 @@ const PasswordResetPage = () => {
 
       <div className="password-reset-content">
         <div className="password-reset-input-container">
-          <label htmlFor="email">
-            회원가입 시 등록한
-            <br />
-            <br />
-            이메일 주소를 입력해 주세요.
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            ref={emailRef}
-            onChange={handleEmailChange}
-            placeholder="이메일 입력"
-            className={!isEmailValid ? 'password-reset-error' : ''}
-          />
-          {!isEmailValid && <small className="password-reset-error-message">올바른 이메일을 입력하세요.</small>}
+          <label >회원가입 시 등록한<br /><br />이름과 이메일 주소를 입력해 주세요.</label>
+          <div className="input-section">
+            <label htmlFor="name">이름</label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              ref={nameRef}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="이름 입력"
+              maxLength="10"
+            />
+          </div>
+          <div className="input-section">
+            <label htmlFor="email">이메일</label>
+
+            <input
+              id="email"
+              type="email"
+              value={email}
+              ref={emailRef}
+              onChange={handleEmailChange}
+              placeholder="이메일 입력"
+              className={!isEmailValid ? 'password-reset-error' : ''}
+            />
+            {!isEmailValid && (
+              <small className="password-reset-error-message">올바른 이메일을 입력하세요.</small>
+            )}
+          </div>
         </div>
       </div>
 
@@ -104,8 +126,9 @@ const PasswordResetPage = () => {
         className="password-reset-button"
         style={{ bottom: `${buttonBottom}px`, backgroundColor: isEmailValid && email ? '#007bff' : '#ccc' }}
         onClick={handlePasswordReset}
-        disabled={!isEmailValid || !email}>
-        비밀번호 재설정
+        disabled={!isEmailValid || !email}
+      >
+        임시 비밀번호 요청
       </button>
 
       {/* <div className="password-reset-find-id">
