@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import UserAPI from '../api/UserAPI';
@@ -17,6 +17,8 @@ import charImage3 from '../assets/character/adult.png';
 import ConfirmationModal from '../components/ConfirmationModal';
 import PortraitModeWarning from '../features/Games/portraitModeWarning';
 
+import { MusicContext } from '../features/Games/musicProvider';
+
 const HomePage = () => {
   const [isPortrait, setIsPortrait] = useState(false);
   const [exp, setExp] = useState(0);
@@ -30,6 +32,8 @@ const HomePage = () => {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { isPlaying, togglePlay } = useContext(MusicContext);
 
   // UserAPI로부터 레벨과 경험치 정보 가져오기
   useEffect(() => {
@@ -103,8 +107,9 @@ const HomePage = () => {
   return (
     <div className="home-page">
       <PortraitModeWarning />
-      <div className="setting-box" onClick={toggleDrawer}>
-        <img src={User} alt="User Icon" />
+      <div className="setting-box">
+        <img src={User} alt="User Icon" onClick={toggleDrawer} />
+        <button onClick={togglePlay}>{isPlaying ? '음악 정지' : '음악 재생'}</button>
       </div>
 
       {drawerOpen && <div className="overlay" onClick={() => setDrawerOpen(false)}></div>}
