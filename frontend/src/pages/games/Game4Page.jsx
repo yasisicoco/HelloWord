@@ -55,17 +55,17 @@ const Game4Page = () => {
     handleNextRound(false); // 타임아웃 시 틀린 것으로 처리
   };
 
+  // showModal 함수 내 setRoundFinished(true) 삭제
   const showModal = (message, isCorrect) => {
     if (roundFinished) return;
     setIsModalOpen(true);
     setModalMessage(message);
     pauseTimer();
     setIsCorrect(isCorrect);
-    setRoundFinished(true);
 
     setTimeout(() => {
       setIsModalOpen(false);
-      handleNextRound(isCorrect);
+      handleNextRound(isCorrect); // 다음 라운드로 넘기는 로직은 handleNextRound에서 관리
     }, 1000);
   };
 

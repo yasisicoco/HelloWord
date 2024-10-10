@@ -99,7 +99,7 @@ const GameMount = ({ kidData }) => {
 
       {/* 오른쪽에 두 개의 차트 */}
       <section className="progress">
-        <div className="progress__label">{currentGame.type} 통계</div>
+        <div className="progress__label">통계</div>
         <div className="progress__chart">
           {/* 첫 번째 차트: 정답률 */}
           <ResponsiveContainer width="100%" height="100%">
@@ -123,7 +123,7 @@ const GameMount = ({ kidData }) => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="name"
-                tickFormatter={() => '학습 시간'}  // X축의 항목을 "학습 시간"으로 변경
+                tickFormatter={() => '플레이 시간'}  // X축의 항목을 "학습 시간"으로 변경
               />
               <YAxis width={40} />
               <Tooltip contentStyle={{ fontSize: '0.75rem' }} />  {/* Tooltip 폰트 크기 줄이기 */}
