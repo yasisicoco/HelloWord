@@ -5,6 +5,8 @@ import './PasswordResetPage.sass';
 import Toast from '../components/Toast';
 import { useToast } from '../context/ToastProvider';
 
+import LandscapeModeWarning from '../features/Games/landscapeModeWarning';
+
 const PasswordResetPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -14,7 +16,7 @@ const PasswordResetPage = () => {
   const nameRef = useRef(null);
   const emailRef = useRef(null);
   const navigate = useNavigate();
-  const { triggerToast } = useToast();  // useToast 훅 사용
+  const { triggerToast } = useToast(); // useToast 훅 사용
 
   useEffect(() => {
     emailRef.current?.focus();
@@ -77,6 +79,7 @@ const PasswordResetPage = () => {
 
   return (
     <div className="password-reset-container">
+      <LandscapeModeWarning />
       <div className="password-reset-header">
         <button className="password-reset-back-button" onClick={handleBack}>
           <span className="password-reset-back-icon">&lt;</span>
@@ -90,7 +93,12 @@ const PasswordResetPage = () => {
 
       <div className="password-reset-content">
         <div className="password-reset-input-container">
-          <label >회원가입 시 등록한<br /><br />이름과 이메일 주소를 입력해 주세요.</label>
+          <label>
+            회원가입 시 등록한
+            <br />
+            <br />
+            이름과 이메일 주소를 입력해 주세요.
+          </label>
           <div className="input-section">
             <label htmlFor="name">이름</label>
             <input
@@ -115,9 +123,7 @@ const PasswordResetPage = () => {
               placeholder="이메일 입력"
               className={!isEmailValid ? 'password-reset-error' : ''}
             />
-            {!isEmailValid && (
-              <small className="password-reset-error-message">올바른 이메일을 입력하세요.</small>
-            )}
+            {!isEmailValid && <small className="password-reset-error-message">올바른 이메일을 입력하세요.</small>}
           </div>
         </div>
       </div>
@@ -126,8 +132,7 @@ const PasswordResetPage = () => {
         className="password-reset-button"
         style={{ bottom: `${buttonBottom}px`, backgroundColor: isEmailValid && email ? '#007bff' : '#ccc' }}
         onClick={handlePasswordReset}
-        disabled={!isEmailValid || !email}
-      >
+        disabled={!isEmailValid || !email}>
         임시 비밀번호 요청
       </button>
 
