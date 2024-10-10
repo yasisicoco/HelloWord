@@ -7,20 +7,20 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GameStatsResponseDto {
 
-    private Integer speedGameKidAverageCorrectRate;
-    private Integer speedGameGlobalAverageCorrectRate;
+    private Double speedGameKidAverageCorrectRate;
+    private Double speedGameGlobalAverageCorrectRate;
     private Integer speedGameKidAveragePlayTime;
     private Integer speedGameGlobalAveragePlayTime;
-    private Integer speechGameKidAverageCorrectRate;
-    private Integer speechGameGlobalAverageCorrectRate;
+    private Double speechGameKidAverageCorrectRate;
+    private Double speechGameGlobalAverageCorrectRate;
     private Integer speechGameKidAveragePlayTime;
     private Integer speechGameGlobalAveragePlayTime;
-    private Integer pairGameKidAverageCorrectRate;
-    private Integer pairGameGlobalAverageCorrectRate;
+    private Double pairGameKidAverageCorrectRate;
+    private Double pairGameGlobalAverageCorrectRate;
     private Integer pairGameKidAveragePlayTime;
     private Integer pairGameGlobalAveragePlayTime;
-    private Integer fairytaleGameKidAverageCorrectRate;
-    private Integer fairytaleGameGlobalAverageCorrectRate;
+    private Double fairytaleGameKidAverageCorrectRate;
+    private Double fairytaleGameGlobalAverageCorrectRate;
     private Integer fairytaleGameKidAveragePlayTime;
     private Integer fairytaleGameGlobalAveragePlayTime;
 }

@@ -9,8 +9,8 @@ public interface LogRepositoryCustom {
 	Integer findTodayCompletedGameCount(Long kidId);
 	Map<String, Integer> findDailyCorrectWordCount(Long kidId);
 	Map<String, Integer> findGlobalDailyAverageCorrectWordCount();
-	Integer findKidAverageCorrectRateByGameType(Long kidId, GameType gameType);
-	Integer findGlobalAverageCorrectRateByGameType(GameType gameType);
+	Double findKidAverageCorrectRateByGameType(Long kidId, GameType gameType);
+	Double findGlobalAverageCorrectRateByGameType(GameType gameType);
 	Integer findKidAveragePlayTimeByGameType(Long kidId, GameType gameType);
 	Integer findGlobalAveragePlayTimeByGameType(GameType gameType);
 }
