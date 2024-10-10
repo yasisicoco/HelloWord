@@ -1,8 +1,9 @@
 import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { FaQuestionCircle } from 'react-icons/fa';
+import ConfirmationModal from '../../components/ConfirmationModal'; // 뒤로가기 확인 모달 추가
 
 // API import
 import { fetchGame3, fetchGameResult } from '../../api/GameAPI';
@@ -30,12 +31,16 @@ const Game3Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isGuideOpen, setIsGuideOpen] = useState(true); // 가이드 모달
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false); // 뒤로가기 확인 모달
   const [modalMessage, setModalMessage] = useState('');
   const [roundFinished, setRoundFinished] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [isCorrect, setIsCorrect] = useState(null);
   const [blocks, setBlocks] = useState([]);
   const [incorrectAnswer, setIncorrectAnswer] = useState(0); // 틀린 횟수 추가
+
+  const [countdown, setCountdown] = useState(3); // 카운트다운 상태
+  const [gameStarted, setGameStarted] = useState(false); // 게임 시작 상태
 
   const kidId = useSelector((state) => state.kid.selectedKidId);
   const accessToken = useSelector((state) => state.auth.accessToken);
@@ -103,18 +108,34 @@ const Game3Page = () => {
     fetchGameData();
   }, [accessToken, kidId]);
 
-  // 가이드 모달이 열릴 때 타이머 일시정지, 닫힐 때 타이머 재개
   useEffect(() => {
     if (isGuideOpen) {
       pauseTimer(); // 모달이 열리면 타이머 멈춤
-    } else {
-      resumeTimer(); // 모달이 닫히면 타이머 재개
+    } else if (!gameStarted && countdown <= 0) {
+      resumeTimer();
     }
-  }, [isGuideOpen]); // isGuideOpen 상태 변경 시마다 실행
+  }, [isGuideOpen, gameStarted, countdown, pauseTimer, resumeTimer]);
+
+  useEffect(() => {
+    if (countdown > 0) {
+      pauseTimer();
+      const timer = setTimeout(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    } else if (countdown === 0 && !gameStarted) {
+      setGameStarted(true);
+      resetTimer();
+      resumeTimer();
+    }
+  }, [countdown, gameStarted, pauseTimer, resetTimer, resumeTimer, isGuideOpen]);
 
   useEffect(() => {
     if (data && data[round]) {
       updateRoundData(data[round]);
+      resetTimer();
+      resumeTimer();
     }
   }, [round, data]);
 
@@ -122,7 +143,6 @@ const Game3Page = () => {
     const roundEndTime = Date.now();
     const timeTaken = (roundEndTime - roundStartTime) / 1000;
     setTotalPlayTime((prevTime) => prevTime + timeTaken);
-
     setRoundFinished(true);
   };
 
@@ -142,42 +162,52 @@ const Game3Page = () => {
   }, [roundFinished, round, totalRounds]);
 
   const handleCardClick = (block) => {
-    // 이미 선택된 카드이거나, 선택된 카드가 2개 이상이거나, 매칭된 카드는 클릭 무시
-    if (selectedCards.includes(block) || selectedCards.length >= 2 || block.isMatched) return;
+    // 이미 선택된 카드를 클릭하면 선택 해제
+    if (selectedCards.includes(block)) {
+      setSelectedCards((prevSelectedCards) =>
+        prevSelectedCards.filter((selectedBlock) => selectedBlock !== block)
+      );
+      return;
+    }
 
-    // 새로운 선택된 카드 배열 업데이트
+    // 카드가 이미 매칭되었거나 2개의 카드를 이미 선택한 경우 클릭 무시
+    if (selectedCards.length >= 2 || block.isMatched) return;
+
     const newSelectedCards = [...selectedCards, block];
     setSelectedCards(newSelectedCards);
 
-    // 선택된 카드가 2개가 되었을 때
     if (newSelectedCards.length === 2) {
-      // 짝이 맞는지 확인 (id가 같고, type이 다른 경우)
-      if (newSelectedCards[0].id === newSelectedCards[1].id && newSelectedCards[0].type !== newSelectedCards[1].type) {
-        showModal('맞았습니다! 😊', true); // 맞았다는 모달 표시
+      if (
+        newSelectedCards[0].id === newSelectedCards[1].id &&
+        newSelectedCards[0].type !== newSelectedCards[1].type
+      ) {
+        showModal('맞았습니다! 😊', true);
         setCorrectWords((prevWords) => [
           ...prevWords,
-          { id: newSelectedCards[0].id, word: newSelectedCards.find((card) => card.type === 'word').content },
+          {
+            id: newSelectedCards[0].id,
+            word: newSelectedCards.find((card) => card.type === 'word').content,
+          },
         ]);
-        setCorrectAnswer((prevCount) => prevCount + 1); // 정답 개수 증가
+        setCorrectAnswer((prevCount) => prevCount + 1);
 
-        // 1초 후 매칭된 카드 업데이트
         setTimeout(() => {
           setBlocks((prevBlocks) =>
-            prevBlocks.map((b) => (b.id === newSelectedCards[0].id ? { ...b, isMatched: true } : b)),
+            prevBlocks.map((b) =>
+              b.id === newSelectedCards[0].id ? { ...b, isMatched: true } : b
+            )
           );
-          setSelectedCards([]); // 선택된 카드 초기화
+          setSelectedCards([]);
 
-          // 남은 매칭되지 않은 카드가 2장 이하이면 다음 라운드로 넘어감
           if (blocks.filter((b) => !b.isMatched).length === 2) {
             handleNextRound(true);
           }
         }, 1000);
       } else {
-        // 짝이 맞지 않는 경우
-        showModal('틀렸습니다. 😞', false); // 틀렸다는 모달 표시
-        setIncorrectAnswer((prevCount) => prevCount + 1); // 틀린 시도 횟수 증가
+        showModal('틀렸습니다. 😞', false);
+        setIncorrectAnswer((prevCount) => prevCount + 1);
         setTimeout(() => {
-          setSelectedCards([]); // 선택된 카드 초기화
+          setSelectedCards([]);
         }, 1000);
       }
     }
@@ -189,13 +219,14 @@ const Game3Page = () => {
     setCorrectAnswer(0);
     setTotalPlayTime(0);
     setCorrectWords([]);
+    setCountdown(3); // 다시하기 시 카운트다운 재시작
+    setGameStarted(false); // 게임 상태 초기화
     updateRoundData(data[0]);
-    resumeTimer();
   };
 
   const handleQuit = async () => {
-    const totalAttempts = correctAnswer + incorrectAnswer; // 총 시도 횟수
-    const correctRate = totalAttempts > 0 ? correctAnswer / (totalAttempts + (totalRounds * 4 - correctAnswer)) : 0; // 정답률 계산
+    const totalAttempts = correctAnswer + incorrectAnswer;
+    const correctRate = totalAttempts > 0 ? correctAnswer / (totalAttempts + (totalRounds * 4 - correctAnswer)) : 0;
 
     const resultData = {
       kidId: kidId,
@@ -214,54 +245,65 @@ const Game3Page = () => {
     }
   };
 
-  if (isDataLoading) {
-    return (
-      <div
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          color: 'white',
-          padding: '20px',
-          borderRadius: '8px',
-          fontSize: '18px',
-          zIndex: 1000,
-        }}>
-        게임 정보를 불러오는 중이에요!
-      </div>
-    );
+  const handleBackButtonClick = () => {
+    setIsConfirmationOpen(true);
+    pauseTimer();
+  };
+
+  const handleConfirmBack = () => {
+    setIsConfirmationOpen(false);
+    nav(-1);
+  };
+
+  const handleCancelBack = () => {
+    setIsConfirmationOpen(false);
+    resumeTimer();
+  };
+
+  // 가이드 모달 열기
+  const openGuide = () => {
+    setIsGuideOpen(true);
+    pauseTimer(); // 가이드 모달이 열리면 타이머 멈추기
+  };
+
+  // 가이드 모달 닫기
+  const closeGuide = () => {
+    setIsGuideOpen(false);
+    resumeTimer(); // 가이드 모달이 닫히면 타이머 재개
+  };
+
+  if (!gameStarted) {
+    return <div className="countdown-screen">{countdown > 0 ? countdown : '시작!'}</div>;
   }
 
   return (
     <div className="game3-page">
       <section className="top-nav">
-        <button onClick={() => nav(-1)} className="top-nav__back-space">
+        <button onClick={handleBackButtonClick} className="top-nav__back-space">
           <img src="/icons/arrow_back.svg" alt="뒤로가기" />
         </button>
         <div className="top-nav__time-stamp">
           <TimeBar time={timeLeft} />
         </div>
         <div className="top-nav__bookmarker">
+          <div
+            className="top-nav__guide-button"
+            onClick={openGuide}  // 가이드 열 때 타이머 멈추기
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              position: "absolute",
+              fontSize: "20px",
+              width: "20px",
+              height: "20px",
+              right: "10px",
+            }}>
+            <FaQuestionCircle style={{ width: "100%", height: "100%", zIndex: "9999" }} />
+          </div>
           {round + 1} / {totalRounds}
         </div>
       </section>
-
-      <button
-        className="top-nav__guide-button"
-        onClick={() => setIsGuideOpen(true)}
-        style={{
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          position: 'absolute',
-          top: '10px',
-          right: '5px',
-          fontSize: '20px',
-        }}>
-        <FaQuestionCircle />
-      </button>
 
       <section className="main-content">
         {blocks.map((block) => (
@@ -285,6 +327,7 @@ const Game3Page = () => {
         isCorrect={isCorrect}
         onRequestClose={() => setIsModalOpen(false)}
       />
+
       <ResultModal
         isOpen={isResultModalOpen}
         correctAnswer={(correctAnswer * 5) / 12}
@@ -293,7 +336,14 @@ const Game3Page = () => {
         onQuit={handleQuit}
       />
 
-      <GameGuide isOpen={isGuideOpen} onRequestClose={() => setIsGuideOpen(false)} />
+      <ConfirmationModal
+        isOpen={isConfirmationOpen}
+        message="게임을 그만두시겠습니까?"
+        onConfirm={handleConfirmBack}
+        onCancel={handleCancelBack}
+      />
+
+      <GameGuide isOpen={isGuideOpen} onRequestClose={closeGuide} />
     </div>
   );
 };

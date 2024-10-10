@@ -119,6 +119,7 @@ const AddProfilePage = () => {
     } catch (error) {
       console.error('아이 등록 중 오류가 발생했습니다.', error);
       triggerToast('아이 등록이 실패했습니다.');
+      setIsSubmitting(false);
     }
   };
 

@@ -100,13 +100,33 @@ const UserAPI = () => {
       });
 
       if (response.status != 200) {
-        console.log(`isDuplicate Server Error: ${response}`);
+        console.error(`isDuplicate Server Error: ${response}`);
         return true;
       }
 
       return !response.data.data;
     } catch (error) {
-      console.log('Error UserAPI-isDuplicate');
+      console.error('Error UserAPI-isDuplicate');
+      throw error;
+    }
+  };
+
+  // 임시 비밀번호 요청
+  const requestTempPassword = async (username, email) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/users/send-password`, {username, email} ,{
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if(response.status != 200) {
+        console.error(`requestTempPassword Server Error: ${response}`);
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error('Error UserAPI-requestTempPassword')
       throw error;
     }
   };
@@ -323,7 +343,7 @@ const UserAPI = () => {
     }
   };
 
-  return { login, checkEmailAvailability, checkPhoneAvailability, requestEmailVerification, checkEmailVerification, signUp, createKid, getKids, kidSearch, verifyEmailCode, sendEmailCode, getLearningStats, getGameStats, deleteKid };
+  return { login, checkEmailAvailability, checkPhoneAvailability, requestEmailVerification, checkEmailVerification, requestTempPassword, signUp, createKid, getKids, kidSearch, verifyEmailCode, sendEmailCode, getLearningStats, getGameStats, deleteKid };
 };
 
 export default UserAPI;

@@ -1,4 +1,3 @@
-// hook
 import 'regenerator-runtime/runtime';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -27,7 +26,7 @@ const Game1Page = () => {
   const [round, setRound] = useState(0);
   const [correct, setCorrect] = useState('');
   const [imageUrl, setImage] = useState('');
-  const [voice, setVoice] = useState(''); // 목소리 URL 저1장
+  const [voice, setVoice] = useState(''); // 목소리 URL 저장
   const [wrong0, setWrong0] = useState('');
   const [wrong1, setWrong1] = useState('');
   const [wrong2, setWrong2] = useState('');
@@ -43,6 +42,7 @@ const Game1Page = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [roundFinished, setRoundFinished] = useState(false); // 라운드 완료 여부 상태 추가
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false); // 오디오 재생 상태 추가
   const kidId = useSelector((state) => state.kid.selectedKidId); // 선택된 아이 ID 확인
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [isCorrect, setIsCorrect] = useState(null); // 정답 여부 상태 추가
@@ -70,8 +70,9 @@ const Game1Page = () => {
 
   // 시간 초과 시 라운드 넘기기
   const onTimeUp = () => {
-    showModal('시간이 초과되었습니다. 틀렸습니다 😞');
-    handleNextRound(false); // 타임아웃 시 틀린 것으로 처리
+    if (!roundFinished) {
+      showModal('시간이 초과되었습니다. 틀렸습니다 😞', false); // 정답 여부를 false로 명시
+    }
   };
 
   // 타이머 관련 hook 사용
@@ -79,16 +80,19 @@ const Game1Page = () => {
 
   // 모달을 띄운 후 일정 시간 대기 후 다음 문제로 넘어가도록 수정된 showModal 함수
   const showModal = (message, isCorrect) => {
+    if (roundFinished) return; // 이미 라운드가 끝난 경우 함수 종료
+
     setIsModalOpen(true);
     setModalMessage(message);
     pauseTimer(); // 모달이 열리면 타이머 일시정지
     setIsCorrect(isCorrect); // 정답 여부 상태 저장
+    setRoundFinished(true); // 라운드가 끝났음을 기록
 
     // 1초 후 모달을 닫고 다음 라운드로 이동
     setTimeout(() => {
       setIsModalOpen(false);
-      resumeTimer(); // 모달이 닫히면 타이머 재개
       handleNextRound(isCorrect); // 모달이 닫힌 후에만 다음 라운드로 이동
+      setRoundFinished(false); // 다음 라운드가 시작되면 다시 라운드 상태를 false로 변경
     }, 1000); // 1초 후 모달 닫기
   };
 
@@ -147,29 +151,26 @@ const Game1Page = () => {
 
   // 가이드 모달이 닫힌 후 카운트다운을 시작하는 useEffect 추가
   useEffect(() => {
-    if (!isGuideOpen && !gameStarted && countdown === 3) {
-      const countdownInterval = setInterval(() => {
-        setCountdown((prevCount) => {
-          if (prevCount > 0) {
-            return prevCount - 1;
-          } else {
-            clearInterval(countdownInterval);
-            setGameStarted(true); // 카운트다운이 끝나면 게임 시작
-            resumeTimer(); // 타이머 시작
-            return 0;
-          }
-        });
-      }, 1000);
+    if (countdown > 0) {
+      pauseTimer(); // 카운트다운 동안 타이머 멈추기
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000); // 1초마다 카운트다운 감소
 
-      return () => clearInterval(countdownInterval);
+      return () => clearTimeout(timer);
+    } else if (countdown === 0 && !gameStarted) {
+      setGameStarted(true);
+      resetTimer(); // 타이머를 리셋하고
+      resumeTimer(); // 카운트다운이 끝나면 타이머 시작
     }
-  }, [isGuideOpen, gameStarted, countdown, resumeTimer]);
-
+  }, [countdown, gameStarted, pauseTimer, resetTimer, resumeTimer]);
 
   // 라운드가 변경될 때마다 데이터를 업데이트하는 useEffect
   useEffect(() => {
     if (data && data[round]) {
       updateRoundData(data[round]); // 현재 라운드에 맞는 데이터 갱신
+      resetTimer(); // 타이머 리셋
+      resumeTimer(); // 타이머 재개
     }
   }, [round, data]);
 
@@ -197,7 +198,14 @@ const Game1Page = () => {
     }
   }, [countdown]);
 
-  // 정답 맞춤 여부에 따라 다음 라운드로 이동
+  useEffect(() => {
+    if (isGuideOpen) {
+      pauseTimer(); // 가이드 모달이 열리면 타이머 멈추기
+    } else if (!gameStarted) {
+      resumeTimer(); // 가이드 모달이 닫히면 타이머 재개
+    }
+  }, [isGuideOpen, gameStarted, pauseTimer, resumeTimer]);
+
   const handleNextRound = (isCorrect) => {
     const roundEndTime = Date.now();
     const timeTaken = (roundEndTime - roundStartTime) / 1000; // 초 단위로 계산
@@ -221,6 +229,8 @@ const Game1Page = () => {
       pauseTimer(); // 타이머 정지
     } else {
       setRound((prevRound) => prevRound + 1); // 다음 라운드로 이동
+      resetTimer(); // 타이머 리셋 (새 라운드 시작)
+      resumeTimer(); // 타이머 재개
     }
   };
 
@@ -236,8 +246,9 @@ const Game1Page = () => {
     setRound(0); // 게임을 다시 시작
     setCorrectAnswer(0); // 맞은 갯수 초기화
     setTotalPlayTime(0); // 전체 플레이 시간 초기화
+    setCountdown(3); // 다시하기 시 카운트다운 재시작
     updateRoundData(data[0]); // 첫 라운드로 다시 시작
-    resumeTimer(); // 모달이 닫히면 타이머 재개
+    setGameStarted(false); // 게임 상태 초기화
   };
 
   // 그만하기 버튼 클릭 시
@@ -260,15 +271,34 @@ const Game1Page = () => {
     }
   };
 
-  // 오디오 재생 함수
+  // 오디오 재생 함수 (재생 중에는 다시 눌러도 동작하지 않도록 설정)
   const playVoice = () => {
-    if (voice) {
+    if (!isPlaying && voice) {  // 재생 중이 아닐 때만 동작
+      setIsPlaying(true); // 재생 시작 상태로 변경
       const audio = new Audio(voice); // voice URL을 사용하여 오디오 객체 생성
       audio.play(); // 오디오 재생
-    } else {
+
+      // 오디오가 끝났을 때 재생 상태를 false로 변경
+      audio.onended = () => {
+        setIsPlaying(false); 
+      };
+    } else if (!voice) {
       showModal('재생할 음성이 없습니다.');
     }
   };
+
+  // 가이드 모달 열기
+  const openGuide = () => {
+    setIsGuideOpen(true);
+    pauseTimer(); // 가이드 모달이 열리면 타이머 멈추기
+  };
+
+  // 가이드 모달 닫기
+  const closeGuide = () => {
+    setIsGuideOpen(false);
+    resumeTimer(); // 가이드 모달이 닫히면 타이머 재개
+  };
+
 
   // 게임이 시작되지 않았을 때 카운트다운 화면을 렌더링
   if (!gameStarted) {
@@ -278,7 +308,6 @@ const Game1Page = () => {
       </div>
     );
   }
-
 
   if (isDataLoading) {
     return (
@@ -313,7 +342,7 @@ const Game1Page = () => {
         <div className="top-nav__bookmarker">
           <div
             className="top-nav__guide-button"
-            onClick={() => setIsGuideOpen(true)}
+            onClick={openGuide}  // 가이드 열 때 타이머 멈추기
             style={{
               background: "none",
               border: "none",
@@ -371,7 +400,7 @@ const Game1Page = () => {
         onQuit={handleQuit}
       />
 
-      <GameGuide isOpen={isGuideOpen} onRequestClose={() => setIsGuideOpen(false)} />
+      <GameGuide isOpen={isGuideOpen} onRequestClose={closeGuide} />
     </div>
   );
 };
