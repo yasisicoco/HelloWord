@@ -11,9 +11,9 @@ import game4 from '../assets/gameThumbnail/game4.png';
 import User from '../assets/homeIcon/User.png';
 import { clearTokens } from '../features/Auth/authSlice';
 
-import charImage1 from '../assets/character/mini.png';
-import charImage2 from '../assets/character/middle.png';
-import charImage3 from '../assets/character/adult.png';
+import charImage1 from '../assets/character/mini.gif';
+import charImage2 from '../assets/character/middle.gif';
+import charImage3 from '../assets/character/adult.gif';
 import ConfirmationModal from '../components/ConfirmationModal';
 import PortraitModeWarning from '../features/Games/portraitModeWarning';
 
