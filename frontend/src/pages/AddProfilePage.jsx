@@ -6,6 +6,8 @@ import UserAPI from '../api/UserAPI';
 import Toast from '../components/Toast';
 import { useToast } from '../context/ToastProvider';
 
+import LandscapeModeWarning from '../features/Games/landscapeModeWarning';
+
 const AddProfilePage = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [profileImageFile, setProfileImageFile] = useState(null);
@@ -24,7 +26,7 @@ const AddProfilePage = () => {
   const dayInputRef = useRef(null);
   const yearInputRef = useRef(null);
   const currentYear = new Date().getFullYear();
-  const { triggerToast } = useToast();  // useToast 훅 사용
+  const { triggerToast } = useToast(); // useToast 훅 사용
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -129,6 +131,7 @@ const AddProfilePage = () => {
 
   return (
     <div className="add-profile-container">
+      <LandscapeModeWarning />
       <div className="header">
         <button className="back-button" onClick={handleBack}>
           <span className="back-icon">&lt;</span>
@@ -175,7 +178,7 @@ const AddProfilePage = () => {
           <label htmlFor="birthDate">생년월일</label>
           <div className="birthdate-inputs">
             <div className="input-wrapper">
-              <div className='input-box'>
+              <div className="input-box">
                 <input
                   type="number"
                   placeholder="연도"
@@ -210,16 +213,10 @@ const AddProfilePage = () => {
 
           <label htmlFor="gender">성별</label>
           <div className="gender-toggle">
-            <button
-              className={`gender-button ${gender === 'M' ? 'selected' : ''}`}
-              onClick={() => setGender('M')}
-            >
+            <button className={`gender-button ${gender === 'M' ? 'selected' : ''}`} onClick={() => setGender('M')}>
               남자
             </button>
-            <button
-              className={`gender-button ${gender === 'F' ? 'selected' : ''}`}
-              onClick={() => setGender('F')}
-            >
+            <button className={`gender-button ${gender === 'F' ? 'selected' : ''}`} onClick={() => setGender('F')}>
               여자
             </button>
           </div>

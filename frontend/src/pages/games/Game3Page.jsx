@@ -7,6 +7,7 @@ import ConfirmationModal from '../../components/ConfirmationModal'; // 뒤로가
 
 // API import
 import { fetchGame3, fetchGameResult } from '../../api/GameAPI';
+import PortraitModeWarning from '../../features/Games/portraitModeWarning';
 
 // compo
 import TimeBar from '../../components/TimeBar';
@@ -278,6 +279,8 @@ const Game3Page = () => {
 
   return (
     <div className="game3-page">
+      <PortraitModeWarning />
+
       <section className="top-nav">
         <button onClick={handleBackButtonClick} className="top-nav__back-space">
           <img src="/icons/arrow_back.svg" alt="뒤로가기" />

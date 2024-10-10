@@ -6,6 +6,7 @@ import { FaQuestionCircle } from 'react-icons/fa';
 
 // API import
 import { fetchGame1, fetchGameResult } from '../../api/GameAPI';
+import PortraitModeWarning from '../../features/Games/portraitModeWarning';
 
 // compo
 import TimeBar from '../../components/TimeBar';
@@ -331,6 +332,8 @@ const Game1Page = () => {
 
   return (
     <div className="game1-page">
+      <PortraitModeWarning />
+
       <section className="top-nav">
         {/* 뒤로가기 버튼 클릭 시 ConfirmationModal 열기 */}
         <button onClick={handleBackButtonClick} className="top-nav__back-space">

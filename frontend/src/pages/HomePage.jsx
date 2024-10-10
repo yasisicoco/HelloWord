@@ -15,8 +15,10 @@ import charImage1 from '../assets/character/mini.png';
 import charImage2 from '../assets/character/middle.png';
 import charImage3 from '../assets/character/adult.png';
 import ConfirmationModal from '../components/ConfirmationModal';
+import PortraitModeWarning from '../features/Games/portraitModeWarning';
 
 const HomePage = () => {
+  const [isPortrait, setIsPortrait] = useState(false);
   const [exp, setExp] = useState(0);
   const [level, setLevel] = useState(1);
   const [name, setName] = useState('');
@@ -100,6 +102,7 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
+      <PortraitModeWarning />
       <div className="setting-box" onClick={toggleDrawer}>
         <img src={User} alt="User Icon" />
       </div>
@@ -109,13 +112,16 @@ const HomePage = () => {
       <div className={`drawer-menu ${drawerOpen ? 'open' : ''}`} ref={drawerRef}>
         <div className="drawer-header">
           <h2>메뉴</h2>
-          <button className="drawer-close" onClick={() => setDrawerOpen(false)}>x</button>
+          <button className="drawer-close" onClick={() => setDrawerOpen(false)}>
+            x
+          </button>
         </div>
         <div className="drawer-links">
           <Link to="/profile">아이 통계</Link>
           <Link to="/collection">학습 단어</Link>
           <Link to="/select-kid">아이 변경</Link>
           <div onClick={handleLogoutClick}>로그아웃</div> {/* 로그아웃 버튼 클릭 시 모달 열기 */}
+          <Link to="/setings">내 정보 수정</Link>
         </div>
       </div>
 
@@ -135,7 +141,6 @@ const HomePage = () => {
         <EmblaCarousel slides={gameItems} options={{ axis: 'y', loop: true }} storageKey="homeGameIndex" />
       </section>
 
-      {/* 로그아웃 확인 모달 */}
       <ConfirmationModal
         isOpen={isLogoutModalOpen}
         message="로그아웃하시겠습니까?"

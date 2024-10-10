@@ -5,6 +5,8 @@ import './ProfileSelectionPage.sass';
 import UserAPI from '../api/UserAPI';
 import { setSelectedKid } from '../features/Auth/kidSlice';
 
+import LandscapeModeWarning from '../features/Games/landscapeModeWarning';
+
 const ProfileSelectionPage = () => {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [kids, setKids] = useState([]);
@@ -55,6 +57,7 @@ const ProfileSelectionPage = () => {
 
   return (
     <div className="profile-selection-container">
+      <LandscapeModeWarning />
       <div className="header">
         <h1 className="header-title">아이 선택</h1>
         <button className="add-button" onClick={handleAddProfile}>
@@ -71,19 +74,15 @@ const ProfileSelectionPage = () => {
           {kids.length === 0 ? (
             <p className="no-profiles">아이 프로필을 생성해주세요.</p>
           ) : (
-            kids.map(
-              (
-                kid,
-              ) => (
-                <div
-                  key={kid.kidId}
-                  className={`profile-item ${selectedProfile === kid.kidId ? 'selected' : ''}`}
-                  onClick={() => handleSelectProfile(kid)}>
-                  <img src={kid.profileImageUrl} alt={kid.name} className="profile-image" />
-                  <p className="profile-name">{kid.name}</p>
-                </div>
-              ),
-            )
+            kids.map((kid) => (
+              <div
+                key={kid.kidId}
+                className={`profile-item ${selectedProfile === kid.kidId ? 'selected' : ''}`}
+                onClick={() => handleSelectProfile(kid)}>
+                <img src={kid.profileImageUrl} alt={kid.name} className="profile-image" />
+                <p className="profile-name">{kid.name}</p>
+              </div>
+            ))
           )}
         </div>
       )}
@@ -91,8 +90,7 @@ const ProfileSelectionPage = () => {
       <button
         className={`select-button ${selectedProfile ? '' : 'disabled'}`}
         disabled={!selectedProfile}
-        onClick={handleSelectButtonClick}
-      >
+        onClick={handleSelectButtonClick}>
         선택
       </button>
     </div>
