@@ -7,15 +7,16 @@ import { setTokens } from '../features/Auth/authSlice';
 import xIcon from '../assets/homeIcon/x-icon.png';
 import { useToast } from '../context/ToastProvider';
 
+import defaultProfile from '../assets/character/defaultProfile.png';
+
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const passwordInputRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { triggerToast } = useToast();  // useToast 훅 사용
+  const { triggerToast } = useToast(); // useToast 훅 사용
   const accessToken = useSelector((state) => state.auth.accessToken); // accessToken 가져오기
-
 
   useEffect(() => {
     // accessToken이 있으면 바로 /select-kid 페이지로 이동
@@ -33,7 +34,7 @@ const LoginPage = () => {
     event.preventDefault();
 
     if (!isValidEmail(email)) {
-      triggerToast('올바른 이메일 주소를 입력해 주세요.');  // 전역 토스트 호출
+      triggerToast('올바른 이메일 주소를 입력해 주세요.'); // 전역 토스트 호출
       return;
     }
 
@@ -47,11 +48,11 @@ const LoginPage = () => {
         dispatch(setTokens({ accessToken, refreshToken }));
         navigate('/select-kid');
       } else {
-        triggerToast('입력하신 정보가 틀렸습니다.');  // 전역 토스트 호출
+        triggerToast('입력하신 정보가 틀렸습니다.'); // 전역 토스트 호출
       }
     } catch (error) {
       console.error('로그인 중 에러 발생:', error);
-      triggerToast('입력하신 정보가 틀렸습니다.');  // 전역 토스트 호출
+      triggerToast('입력하신 정보가 틀렸습니다.'); // 전역 토스트 호출
     }
   };
 
@@ -108,7 +109,7 @@ const LoginPage = () => {
           </div>
         </div>
         <button type="submit" className="login-button" disabled={!isFormValid}>
-          <img src='/character/guiyomi.png' alt="로그인 이미지" />
+          <img src={defaultProfile} alt="로그인 이미지" />
           로그인
         </button>
       </form>
@@ -118,7 +119,9 @@ const LoginPage = () => {
         {/* <span className="divider">|</span> */}
         {/* <Link to="/find/password" className="link-item">비밀번호 찾기</Link>
         <span className="divider">|</span> */}
-        <Link to="/signup" className="link-item">회원가입</Link>
+        <Link to="/signup" className="link-item">
+          회원가입
+        </Link>
       </div>
     </div>
   );
