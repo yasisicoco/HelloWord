@@ -115,7 +115,6 @@ const HomePage = () => {
           <Link to="/profile">아이 통계</Link>
           <Link to="/collection">학습 단어</Link>
           <Link to="/select-kid">아이 변경</Link>
-          <Link to="/settings">정보 수정</Link>
           <div onClick={handleLogoutClick}>로그아웃</div> {/* 로그아웃 버튼 클릭 시 모달 열기 */}
         </div>
       </div>
