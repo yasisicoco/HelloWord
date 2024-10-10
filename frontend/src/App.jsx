@@ -50,8 +50,8 @@ function App() {
 
   return (
     <div className="App">
-      {/* {isPWA ? <PWARouter /> : <BrowserRouter />} */}
-      <PWARouter />
+      {isPWA ? <PWARouter /> : <BrowserRouter />}
+      {/* <PWARouter /> */}
     </div>
   );
 }
