@@ -107,30 +107,34 @@ const HomePage = () => {
   return (
     <div className="home-page">
       <PortraitModeWarning />
-      <div className="setting-box">
-        <img src={User} alt="User Icon" onClick={toggleDrawer} />
-        <button onClick={togglePlay}>{isPlaying ? '음악 정지' : '음악 재생'}</button>
-      </div>
-
-      {drawerOpen && <div className="overlay" onClick={() => setDrawerOpen(false)}></div>}
-
-      <div className={`drawer-menu ${drawerOpen ? 'open' : ''}`} ref={drawerRef}>
-        <div className="drawer-header">
-          <h2>메뉴</h2>
-          <button className="drawer-close" onClick={() => setDrawerOpen(false)}>
-            x
-          </button>
-        </div>
-        <div className="drawer-links">
-          <Link to="/profile">아이 통계</Link>
-          <Link to="/collection">학습 단어</Link>
-          <Link to="/select-kid">아이 변경</Link>
-          <div onClick={handleLogoutClick}>로그아웃</div> {/* 로그아웃 버튼 클릭 시 모달 열기 */}
-          <Link to="/setings">내 정보 수정</Link>
-        </div>
-      </div>
 
       <section className="home-user">
+        <div className="setting-box">
+          <div className="user-button" onClick={toggleDrawer}>
+            <img src={User} alt="User Icon" />
+          </div>
+          <button className="music-button" onClick={togglePlay}>
+            {isPlaying ? '■' : '▶'}
+          </button>
+        </div>
+
+        {drawerOpen && <div className="overlay" onClick={() => setDrawerOpen(false)}></div>}
+
+        <div className={`drawer-menu ${drawerOpen ? 'open' : ''}`} ref={drawerRef}>
+          <div className="drawer-header">
+            <h2>메뉴</h2>
+            <button className="drawer-close" onClick={() => setDrawerOpen(false)}>
+              x
+            </button>
+          </div>
+          <div className="drawer-links">
+            <Link to="/profile">아이 통계</Link>
+            <Link to="/collection">학습 단어</Link>
+            <Link to="/select-kid">아이 변경</Link>
+            <div onClick={handleLogoutClick}>로그아웃</div> {/* 로그아웃 버튼 클릭 시 모달 열기 */}
+          </div>
+        </div>
+
         <div className="home-user__character">
           <img src={characterImage} alt="Character" className="home-user__character--image" />
         </div>
