@@ -2,6 +2,7 @@ import './Story.sass';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TbPlayerTrackNext } from 'react-icons/tb';
+import PortraitModeWarning from '../features/Games/portraitModeWarning';
 
 const storyData = [
   {
@@ -34,22 +35,27 @@ const StoryPage = () => {
   const [number, setNumber] = useState(0);
   const [displayedText, setDisplayedText] = useState(''); // 애니메이션된 텍스트
   const [fade, setFade] = useState(false); // 이미지 교차를 위한 상태
+  const [isAnimating, setIsAnimating] = useState(false); // 애니메이션 상태
+  const [isClickDisabled, setIsClickDisabled] = useState(false); // 클릭 차단 상태
   const navigate = useNavigate();
 
   useEffect(() => {
     const text = storyData[number].text;
     let index = 0;
 
-    // 먼저 텍스트를 초기화
+    // 클릭 차단 활성화
+    setIsClickDisabled(true);
     setDisplayedText('');
+    setIsAnimating(true); // 애니메이션 시작
 
-    // interval을 통해 글자를 하나씩 추가
     const interval = setInterval(() => {
       setDisplayedText((prev) => prev + text[index]); // 이전 텍스트에 현재 글자 추가
       index++;
 
       if (index >= text.length - 1) {
         clearInterval(interval); // 모든 글자가 출력되면 종료
+        setIsAnimating(false); // 애니메이션 종료
+        setIsClickDisabled(false); // 클릭 차단 해제
       }
     }, 60); // 글자가 하나씩 나오는 속도 (ms 단위)
 
@@ -57,7 +63,11 @@ const StoryPage = () => {
   }, [number]);
 
   const imageChange = () => {
+    // 클릭이 비활성화된 상태거나 애니메이션이 진행 중일 때는 클릭 방지
+    if (isAnimating || isClickDisabled) return;
+
     setFade(true);
+    setIsClickDisabled(true); // 페이지 전환 중 클릭 차단
 
     setTimeout(() => {
       if (number < storyData.length - 1) {
@@ -66,11 +76,14 @@ const StoryPage = () => {
         navigate('/home');
       }
       setFade(false);
+      setIsClickDisabled(false); // 페이지가 전환된 후 클릭 가능하게 설정
     }, 1000);
   };
 
   return (
     <div className="Story-Page">
+      <PortraitModeWarning />
+
       <div className="story-form">
         {/* 그림 들어가는 화면 */}
         <section className="story-form__background" onClick={imageChange}>

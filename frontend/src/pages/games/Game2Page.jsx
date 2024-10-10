@@ -7,6 +7,7 @@ import { FaQuestionCircle } from 'react-icons/fa';
 
 // API import
 import { fetchGame2, fetchGameResult } from '../../api/GameAPI';
+import PortraitModeWarning from '../../features/Games/portraitModeWarning';
 
 // compo
 import TimeBar from '../../components/TimeBar';
@@ -249,6 +250,8 @@ const Game2Page = () => {
 
   return (
     <div className="game2-page">
+      <PortraitModeWarning />
+
       <section className="top-nav">
         <button onClick={backButton} className="top-nav__back-space">
           <img src="/icons/arrow_back.svg" alt="뒤로가기" />
