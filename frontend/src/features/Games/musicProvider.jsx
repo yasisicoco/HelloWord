@@ -1,13 +1,13 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
-// MusicContext 생성
 export const MusicContext = createContext();
 
 export const MusicProvider = ({ children }) => {
   const [audio] = useState(new Audio('/sounds/energetic-bgm.mp3'));
   const [isPlaying, setIsPlaying] = useState(false);
+  const location = useLocation();
 
-  // 음악 재생 상태를 관리하는 함수
   const togglePlay = () => {
     if (isPlaying) {
       audio.pause();
@@ -15,24 +15,27 @@ export const MusicProvider = ({ children }) => {
     } else {
       audio
         .play()
-        .then(() => setIsPlaying(true)) // 재생 성공 시 상태 변경
+        .then(() => setIsPlaying(true))
         .catch((error) => {
-          console.error('음악 재생 오류:', error); // 오류 처리
+          console.error('음악 재생 오류:', error);
         });
     }
   };
 
-  // 컴포넌트가 마운트될 때 오디오 설정
   useEffect(() => {
-    audio.loop = true; // 무한 반복 재생
-    // audio.play(); // 자동 재생
+    audio.loop = true;
 
-    // 컴포넌트 언마운트 시 음악 멈춤
     return () => {
       audio.pause();
-      setIsPlaying(false); // 상태 초기화
+      setIsPlaying(false);
     };
   }, [audio]);
+
+  // 페이지 변경 감지 및 음악 중지
+  useEffect(() => {
+    audio.pause();
+    setIsPlaying(false);
+  }, [location, audio]);
 
   return <MusicContext.Provider value={{ isPlaying, togglePlay }}>{children}</MusicContext.Provider>;
 };
