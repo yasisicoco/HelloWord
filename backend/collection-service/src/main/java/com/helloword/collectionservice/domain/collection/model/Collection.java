@@ -1,5 +1,7 @@
 package com.helloword.collectionservice.domain.collection.model;
 
+import java.time.LocalDate;
+
 import com.helloword.collectionservice.domain.collection.dto.request.CreateCollectionRequestDto;
 
 import jakarta.persistence.Column;
@@ -35,6 +37,9 @@ public class Collection {
 	@Column(nullable = false)
 	private Boolean isCompleted;
 
+	@Column
+	private LocalDate completionDate;
+
 	@Builder
 	private Collection(Long kidId, Long wordId, Integer count, Boolean isCompleted) {
 		this.kidId = kidId;
@@ -63,5 +68,6 @@ public class Collection {
 
 	private void updateIsCompleted() {
 		this.isCompleted = true;
+		this.completionDate = LocalDate.now();
 	}
 }

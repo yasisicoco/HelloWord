@@ -1,5 +1,6 @@
 package com.helloword.collectionservice.domain.collection.dto.response;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,8 @@ public class CollectionsResponseDto {
 					word.getImageUrl(),
 					word.getVoiceUrl(),
 					collection.getCount(),
-					collection.getIsCompleted()
+					collection.getIsCompleted(),
+					collection.getCompletionDate()
 				);
 			}).collect(Collectors.toList());
 
@@ -56,5 +58,6 @@ public class CollectionsResponseDto {
 		private String voiceUrl;
 		private int count;
 		private Boolean isCompleted;
+		private LocalDate completionDate;
 	}
 }
