@@ -15,7 +15,7 @@ const LearningMount = ({ kidData }) => {
       const formattedDate = `${pastDate.getMonth() + 1}/${pastDate.getDate()}`; // "MM/DD" 형식으로 날짜 표시
       result.push({
         date: formattedDate,
-        day: pastDate.getDay(), // 요일을 얻음 (0: 일요일, 1: 월요일, ...)
+        day: pastDate.getDay(), // 요일을 얻음 (0: 일요일, 1: 월요일, ... 6: 토요일)
       });
     }
 
@@ -34,6 +34,13 @@ const LearningMount = ({ kidData }) => {
     평균: kidData.globalDailyAverageCorrectWordCounts[dayMap[day]] || 0, // 글로벌 평균 맞춘 개수
   }));
 
+  // 초 단위를 분과 초로 변환하는 함수
+  const formatPlayTime = (totalSeconds) => {
+    const minutes = Math.floor(totalSeconds / 60); // 분
+    const seconds = totalSeconds % 60; // 초
+    return `${minutes}분 ${seconds}초`;
+  };
+
   return (
     <div className="learning-compo">
       <section className="child-info">
@@ -44,7 +51,7 @@ const LearningMount = ({ kidData }) => {
         <div className="child-info__data">
           <div className="data-item">
             <p className="data-item__label">오늘 학습한 시간</p>
-            <p className="data-item__value">{kidData.todayPlayTime} 분</p>
+            <p className="data-item__value">{formatPlayTime(kidData.todayPlayTime)}</p> {/* 학습 시간 포맷팅 적용 */}
           </div>
           <div className="data-item">
             <p className="data-item__label">오늘 완료한 게임</p>
@@ -54,7 +61,7 @@ const LearningMount = ({ kidData }) => {
       </section>
 
       <section className="progress">
-        <div className="progress__label">7일간 맞춘 개수 비교</div>
+        <div className="progress__label">주간 학습량</div>
         <div className="progress__chart">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData}>
