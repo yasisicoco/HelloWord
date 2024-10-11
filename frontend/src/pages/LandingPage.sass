@@ -1,0 +1,23 @@
+*
+  margin: 0
+  padding: 0
+  box-sizing: border-box
+
+.LandingPage
+  width: 100%
+  height: 100vh
+  overflow-y: scroll
+  scroll-snap-type: y mandatory // 세로 스크롤 방향, 스크롤 고정
+
+.section
+  width: 100%
+  height: 100vh
+  display: flex
+  justify-content: center
+  align-items: center
+  scroll-snap-align: start // 각 섹션이 스크롤 시 화면에 맞춰 정렬
+
+.image
+  width: 100%
+  height: 100%
+  object-fit: cover

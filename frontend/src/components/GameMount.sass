@@ -1,0 +1,82 @@
+.gamemount-compo
+  display: flex
+  padding: 0.5rem 2rem 1rem 2rem
+  gap: 24px
+  height: 100%
+  width: 100%
+  margin: 0 auto
+  justify-content: center
+
+  .game-info
+    width: 40%
+    &__img
+      display: flex
+      flex-direction: column
+      gap: 20px
+      justify-content: space-between
+      height: 100%
+      .game-info__carousel
+        height: 100%
+        border-radius: 24px
+        box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+        filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+        height: 80%
+        width: 100%
+      .game-info__controls
+        display: flex
+        justify-content: center
+        height: 20%
+        &--prev
+          padding: 12px
+          border: none
+          border-top-left-radius: 12px
+          border-bottom-left-radius: 12px
+          background-color: #fce6bc
+          box-shadow: inset 0px 1px 4px rgba(255, 255, 255, 0.75), inset 0px -1px 4px rgba(0, 0, 0, 0.25)
+          filter: drop-shadow(0px 1px 4px rgba(0, 0, 0, 0.25))
+          display: flex
+          justify-content: center
+          align-items: center
+          width: 20%
+        &--text
+          display: flex
+          justify-content: center
+          align-items: center
+          background-color: #ffffff
+          box-shadow: inset 0px 1px 4px rgba(255, 255, 255, 0.75), inset 0px -1px 4px rgba(0, 0, 0, 0.25)
+          filter: drop-shadow(0px 1px 4px rgba(0, 0, 0, 0.25))
+          width: 60%
+        &--next
+          flex: 1
+          padding: 12px
+          border: none
+          border-top-right-radius: 12px
+          border-bottom-right-radius: 12px
+          background-color: #fce6bc
+          box-shadow: inset 0px 1px 4px rgba(255, 255, 255, 0.75), inset 0px -1px 4px rgba(0, 0, 0, 0.25)
+          filter: drop-shadow(0px 1px 4px rgba(0, 0, 0, 0.25))
+          display: flex
+          justify-content: center
+          align-items: center
+          width: 20%
+
+  .progress
+    display: flex
+    padding: 12px
+    flex-direction: column
+    border-radius: 24px
+    background-color: #fce6bc
+    box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+    filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+    width: 60%
+    &__label
+      text-align: center
+      font-size: 1.5rem
+      height: 10%
+      display: flex
+      justify-content: center
+      align-items: center
+      margin: 0.5rem 0
+    .progress__chart
+      display: flex
+      height: 100%

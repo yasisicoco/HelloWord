@@ -1,0 +1,184 @@
+body, html
+  margin: 0
+  padding: 0
+  font-family: 'CookieRun-Regular', serif
+
+.add-profile-container
+  display: flex
+  flex-direction: column
+  height: 100vh
+  justify-content: flex-start
+
+  .header
+    display: flex
+    justify-content: center
+    align-items: center
+    padding: 40px 20px 10px
+    margin-top: 0.8rem
+    position: relative
+
+    .back-button
+      position: absolute
+      left: 10px
+      font-size: 16px
+      background: none
+      border: none
+      cursor: pointer
+      color: #7572B4
+
+      .back-icon
+        font-size: 24px
+        font-weight: bold
+
+    .header-title
+      font-size: 20px
+      font-weight: bold
+      color: #7572B4
+
+  .progress-bar
+    width: 100%
+    height: 4px
+    background-color: #e0e0e0
+    margin-top: 0.8rem
+
+    .progress
+      height: 100%
+      background-color: #7572B4
+      transition: width 0.3s ease
+
+  .content
+    padding: 1.5rem
+    margin-top: 1.5rem
+
+  .profile-image-section
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    margin-bottom: 20px
+
+    .profile-image-label
+      width: 120px
+      height: 120px
+      display: flex
+      justify-content: center
+      align-items: center
+      border-radius: 50%
+      background-color: #e0e0e0
+      cursor: pointer
+
+    .profile-image-placeholder
+      color: #7572B4
+      font-size: 14px
+
+    .profile-image-preview
+      width: 100%
+      height: 100%
+      border-radius: 50%
+      object-fit: cover
+
+  .input-section
+    display: flex
+    flex-direction: column
+    gap: 20px
+    width: 100%
+
+    label
+      font-size: 16px
+      font-weight: bold
+      color: #7572B4
+
+    .input-wrapper
+      display: flex
+      flex-direction: column
+      position: relative
+      gap: 4px
+      min-height: 70px
+
+      input
+        width: 100%
+        height: 50px
+        padding: 10px
+        border: 1px solid #ddd  
+        border-radius: 4px
+        font-size: 16px
+
+      .error-message
+        position: absolute
+        bottom: 0
+        left: 0
+        color: red 
+        font-size: 12px
+        margin-top: 4px
+
+    .birthdate-inputs
+      display: flex
+      gap: 10px
+      justify-content: space-between
+
+      .input-wrapper
+        display: flex
+        flex-direction: column
+        width: 100%
+        gap: 4px // 입력 필드와 오류 메시지 사이의 간격
+
+      .input-box
+        display: flex
+        gap: 10px 
+        .number-input
+          padding: 10px
+          border: 1px solid #ddd
+          border-radius: 4px
+          font-size: 16px
+          text-align: center
+          -moz-appearance: textfield // Firefox에서 스핀 버튼 제거
+          &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
+            -webkit-appearance: none // Chrome, Safari, Edge에서 스핀 버튼 제거
+            margin: 0
+
+  .submit-button
+    position: fixed
+    bottom: 1rem
+    width: calc(100% - 40px)
+    left: 20px
+    padding: 15px
+    background-color: #7572B4
+    color: white
+    border: none
+    cursor: pointer
+    font-size: 18px
+    text-align: center
+    transition: background-color 0.3s ease
+    border-radius: 8px
+
+    &:hover
+      background-color: #5a5a9c
+
+.gender-toggle
+  display: flex
+  gap: 20px
+
+.gender-button
+  flex: 1
+  padding: 12px
+  border-radius: 8px
+  border: 2px solid #ddd
+  background-color: white
+  font-size: 16px
+  font-weight: bold
+  color: #7572B4
+  cursor: pointer
+  transition: all 0.3s ease
+
+  &:hover
+    background-color: #f0f0f0
+
+  &.selected
+    background-color: #7572B4
+    color: white
+    border-color: #7572B4
+
+.error-message 
+  color: red
+  font-size: 12px
+  margin-top: 4px

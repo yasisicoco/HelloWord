@@ -1,0 +1,169 @@
+.home-page
+  display: flex
+  flex-direction: row
+  width: 100%
+  height: 100vh
+  background: linear-gradient(180deg, #e96d91, #fff49e)
+
+  .setting-box
+    display: flex
+    align-items: center
+    justify-content: space-between
+    width: auto
+    height: 3.5rem
+    left: 20px
+    top: 20px
+    padding: 0 5px
+    border: none
+    border-radius: 1.75rem
+    background-color: transparent
+    position: absolute
+
+    .user-button,
+    .music-button
+      width: 3rem
+      height: 3rem
+      border-radius: 50%
+      background-color: #fff
+      display: flex
+      align-items: center
+      justify-content: center
+      cursor: pointer
+      box-shadow: inset 1px 1px 4px #ffffffbf, inset -1px -1px 4px #00000040
+      filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, .25))
+
+    .user-button
+      img
+        width: 2.5rem
+        height: 2.5rem
+
+    .music-button
+      margin-left: 10px
+      font-size: 1.2rem
+      color: #666666
+      border: none
+
+  .overlay
+    position: fixed
+    top: 0
+    left: 0
+    width: 100vw
+    height: 100vh
+    background-color: rgba(0, 0, 0, 0.5)
+    z-index: 500
+
+  .drawer-menu
+    position: fixed
+    top: 0
+    left: -250px
+    width: 200px
+    height: 100vh
+    background-color: #ffffff
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3)
+    display: flex
+    flex-direction: column
+    transition: left 0.3s ease, opacity 0.3s ease
+    z-index: 1000
+
+    &.open
+      left: 0
+      opacity: 1
+
+    .drawer-header
+      padding: 20px
+      background-color: #e96d91
+      color: white
+      text-align: center
+      position: relative
+
+      .drawer-close
+        position: absolute
+        right: 5px
+        top: 13px
+        background: none
+        border: none
+        font-size: 1.2rem
+        cursor: pointer
+        color: white
+        display: flex
+        justify-content: center
+        align-content: center
+
+    .drawer-links
+      padding: 20px
+      display: flex
+      flex-direction: column
+      align-items: center  // 자식 요소들을 오른쪽으로 정렬
+
+      a, div
+        margin-bottom: 20px
+        color: #333
+        text-decoration: none
+        font-size: 1.3rem
+        padding-bottom: 4px
+
+        &:hover
+          color: #e96d91
+
+  .home-user
+    display: flex
+    height: 100%
+    flex-direction: column
+    margin-left: 40px
+    width: 35%
+    justify-content: center
+
+    &__character
+      display: flex
+      height: 50%
+      justify-content: center
+      align-items: center
+      flex-direction: column
+      font-size: 1.5rem
+
+      &--image
+        max-width: 100%
+        max-height: 100%
+        object-fit: contain
+        margin-top: 1rem
+
+    &__exp
+      height: 2rem
+      background: #FFFFFF
+      border-radius: 24px
+      position: relative
+      margin-top: 1.5rem
+
+      &--text
+        width: 100%
+        text-align: center
+        font-size: 0.9rem
+        font-weight: bold
+        color: black
+        white-space: nowrap
+        display: flex
+        justify-content: center
+        align-items: center
+        height: 100%
+        position: absolute
+        z-index: 2
+
+      &--exp-wrap
+        border-radius: 30px
+        height: 2rem
+        display: flex
+        align-items: center
+        justify-content: center
+        color: black
+        font-weight: bold
+        background: #D0FF01
+        box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.75), inset -1px -1px 4px rgba(0, 0, 0, 0.25)
+        filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.25))
+        z-index: 1
+
+  .home-game
+    width: 65%
+    margin-right: 40px
+    margin-left: auto
+    height: 100%
+    padding-left: 12px
