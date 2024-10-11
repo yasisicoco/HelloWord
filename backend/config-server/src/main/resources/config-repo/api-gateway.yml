@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: swagger-server
+          uri: lb://WORD-SERVICE
+          predicates:
+            - Path=/swagger-ui/**
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/users/**
+        - id: log-service
+          uri: lb://LOG-SERVICE
+          predicates:
+            - Path=/api/logs/**
+        - id: kid-service
+          uri: lb://KID-SERVICE
+          predicates:
+            - Path=/api/kids/**
+        - id: word-service
+          uri: lb://WORD-SERVICE
+          predicates:
+            - Path=/api/words/**
+        - id: game-service
+          uri: lb://GAME-SERVICE
+          predicates:
+            - Path=/api/games/**
+        - id: collection-service
+          uri: lb://COLLECTION-SERVICE
+          predicates:
+            - Path=/api/collections/**
+        - id: probability-service
+          uri: lb://PROBABILITY-SERVICE
+          predicates:
+            - Path=/api/probability/**
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/auth/**
+
+jwt:
+  secret: fEDYiKuYlRKW/NscG8DEFqtIyb2Vo0Y3wEmGMEZ7oSLuoBakNBPN1BZvkBtYOsmIHljKX5BJmJLKSiRsZYaq6g==

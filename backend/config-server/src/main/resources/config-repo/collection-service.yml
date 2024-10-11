@@ -1,0 +1,30 @@
+## mysql
+spring:
+  datasource:
+    url: "{cipher}62977d2ef59b06d51c8519efc7ba78bf46c2f5b2bf96d3c324a428c9a36e68f44708e4786cd3fffe965be5ece70c7766d53203a662d17ce9e098540266fcc8b99602e5096936e23b1399a8f0ff48cee10471fcdeafdb63602f92147aae9244a4b694b3651c09ffcdba7ed2fbbccb3df232ba6973dc05430d4beff545fa0a111b"
+    username: "{cipher}da14d62c79a2be879eba51e4e85f556ac1d26e30efda948a68b6c9a88adff5a9"
+    password: "{cipher}563b05776188182702b2cc46f036c3a63c387275c03fdac88750fe66b14e1a56"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true # INSERT 쿼리의 순서를 최적화하여 성능 향상
+        order_updates: true # UPDATE 쿼리의 순서를 최적화하여 성능 향상
+
+springdoc:
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    path: /api/collections/v3/api-docs
+    groups:
+      enabled: true
+  swagger-ui:
+    disable-swagger-default-url: true
+    display-request-duration: true
+  paths-to-match: /**

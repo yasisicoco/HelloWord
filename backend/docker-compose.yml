@@ -1,0 +1,138 @@
+services:
+  config-server:
+    image: mrcsbin/helloword-config-server:latest
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - backend-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker,native
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://config-server:8888/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  discovery-server:
+    image: mrcsbin/helloword-discovery-server:latest
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    networks:
+      - backend-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://discovery-server:8761/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  api-gateway:
+    image: mrcsbin/helloword-api-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - backend-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  auth-service:
+    image: mrcsbin/helloword-auth-service:latest
+    container_name: auth-service
+    networks:
+      - backend-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  collection-service:
+    image: mrcsbin/helloword-collection-service:latest
+    container_name: collection-service
+    networks:
+      - backend-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  kid-service:
+    image: mrcsbin/helloword-kid-service:latest
+    container_name: kid-service
+    networks:
+      - backend-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  probability-service:
+    image: mrcsbin/helloword-probability-service:latest
+    container_name: probability-service
+    networks:
+      - backend-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  user-service:
+    image: mrcsbin/helloword-user-service:latest
+    container_name: user-service
+    networks:
+      - backend-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  word-service:
+    image: mrcsbin/helloword-word-service:latest
+    container_name: word-service
+    networks:
+      - backend-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  game-service:
+    image: mrcsbin/helloword-game-service:latest
+    container_name: game-service
+    networks:
+      - backend-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  log-service:
+    image: mrcsbin/helloword-log-service:latest
+    container_name: log-service
+    networks:
+      - backend-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+networks:
+  backend-network:
+    driver: bridge

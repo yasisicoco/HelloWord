@@ -1,0 +1,30 @@
+## mysql
+spring:
+  datasource:
+    url: "{cipher}0dbda0c37b1c5e99fdbf7027c0b53369033ab65a6bea2f871085961632fcf0062f7a428703a08307d9e7eef5588c8dc18aa38ef3fcc4aafaff5eaf5267ba4fe12db9d1a935140d915c8e8505946f9f07b4b170eeb700b42e046295ac7d56f296288fa65d1006bc1f0bd7423aded25fd576fb2cae9bbad48dc641e0278d15d444"
+    username: "{cipher}55c65c2c7873c2f9876bd56dca210e1552513e04c71e6e4b7382d094edd42ef5"
+    password: "{cipher}fc132c8ea1440aea7e2795c0805be049d1e4cf4b2d0b2bd40541c2292af7a603"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true # INSERT 쿼리의 순서를 최적화하여 성능 향상
+        order_updates: true # UPDATE 쿼리의 순서를 최적화하여 성능 향상
+
+springdoc:
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    path: /api/probability/v3/api-docs
+    groups:
+      enabled: true
+  swagger-ui:
+    disable-swagger-default-url: true
+    display-request-duration: true
+  paths-to-match: /**
