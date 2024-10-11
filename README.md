@@ -3,7 +3,10 @@
 
 >언어 발달이 지연된 영유아들을 대상으로 게임화된 학습 방식을 통해 발음, 어휘, 문장 구성 능력을 향상시키고 부모가 함께 참여하여 자녀의 언어 발달 과정을 모니터링할 수 언어 도우미입니다!
 
-![alt text](HelloWord.png)
+<p align="center">
+  <img src="./assets/HelloWord.png">
+</p>
+
 
 <br>
 
@@ -44,14 +47,23 @@ Spring Cloud를 기반으로 MSA 구조로 서비스를 구현했습니다. 기�
 <br>
 
 ## 아키텍쳐
-![alt text](<image (2).png>)
+<p align="left">
+  <img src="./assets/아키텍처.png">
+</p>
+
 
 <br>
 
 ## 팀원 소개
-![alt text](팀원소개.png)
+<p align="center">
+  <img src="./assets/팀원소개.png">
+</p>
+
 
 <br>
 
 ## ERD
-![alt text](<Hello, word.png>)
+<p align="center">
+  <img src="./assets/Hello, word.png">
+</p>
+
